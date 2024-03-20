@@ -1,12 +1,11 @@
-import { Outlet } from 'react-router-dom'
-import Sidebar from './components/Sidebar'
-import Breadcrumbs from './components/ui/breadcrumbs'
+import { Outlet } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import Breadcrumbs from "./components/ui/breadcrumbs";
 import { Bell } from "lucide-react";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from './components/ui/sheet';
 
 const Layout = () => {
+
   return (
-    <Sheet>
       <div className="w-full h-screen flex gap-2">
         <Sidebar />
         <div className="xl:basis-5/6 basis-4/5 p-5 flex flex-col gap-10 h-full w-full ">
@@ -16,9 +15,8 @@ const Layout = () => {
           </div>
           <Outlet />
         </div>
-      </div>      
-    </Sheet>
+      </div>
   );
-}
+};
 
-export default Layout
+export default Layout;

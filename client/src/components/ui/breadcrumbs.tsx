@@ -16,15 +16,15 @@ const Breadcrumbs = () => {
         .split("/")
         .filter(Boolean)
         .map((path, index, array) => (
-          <>
+          <React.Fragment key={index}>
             <p>/</p>
             <Link
               to={`/${array.slice(0, index + 1).join("/")}`}
-              className="text-sm font-medium capitalize"
+              className="text-sm last-of-type:font-semibold capitalize"
             >
               {path}
             </Link>
-          </>
+          </React.Fragment>
         ))}
     </div>
   );

@@ -14,6 +14,7 @@ const Sidebar = () => {
       <ul className="flex flex-col space-y-1.5 py-8 overflow-auto">
         {links.map((link) => (
           <li
+            key={link.label}
             className={clsx(
               "rounded-md text-sm font-medium",
               location.pathname.startsWith("/" + link.href)

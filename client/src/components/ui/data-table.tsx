@@ -2,7 +2,6 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -34,9 +33,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "../../../components/ui/button";
+import { Button } from "./button";
 import React from "react";
-import DetailKelas from "./DetailKelas";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,10 +45,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState("");
 
   const table = useReactTable({
     data,
@@ -59,29 +55,29 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters
-    }
+      globalFilter: columnFilters,
+    },
   });
 
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2 max-w-sm rounded-md border leading-none border-slate-200 bg-transparent px-3 py-2 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
-          <Search size={18} className="text-slate-700 inline"/>
+          <Search size={18} className="text-slate-700 inline" />
           <input
-            placeholder="Search class ID"
-            value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("id")?.setFilterValue(event.target.value)
-            }
+            placeholder="Search class major or wali kelas"
+            value={columnFilters}
+            onChange={(event) => setColumnFilters(event.target.value)}
             className="w-full h-full focus-visible:ring-0 focus-visible:outline-none px-2 py-0.5 focus-visible:border-b"
           />
         </div>
-        <Button className="flex items-center gap-2"><School size={18}/>Add New Data</Button>
+        <Button className="flex items-center gap-2">
+          <School size={18} />
+          Add New Data
+        </Button>
       </div>
       <div className="flex flex-col gap-8 py-4 h-full overflow-y-auto">
         <div className="rounded-md border overflow-y-auto">
@@ -100,26 +96,26 @@ export function DataTable<TData, TValue>({
                             )}
                       </TableHead>
                     );
-                  })}                  
+                  })}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>                       
-                      ))}                      
-                    </TableRow>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
                 ))
               ) : (
                 <TableRow>
@@ -130,10 +126,9 @@ export function DataTable<TData, TValue>({
                     No results.
                   </TableCell>
                 </TableRow>
-              )}            
+              )}
             </TableBody>
           </Table>
-          <DetailKelas/>
         </div>
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center space-x-2">
@@ -145,7 +140,9 @@ export function DataTable<TData, TValue>({
               }}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (
