@@ -17,7 +17,7 @@ export const NavLinks = {
         label: "Data Siswa",
         href: "siswa",
         icon: Users
-      },
+      },     
     ]
   }
 }
