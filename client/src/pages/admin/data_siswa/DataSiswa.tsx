@@ -5,10 +5,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import axios from 'axios'
 import Detail from './components/Detail'
 import { Search } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 interface StudentType {
   nisn: string,
   name: string,
+  classId: string,
   grade: "X" | "XI" | "XII";
   major: string;
   class: string;
@@ -115,7 +117,9 @@ const DataSiswa = () => {
               <h1 className='text-sm font-medium'>{student.name}</h1>
               <p className='text-xs font-light'>{student.nisn}</p>
             </div>
-            <p className='text-xs ml-auto'>{student.grade} {student.major} {student.class}</p>
+            {student.classId &&
+            <Badge className='ml-auto'>{student.grade} {student.major} {student.class}</Badge>
+            }
           </div>
         ))}
       </List>
