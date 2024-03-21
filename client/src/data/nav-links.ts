@@ -1,4 +1,4 @@
-import { PanelsLeftBottom, School, Users } from "lucide-react";
+import { PanelsLeftBottom, School, Users, CalendarClock } from "lucide-react";
 
 export const NavLinks = {
   ADMIN: {
@@ -23,8 +23,18 @@ export const NavLinks = {
           },
           {
             label: "Data Siswa",
-            href: "siswa",
+            href: "students",
             icon: Users
+          },     
+          {
+            label: "Data Guru",
+            href: "teachers",
+            icon: Users
+          },     
+          {
+            label: "Data Jadwal",
+            href: "siswa",
+            icon: CalendarClock
           },     
         ]
       }

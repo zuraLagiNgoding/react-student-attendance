@@ -2,6 +2,8 @@ import { NavLinks } from "@/data/nav-links";
 import { Link, useLocation } from "react-router-dom";
 import clsx from "clsx";
 import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { MoreHorizontal } from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -19,26 +21,37 @@ const Sidebar = () => {
               {base.base}
             </h1>
             <ul className="flex flex-col py-2 space-y-1.5 overflow-auto">
-            {base.links.map((link) => (
-              <li
-                key={link.label}
-                className={clsx(
-                  "rounded-md text-sm font-medium",
-                  location.pathname.startsWith("/" + link.href)
-                    ? "bg-slate-800 text-white"
-                    : "hover:bg-primary/[0.08]"
-                )}
-              >
-                <Link to={link.href} className="px-4 py-3 inline-flex gap-2 items-center leading-none">
-                  <link.icon size={18} />
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+              {base.links.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    to={link.href}
+                    className={clsx(
+                      "rounded-md text-sm font-medium px-4 py-3 inline-flex gap-2 items-center leading-none w-full",
+                      location.pathname.startsWith("/" + link.href)
+                        ? "bg-slate-800 text-white"
+                        : "hover:bg-primary/[0.08]"
+                    )}
+                  >
+                    <link.icon size={18} />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </React.Fragment>
         ))}
+      </div>
+      <div className="flex gap-4 items-center mt-auto px-3">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <div>
+          <h1 className="font-medium text-sm">@Dimas Solar</h1>
+          <p className="text-xs">Administrator</p>
         </div>
+        <MoreHorizontal className="ml-auto"/>
+      </div>
     </aside>
   );
 };
