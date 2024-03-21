@@ -8,7 +8,7 @@ const Layout = () => {
   return (
       <div className="w-full h-screen flex gap-2">
         <Sidebar />
-        <div className="xl:basis-5/6 basis-4/5 p-5 flex flex-col gap-10 h-full w-full ">
+        <div className="2xl:basis-5/6 basis-4/5 p-5 flex flex-col gap-10 h-full w-full ">
           <div className="flex items-center justify-between pr-4">
             <Breadcrumbs />
             <Bell size={20} />

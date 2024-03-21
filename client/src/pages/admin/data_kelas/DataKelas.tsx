@@ -12,7 +12,6 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
       try {
         const res = await axios.get("http://localhost:8800/backend/classes");
         setData(res.data);
-        console.log(res);
       } catch (error) {
         console.log(error);
       }

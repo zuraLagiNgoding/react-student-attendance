@@ -4,20 +4,30 @@ export const NavLinks = {
   ADMIN: {
     links: [
       {
-        label: "Overview",
-        href: "overview",
-        icon: PanelsLeftBottom
+        base: "Main Menu",
+        links: [
+          {
+            label: "Overview",
+            href: "overview",
+            icon: PanelsLeftBottom
+          }
+        ]
       },
       {
-        label: "Data Kelas",
-        href: "classes",
-        icon: School
-      },
-      {
-        label: "Data Siswa",
-        href: "siswa",
-        icon: Users
-      },     
+        base: "Master Data",
+        links: [
+          {
+            label: "Data Kelas",
+            href: "classes",
+            icon: School
+          },
+          {
+            label: "Data Siswa",
+            href: "siswa",
+            icon: Users
+          },     
+        ]
+      }
     ]
   }
 }

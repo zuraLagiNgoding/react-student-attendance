@@ -3,7 +3,7 @@ import Login from "./pages/Login"
 import Layout from "./Layout";
 import Overview from "./pages/admin/Overview";
 import DataKelas from "./pages/admin/data_kelas/DataKelas";
-import DataSiswa from "./pages/admin/DataSiswa";
+import DataSiswa from "./pages/admin/data_siswa/DataSiswa";
 
 function App() {
   return (
