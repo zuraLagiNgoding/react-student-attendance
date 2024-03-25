@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", getClasses);
 router.get("/:id", getClass);
-router.post("/save", addClass);
+router.post("/", addClass);
 router.delete("/:id", deleteClass);
 router.put("/:id", updateClass);
 

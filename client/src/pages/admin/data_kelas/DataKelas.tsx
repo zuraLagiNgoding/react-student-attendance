@@ -2,7 +2,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { ClassesType, columns } from "./columns";
 import axios from "axios";
 import React from "react";
-import DetailKelas from "./DetailKelas";
+import DetailKelas from "./Detail";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
   const [data, setData] = React.useState<ClassesType[]>([]);

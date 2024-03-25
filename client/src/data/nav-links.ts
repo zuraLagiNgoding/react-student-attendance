@@ -17,6 +17,11 @@ export const NavLinks = {
         base: "Master Data",
         links: [
           {
+            label: "Data Jurusan",
+            href: "majors",
+            icon: School
+          },
+          {
             label: "Data Kelas",
             href: "classes",
             icon: School

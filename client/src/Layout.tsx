@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Breadcrumbs from "./components/ui/breadcrumbs";
 import { Bell } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 const Layout = () => {
 
@@ -15,6 +16,7 @@ const Layout = () => {
           </div>
           <Outlet />
         </div>
+        <Toaster/>
       </div>
   );
 };

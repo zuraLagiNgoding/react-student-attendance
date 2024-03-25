@@ -25,7 +25,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
-import { Search, School } from "lucide-react";
+import { Search, CirclePlus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -35,15 +35,18 @@ import {
 } from "@/components/ui/select";
 import { Button } from "./button";
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  saveLabel: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  saveLabel,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState("");
@@ -75,9 +78,11 @@ export function DataTable<TData, TValue>({
           />
         </div>
 
-        <Button className="flex items-center gap-2">
-          <School size={18} />
-          Add New Data
+        <Button>
+          <Link to="save" className="flex items-center gap-2">
+            <CirclePlus size={18} />
+            Add New {saveLabel}
+          </Link>
         </Button>
       </div>
       <div className="flex flex-col gap-8 py-4 h-full overflow-y-auto">

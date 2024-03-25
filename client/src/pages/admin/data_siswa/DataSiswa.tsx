@@ -123,7 +123,7 @@ const DataSiswa = () => {
           {students
             .filter(
               (filtered) =>
-                filtered.major.toLowerCase().includes(selectedMajor) &&
+                filtered.major?.toLowerCase().includes(selectedMajor) &&
                 (filtered.name.toLowerCase().includes(search.toLowerCase()) ||
                   filtered.nisn.includes(search))
             )

@@ -11,12 +11,12 @@ const DetailKelas = () => {
   const [data, setData] = React.useState<ClassesType>();
   const navigate = useNavigate();
   const location = useLocation();
-  const postId = location.pathname.split("/")[2];
+  const classId = location.pathname.split("/")[2];
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/backend/classes/${postId}`);
+        const res = await axios.get(`http://localhost:8800/backend/classes/${classId}`);
         setData(res.data[0]);
         console.log(data)
       } catch (error) {
@@ -25,7 +25,7 @@ const DetailKelas = () => {
     };
 
     fetchData();
-  }, [postId, data]);
+  }, [classId, data]);
 
   return (
     <Sheet defaultOpen onOpenChange={() => navigate(-1)}>
@@ -38,13 +38,13 @@ const DetailKelas = () => {
           </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="id" className="text-right">
+              <Label htmlFor="id">
                 Class ID
               </Label>
               <Input id="id" value={data?.id} disabled className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="waliKelas" className="text-right">
+              <Label htmlFor="waliKelas">
                 Wali Kelas
               </Label>
               <Input id="waliKelas" value={data?.waliKelas} disabled className="col-span-3" />
