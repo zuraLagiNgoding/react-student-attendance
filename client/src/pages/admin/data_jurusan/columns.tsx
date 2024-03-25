@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 export type MajorsType = {
   id: string;
   name: string;
+  shorten: string;
 };
 
 export const columns: ColumnDef<MajorsType>[] = [
@@ -46,6 +47,14 @@ export const columns: ColumnDef<MajorsType>[] = [
       );
     },
     enableGlobalFilter: false,
+    cell: ({ row }) => {
+      const majors = row.original;
+      return (
+        <>
+          {majors.name} / {majors.shorten}
+        </>
+      );
+    },
   },
   {
     id: "actions",

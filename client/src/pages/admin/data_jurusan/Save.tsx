@@ -19,20 +19,26 @@ import { useNavigate } from "react-router-dom";
 
 const Save = () => {
   const navigate = useNavigate();
+  const [input, setInput] = React.useState("");
   const [generatedId, setGeneratedId] = React.useState("");
 
   const form = useForm<z.infer<typeof MajorSchema>>({
     resolver: zodResolver(MajorSchema),
+    defaultValues: {
+      id: "",
+      name: "",
+      shorten: "",
+    },
   });
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/backend/majors/lastId");
+        const res = await axios.get(
+          "http://localhost:8800/backend/majors/lastId"
+        );
         setGeneratedId(
-          (parseInt(res.data[0].next_id))
-            .toString()
-            .padStart(3, "0")
+          parseInt(res.data[0].next_id).toString().padStart(3, "0")
         );
       } catch (error) {
         console.log(error);
@@ -42,23 +48,28 @@ const Save = () => {
   }, [generatedId]);
 
   React.useEffect(() => {
-    form.reset({
-      id: generatedId,
-      name: "",
-    });
-  }, [form, generatedId]);
+    const shorten = input
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("");
+    form.reset({ id: generatedId, name: input , shorten });
+  }, [form, generatedId, input]);
 
-  // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof MajorSchema>) => {
     try {
       await axios.post(`http://localhost:8800/backend/majors/`, {
         id: values.id,
         name: values.name,
+        shorten: values.shorten,
       });
       navigate("/majors");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value);
   };
 
   return (
@@ -83,24 +94,36 @@ const Save = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Major Name</FormLabel>
-                    <div className="flex items-center w-full max-w-full gap-1">
+              <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                <FormLabel>Major Name</FormLabel>
+                <div className="flex items-center w-full max-w-full gap-1">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
                       <FormControl className="basis-4/6">
-                        <Input {...field} />
+                        <Input
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            inputChangeHandler(e);
+                          }}
+                        />
                       </FormControl>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="shorten"
+                    render={({ field }) => (
                       <FormControl className="basis-2/6">
                         <Input {...field} />
                       </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    )}
+                  />
+                </div>
+                <FormMessage />
+              </FormItem>
             </CardContent>
             <CardFooter>
               <Button type="submit">Submit</Button>

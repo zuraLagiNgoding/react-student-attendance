@@ -28,10 +28,21 @@ export const getMajor = (req, res) => {
   });
 };
 
-export const addMajor = (req, res) => {
-  const q = "INSERT INTO majors(`id`, `name`) VALUES (?)";
+export const getUnique = (req, res) => {
+  const { field, value } = req.params;
+  const q = `SELECT COUNT(*) AS count FROM majors WHERE ${field} = ?`;
+  db.query(q, [value], (err, data) => {
+    if (err) return res.send(err);
 
-  const values = [req.body.id, req.body.name];
+    const exists = data[0].count > 0
+    res.json({ exists });
+  })
+}
+
+export const addMajor = (req, res) => {
+  const q = "INSERT INTO majors(`id`, `name`, `shorten`) VALUES (?)";
+
+  const values = [req.body.id, req.body.name, req.body.shorten];
 
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
