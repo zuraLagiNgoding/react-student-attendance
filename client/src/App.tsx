@@ -7,6 +7,7 @@ import DataSiswa from "./pages/admin/data_siswa/DataSiswa";
 import DataJurusan from "./pages/admin/data_jurusan/DataJurusan";
 import SaveJurusan from "./pages/admin/data_jurusan/Save";
 import SaveKelas from "./pages/admin/data_kelas/Save";
+import SaveSiswa from "./pages/admin/data_siswa/Save"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/classes/:id" element={<DataKelas detail/>}/>
             <Route path="/classes/save" element={<SaveKelas/>}/>
             <Route path="/students" element={<DataSiswa/>}/>
+            <Route path="/students/save" element={<SaveSiswa/>}/>
           </Route>
         </Routes>
       </Router>

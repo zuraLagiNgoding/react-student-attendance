@@ -12,14 +12,14 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type MajorsType = {
-  id: string;
+  majorId: string;
   name: string;
   shorten: string;
 };
 
 export const columns: ColumnDef<MajorsType>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "majorId",
     header: ({ column }) => {
       return (
         <Button
@@ -71,17 +71,17 @@ export const columns: ColumnDef<MajorsType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(majors.id)}
+                onClick={() => navigator.clipboard.writeText(majors.majorId)}
               >
                 Copy class ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/" + majors.id}>Edit Major Detail</Link>
+                <Link to={"/majors/" + majors.majorId}>Edit Major Detail</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/?delete=" + majors.id}>Delete Major</Link>
+                <Link to={"/majors/?delete=" + majors.majorId}>Delete Major</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -1,7 +1,7 @@
 import { db } from "../db.js"
 
 export const getStudents = (req,res) => {
-  const q = "SELECT * FROM students LEFT JOIN classes ON classes.id = students.classId;";
+  const q = "SELECT * FROM students LEFT JOIN classes ON classes.classId = students.classId;";
 
   db.query(q, (err, data) => {
     if (err) return res.send(err);

@@ -1,6 +1,7 @@
 import { db } from "../db.js";
 
 export const getMajors = (req, res) => {
+  const search = req.query.result
   const q = "SELECT * FROM majors";
 
   db.query(q, (err, data) => {

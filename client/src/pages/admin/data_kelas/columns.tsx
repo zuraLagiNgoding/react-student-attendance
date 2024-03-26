@@ -12,7 +12,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type ClassesType = {
-  id: string;
+  classId: string;
   grade: "X" | "XI" | "XII";
   class: string;
   waliKelas?: string;
@@ -20,6 +20,20 @@ export type ClassesType = {
 };
 
 export const columns: ColumnDef<ClassesType>[] = [
+  {
+    accessorKey: "classId",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Class ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   {
     accessorKey: "grade",
     header: ({ column }) => {
@@ -66,13 +80,13 @@ export const columns: ColumnDef<ClassesType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(classes.id)}
+                onClick={() => navigator.clipboard.writeText(classes.classId)}
               >
                 Copy class ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/classes/" + classes.id}>View Class Detail</Link>
+                <Link to={"/classes/" + classes.classId}>View Class Detail</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
