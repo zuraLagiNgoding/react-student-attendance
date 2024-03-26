@@ -26,7 +26,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
         Report Data Kelas
       </h1>
       <div className="flex flex-col overflow-y-hidden">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data} saveLabel="Class" />
         {detail ? <DetailKelas /> : null}
       </div>
     </div>

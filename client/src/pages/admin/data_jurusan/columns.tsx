@@ -31,7 +31,6 @@ export const columns: ColumnDef<MajorsType>[] = [
         </Button>
       );
     },
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "name",
@@ -46,7 +45,6 @@ export const columns: ColumnDef<MajorsType>[] = [
         </Button>
       );
     },
-    enableGlobalFilter: false,
     cell: ({ row }) => {
       const majors = row.original;
       return (

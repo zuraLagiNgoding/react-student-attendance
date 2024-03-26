@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -7,9 +14,9 @@ import { Link } from "react-router-dom";
 export type ClassesType = {
   id: string;
   grade: "X" | "XI" | "XII";
-  major: string;
   class: string;
   waliKelas?: string;
+  name: string;
 };
 
 export const columns: ColumnDef<ClassesType>[] = [
@@ -29,12 +36,13 @@ export const columns: ColumnDef<ClassesType>[] = [
     enableGlobalFilter: false,
   },
   {
-    accessorKey: "major",
-    header: "Major",
-  },
-  {
     accessorKey: "class",
     header: "Class",
+    enableGlobalFilter: false,
+  },
+  {
+    accessorKey: "name",
+    header: "Major",
     enableGlobalFilter: false,
   },
   {
