@@ -52,32 +52,32 @@ const Save = () => {
   const form = useForm<z.infer<typeof ClassSchema>>({
     resolver: zodResolver(ClassSchema),
     defaultValues: {
-      id: "",
+      class_id: "",
       grade: "",
-      class: "",
+      identifier: "",
       waliKelas: "",
-      majorId: "",
+      major_id: "",
     },
   });
 
   React.useEffect(() => {
     form.reset({
-      id: generatedId,
+      class_id: generatedId,
       grade: "",
-      class: "",
+      identifier: "",
       waliKelas: "",
-      majorId: "",
+      major_id: "",
     });
   }, [form, generatedId]);
 
   const onSubmit = async (values: z.infer<typeof ClassSchema>) => {
     try {
       await axios.post(`http://localhost:8800/backend/classes/`, {
-        id: values.id,
+        class_id: values.class_id,
         grade: values.grade,
-        class: values.class,
+        identifier: values.identifier,
         waliKelas: values.waliKelas,
-        majorId: majors.find(major => major.name == values.majorId)?.id,
+        major_id: majors.find(major => major.major_name == values.major_id)?.major_id,
       });
       navigate("/classes");
     } catch (error) {
@@ -102,7 +102,7 @@ const Save = () => {
             <CardContent className="space-y-2">
               <FormField
                 control={form.control}
-                name="id"
+                name="class_id"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                     <FormLabel>Class ID</FormLabel>
@@ -141,7 +141,7 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="majorId"
+                name="major_id"
                 render={({ field }) => (
                   <FormItem className="grid max-w-sm items-center gap-1.5">
                     <FormLabel>Major</FormLabel>
@@ -158,8 +158,8 @@ const Save = () => {
                           >
                             {field.value
                               ? majors.find(
-                                  (major) => major.name === field.value
-                                )?.name
+                                  (major) => major.major_name === field.value
+                                )?.major_name
                               : "Select Major"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -180,7 +180,7 @@ const Save = () => {
                             <div className="overflow-y-auto max-h-[300px]">
                               {majors
                                 .filter((filtered) =>
-                                  filtered.name
+                                  filtered.major_name
                                     .toLowerCase()
                                     .includes(search.toLowerCase())
                                 )
@@ -188,19 +188,19 @@ const Save = () => {
                                   <div
                                     className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
                                     onClick={() => {
-                                      form.setValue("majorId", major.name);
+                                      form.setValue("major_id", major.major_name);
                                     }}
                                   >
                                     <Check
                                       className={cn(
                                         "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === major.name
+                                        field.value === major.major_name
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
                                     />
                                     <h1 className="basis-5/6 leading-tight">
-                                      {major.name}
+                                      {major.major_name}
                                     </h1>
                                   </div>
                                 ))}
@@ -216,7 +216,7 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="class"
+                name="identifier"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                     <FormLabel className="flex items-center justify-between">

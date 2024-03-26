@@ -159,7 +159,7 @@ const List = ({setStudent, students} : ListTypes) => {
         {students
           .filter(
             (filtered) =>
-              filtered.name.toLowerCase().includes(search.toLowerCase()) ||
+              filtered.student_name.toLowerCase().includes(search.toLowerCase()) ||
               filtered.nisn.includes(search)
           )
           .map((student, index) => (
@@ -179,13 +179,13 @@ const List = ({setStudent, students} : ListTypes) => {
               />
               <div className="flex flex-col ">
                 <h1 className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                  {student.name}
+                  {student.student_name}
                 </h1>
                 <p className="text-xs font-light">{student.nisn}</p>
               </div>
-              {student.classId && (
+              {student.class_id && (
                 <Badge className="ml-auto">
-                  {student.grade} {student.major} {student.class}
+                  {student.grade} {student.shorten} {student.identifier}
                 </Badge>
               )}
             </div>

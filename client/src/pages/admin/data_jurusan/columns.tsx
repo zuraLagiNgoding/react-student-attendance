@@ -12,14 +12,14 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type MajorsType = {
-  majorId: string;
-  name: string;
+  major_id: string;
+  major_name: string;
   shorten: string;
 };
 
 export const columns: ColumnDef<MajorsType>[] = [
   {
-    accessorKey: "majorId",
+    accessorKey: "major_id",
     header: ({ column }) => {
       return (
         <Button
@@ -33,7 +33,7 @@ export const columns: ColumnDef<MajorsType>[] = [
     },
   },
   {
-    accessorKey: "name",
+    accessorKey: "major_name",
     header: ({ column }) => {
       return (
         <Button
@@ -49,7 +49,7 @@ export const columns: ColumnDef<MajorsType>[] = [
       const majors = row.original;
       return (
         <>
-          {majors.name} / {majors.shorten}
+          {majors.major_name} / {majors.shorten}
         </>
       );
     },
@@ -71,17 +71,17 @@ export const columns: ColumnDef<MajorsType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(majors.majorId)}
+                onClick={() => navigator.clipboard.writeText(majors.major_id)}
               >
                 Copy class ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/" + majors.majorId}>Edit Major Detail</Link>
+                <Link to={"/majors/" + majors.major_id}>Edit Major Detail</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/?delete=" + majors.majorId}>Delete Major</Link>
+                <Link to={"/majors/?delete=" + majors.major_id}>Delete Major</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

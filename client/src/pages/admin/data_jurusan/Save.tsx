@@ -25,8 +25,8 @@ const Save = () => {
   const form = useForm<z.infer<typeof MajorSchema>>({
     resolver: zodResolver(MajorSchema),
     defaultValues: {
-      id: "",
-      name: "",
+      major_id: "",
+      major_name: "",
       shorten: "",
     },
   });
@@ -52,14 +52,14 @@ const Save = () => {
       .split(" ")
       .map((word) => word.charAt(0))
       .join("");
-    form.reset({ id: generatedId, name: input , shorten });
+    form.reset({ major_id: generatedId, major_name: input , shorten });
   }, [form, generatedId, input]);
 
   const onSubmit = async (values: z.infer<typeof MajorSchema>) => {
     try {
       await axios.post(`http://localhost:8800/backend/majors/`, {
-        id: values.id,
-        name: values.name,
+        id: values.major_id,
+        name: values.major_name,
         shorten: values.shorten,
       });
       navigate("/majors");
@@ -83,7 +83,7 @@ const Save = () => {
             <CardContent className="space-y-2">
               <FormField
                 control={form.control}
-                name="id"
+                name="major_id"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                     <FormLabel>Major ID</FormLabel>
@@ -99,7 +99,7 @@ const Save = () => {
                 <div className="flex items-center w-full max-w-full gap-1">
                   <FormField
                     control={form.control}
-                    name="name"
+                    name="major_name"
                     render={({ field }) => (
                       <FormControl className="basis-4/6">
                         <Input

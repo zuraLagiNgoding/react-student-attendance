@@ -11,7 +11,7 @@ export const getMajors = (req, res) => {
 };
 
 export const getLastId = (req, res) => {
-  const q = "SELECT IFNULL(MAX(id) + 1, 1) AS next_id FROM majors";
+  const q = "SELECT IFNULL(MAX(major_id) + 1, 1) AS next_id FROM majors";
 
   db.query(q, (err, data) => {
     if (err) return res.send(err);
@@ -21,7 +21,7 @@ export const getLastId = (req, res) => {
 
 export const getMajor = (req, res) => {
   const majorId = req.params.id;
-  const q = "SELECT * FROM majors WHERE id=?";
+  const q = "SELECT * FROM majors WHERE major_id=?";
 
   db.query(q, [majorId], (err, data) => {
     if (err) return res.send(err);
@@ -41,7 +41,7 @@ export const getUnique = (req, res) => {
 }
 
 export const addMajor = (req, res) => {
-  const q = "INSERT INTO majors(`id`, `name`, `shorten`) VALUES (?)";
+  const q = "INSERT INTO majors(`major_id`, `major_name`, `shorten`) VALUES (?)";
 
   const values = [req.body.id, req.body.name, req.body.shorten];
 
@@ -53,7 +53,7 @@ export const addMajor = (req, res) => {
 
 export const deleteMajor = (req, res) => {
   const majorId = req.query.delete
-  const q = "DELETE FROM majors WHERE id=?";
+  const q = "DELETE FROM majors WHERE major_id=?";
 
   db.query(q, [majorId], (err, data) => {
     if (err) return res.status(500).json(err);

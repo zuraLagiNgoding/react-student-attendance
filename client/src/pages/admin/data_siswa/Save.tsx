@@ -9,20 +9,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Check, ChevronsUpDown, CircleAlert, Search } from "lucide-react";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ClassSchema } from "@/schemas/class-schemas";
 import { useNavigate } from "react-router-dom";
-import { useFetch, useLastId } from "@/hooks/fetcher";
+import { useFetch } from "@/hooks/fetcher";
 import {
   Select,
   SelectContent,
@@ -37,49 +31,46 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { MajorsType } from "../data_jurusan/columns";
+import { StudentSchema } from "@/schemas/student-schemas";
+import { ClassesType } from "../data_kelas/columns";
+import { Textarea } from "@/components/ui/textarea";
 
 const Save = () => {
   const navigate = useNavigate();
-  const { generatedId } = useLastId(
-    "http://localhost:8800/backend/classes/lastId"
+
+  const { data: classes } = useFetch<ClassesType[]>(
+    "http://localhost:8800/backend/classes"
   );
 
-  const { data: majors } = useFetch<MajorsType[]>(
-    "http://localhost:8800/backend/majors"
-  );
-
-  const form = useForm<z.infer<typeof ClassSchema>>({
-    resolver: zodResolver(ClassSchema),
+  const form = useForm<z.infer<typeof StudentSchema>>({
+    resolver: zodResolver(StudentSchema),
     defaultValues: {
-      id: "",
-      grade: "",
-      class: "",
-      waliKelas: "",
-      majorId: "",
+      nisn: "",
+      student_name: "",
+      address: "",
+      class_id: "",
+      phoneNumber: "",
+      email: "",
     },
   });
 
-  React.useEffect(() => {
-    form.reset({
-      id: generatedId,
-      grade: "",
-      class: "",
-      waliKelas: "",
-      majorId: "",
-    });
-  }, [form, generatedId]);
-
-  const onSubmit = async (values: z.infer<typeof ClassSchema>) => {
+  const onSubmit = async (values: z.infer<typeof StudentSchema>) => {
     try {
-      await axios.post(`http://localhost:8800/backend/classes/`, {
-        id: values.id,
-        grade: values.grade,
-        class: values.class,
-        waliKelas: values.waliKelas,
-        majorId: majors.find(major => major.name == values.majorId)?.id,
+      await axios.post(`http://localhost:8800/backend/students/`, {
+        nisn: values.nisn,
+        student_name: values.student_name,
+        gender: values.gender,
+        address: values.address,
+        class_id:
+          classes.find(
+            (item) =>
+              `${item.grade} ${item.shorten} ${item.identifier}` === values.class_id
+          )?.class_id,
+        phoneNumber: values.phoneNumber,
+        email: values.email,
       });
-      navigate("/classes");
+      navigate("/students");
+      console.log(values)
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +85,7 @@ const Save = () => {
   return (
     <div className="flex flex-col gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
-        Save New Major Data
+        Save New Student Data
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -102,12 +93,25 @@ const Save = () => {
             <CardContent className="space-y-2">
               <FormField
                 control={form.control}
-                name="id"
+                name="nisn"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Class ID</FormLabel>
+                    <FormLabel>NISN</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled />
+                      <Input
+                        type="text"
+                        maxLength={10}
+                        onKeyDown={(e) => {
+                          if (
+                            !/^[0-9]$/.test(e.key) &&
+                            e.keyCode !== 8 &&
+                            e.keyCode !== 13
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,10 +119,23 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="grade"
+                name="student_name"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Grade</FormLabel>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                    <FormLabel>Gender</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -129,9 +146,8 @@ const Save = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="X">X</SelectItem>
-                        <SelectItem value="XI">XI</SelectItem>
-                        <SelectItem value="XII">XII</SelectItem>
+                        <SelectItem value="LK">Laki-Laki / Male</SelectItem>
+                        <SelectItem value="PR">Perempuan / Female</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -141,10 +157,23 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="majorId"
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} className="resize-none" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="class_id"
                 render={({ field }) => (
                   <FormItem className="grid max-w-sm items-center gap-1.5">
-                    <FormLabel>Major</FormLabel>
+                    <FormLabel>Class</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl className="w-full">
@@ -157,10 +186,24 @@ const Save = () => {
                             )}
                           >
                             {field.value
-                              ? majors.find(
-                                  (major) => major.name === field.value
-                                )?.name
-                              : "Select Major"}
+                              ? classes.find(
+                                  (item) =>
+                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                    field.value
+                                )?.grade +
+                                " " +
+                                classes.find(
+                                  (item) =>
+                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                    field.value
+                                )?.shorten +
+                                " " +
+                                classes.find(
+                                  (item) =>
+                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                    field.value
+                                )?.identifier
+                              : "Select Class"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
@@ -170,7 +213,7 @@ const Save = () => {
                           <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
                             <Search size={16} className="text-primary inline" />
                             <input
-                              placeholder="Search major..."
+                              placeholder="Search class..."
                               value={search}
                               onChange={searchHandler}
                               className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
@@ -178,29 +221,43 @@ const Save = () => {
                           </div>
                           <CommandGroup>
                             <div className="overflow-y-auto max-h-[300px]">
-                              {majors
-                                .filter((filtered) =>
-                                  filtered.name
-                                    .toLowerCase()
-                                    .includes(search.toLowerCase())
+                              {classes
+                                .filter(
+                                  (filtered) =>
+                                    filtered.grade
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase()) ||
+                                    filtered.major_name
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase()) ||
+                                    filtered.shorten
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase()) ||
+                                    filtered.identifier
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase())
                                 )
-                                .map((major) => (
+                                .map((item) => (
                                   <div
                                     className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
                                     onClick={() => {
-                                      form.setValue("majorId", major.name);
+                                      form.setValue(
+                                        "class_id",
+                                        `${item.grade} ${item.shorten} ${item.identifier}`
+                                      );
                                     }}
                                   >
                                     <Check
                                       className={cn(
                                         "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === major.name
+                                        field.value ===
+                                          `${item.grade} ${item.shorten} ${item.identifier}`
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
                                     />
                                     <h1 className="basis-5/6 leading-tight">
-                                      {major.name}
+                                      {item.grade} {item.shorten} {item.identifier}
                                     </h1>
                                   </div>
                                 ))}
@@ -216,25 +273,12 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="class"
+                name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel className="flex items-center justify-between">
-                      Class Identifier
-                      <HoverCard>
-                        <HoverCardTrigger>
-                          <CircleAlert size={16} />
-                        </HoverCardTrigger>
-                        <HoverCardContent
-                          side="left"
-                          className="text-[0.8rem] text-slate-500 dark:text-slate-400 w-fit"
-                        >
-                          Example: X TKdP <u>2</u>
-                        </HoverCardContent>
-                      </HoverCard>
-                    </FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -242,17 +286,17 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
-                name="waliKelas"
+                name="email"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                     <FormLabel className="flex gap-2">
-                      Wali Kelas{" "}
+                      Email Address
                       <span className="text-xs text-slate-500 dark:text-slate-400 w-fit">
                         *Optional
                       </span>
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input type="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

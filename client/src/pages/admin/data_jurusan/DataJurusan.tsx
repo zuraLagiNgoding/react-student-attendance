@@ -14,24 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useFetch } from "@/hooks/fetcher";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
-  const [data, setData] = React.useState<MajorsType[]>([]);
+  const { data } = useFetch<MajorsType[]>("http://localhost:8800/backend/majors");
   const navigate = useNavigate();
   const query = useLocation().search;
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/backend/majors");
-        setData(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, [data]);
 
   // React.useEffect(() => {
   //   console.log(isDelete)

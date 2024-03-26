@@ -1,24 +1,36 @@
 import { DataTable } from "@/components/ui/data-table";
 import { ClassesType, columns } from "./columns";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import axios from "axios";
 import React from "react";
 import DetailKelas from "./Detail";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useFetch } from "@/hooks/fetcher";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
-  const [data, setData] = React.useState<ClassesType[]>([]);
+  const { data } = useFetch<ClassesType[]>(
+    "http://localhost:8800/backend/classes"
+  );
+  const navigate = useNavigate();
+  const query = useLocation().search;
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/backend/classes");
-        setData(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const handleDelete = async () => {
+    try {
+      await axios.delete("http://localhost:8800/backend/classes" + query);
+      navigate("/classes");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -28,6 +40,25 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
       <div className="flex flex-col overflow-y-hidden">
         <DataTable columns={columns} data={data} saveLabel="Class" />
         {detail ? <DetailKelas /> : null}
+        {query.includes("?delete") ? (
+          <Dialog defaultOpen onOpenChange={() => navigate("/classes")}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Delete class</DialogTitle>
+                <DialogDescription>
+                  You are about to delete this class
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button onClick={handleDelete} type="submit">
+                    Ok
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : null}
       </div>
     </div>
   );

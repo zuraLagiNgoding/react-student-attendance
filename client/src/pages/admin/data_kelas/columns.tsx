@@ -12,16 +12,17 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type ClassesType = {
-  classId: string;
+  class_id: string;
   grade: "X" | "XI" | "XII";
-  class: string;
+  identifier: string;
   waliKelas?: string;
-  name: string;
+  major_name: string;
+  shorten: string;
 };
 
 export const columns: ColumnDef<ClassesType>[] = [
   {
-    accessorKey: "classId",
+    accessorKey: "class_id",
     header: ({ column }) => {
       return (
         <Button
@@ -50,12 +51,12 @@ export const columns: ColumnDef<ClassesType>[] = [
     enableGlobalFilter: false,
   },
   {
-    accessorKey: "class",
+    accessorKey: "identifier",
     header: "Class",
     enableGlobalFilter: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "major_name",
     header: "Major",
     enableGlobalFilter: false,
   },
@@ -80,13 +81,21 @@ export const columns: ColumnDef<ClassesType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(classes.classId)}
+                onClick={() => navigator.clipboard.writeText(classes.class_id)}
               >
                 Copy class ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/classes/" + classes.classId}>View Class Detail</Link>
+                <Link to={"/classes/" + classes.class_id}>
+                  View Class Detail
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to={"/classes/?delete=" + classes.class_id}>
+                  Delete Class
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

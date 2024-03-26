@@ -18,7 +18,7 @@ export const useFetch = <T>(url:string) => {
       setLoading(false);
     };
     fetchData();
-  }, [url]);
+  }, [url, data]);
 
   const reFetch = async () => {
     setLoading(true);

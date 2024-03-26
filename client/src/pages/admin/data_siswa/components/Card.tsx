@@ -12,7 +12,7 @@ interface CardProps {
   description?: string
 }
 
-const Card = ({ children, title, description } : CardProps & { children: ReactNode }) => {
+const Information = ({ children, title, description } : CardProps & { children: ReactNode }) => {
   return (
     <CardElement>
       <CardHeader className="pb-1">
@@ -24,4 +24,4 @@ const Card = ({ children, title, description } : CardProps & { children: ReactNo
   );
 };
 
-export default Card;
+export default Information;

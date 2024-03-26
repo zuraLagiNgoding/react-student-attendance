@@ -33,7 +33,7 @@ const DetailKelas = () => {
           <SheetHeader>
               <SheetTitle>Class Detail</SheetTitle>
               <SheetDescription>
-                {data?.name}
+                {data?.major_name}
               </SheetDescription>
           </SheetHeader>
           <div className="grid gap-4 py-4">
@@ -41,13 +41,13 @@ const DetailKelas = () => {
               <Label htmlFor="id">
                 Major ID
               </Label>
-              <Input id="id" value={data?.id} disabled className="col-span-3" />
+              <Input id="id" value={data?.major_id} disabled className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="waliKelas">
                 Major Name
               </Label>
-              <Input id="waliKelas" value={data?.name} disabled className="col-span-3" />
+              <Input id="waliKelas" value={data?.major_name} disabled className="col-span-3" />
             </div>
           </div>
           <SheetFooter>

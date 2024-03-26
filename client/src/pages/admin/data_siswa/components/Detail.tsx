@@ -6,12 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Information from "./Card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { StudentType } from "./../DataSiswa";
 
 type DetailType = {
-  student: StudentType;
+  student: StudentType | undefined;
 };
 
 const Detail = ({ student }: DetailType) => {
@@ -32,7 +33,7 @@ const Detail = ({ student }: DetailType) => {
                 <hr />
                 <div className="flex flex-col gap-1">
                   <h1 className="text-lg font-medium text-wrap leading-tight">
-                    {student.name}
+                    {student.student_name}
                   </h1>
                   <p className="text-sm font-light">{student.nisn}</p>
                 </div>
@@ -44,12 +45,12 @@ const Detail = ({ student }: DetailType) => {
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Full Name</Label>
-                  <span className="text-sm font-light">{student.name}</span>
+                  <span className="text-sm font-light">{student.student_name}</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Class</Label>
-                  {student.classId ? (
-                    <span className="text-sm font-light">{`${student.grade} ${student.major} ${student.class}`}</span>
+                  {student.class_id ? (
+                    <span className="text-sm font-light">{`${student.grade} ${student.shorten} ${student.identifier}`}</span>
                   ) : null}
                 </div>
                 <div className="flex flex-col gap-1">
@@ -72,15 +73,15 @@ const Detail = ({ student }: DetailType) => {
                 </div>
               </div>
               <div className="basis-1/5 space-y-4 mr-10">
-                <Card title="Tidak Hadir">
+                <Information title="Tidak Hadir">
                   <h1 className="text-5xl font-medium">7</h1>
-                </Card>
-                <Card title="Sakit">
+                </Information>
+                <Information title="Sakit">
                   <h1 className="text-5xl font-medium">2</h1>
-                </Card>
-                <Card title="Izin">
+                </Information>
+                <Information title="Izin">
                   <h1 className="text-5xl font-medium">2</h1>
-                </Card>
+                </Information>
               </div>
             </div>
           </div>

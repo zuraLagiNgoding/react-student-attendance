@@ -9,15 +9,17 @@ import { Link } from "react-router-dom";
 
 export interface StudentType {
   nisn: string;
-  name: string;
-  classId: string;
+  student_name: string;
+  class_id: string;
   grade: "X" | "XI" | "XII";
-  major: string;
-  class: string;
+  identifier: string;
   gender: string;
   address: string;
   phoneNumber: string;
   email: string;
+
+  major_name: string;
+  shorten: string;
 }
 
 const DataSiswa = () => {
@@ -28,13 +30,13 @@ const DataSiswa = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get("http://localhost:8800/backend/students");
-        setStudents(res.data);
+        setStudents(res.data);        
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [students]);
+  }, []);
 
   // const data = [
   //   {
