@@ -21,10 +21,5 @@ export const StudentSchema = z.object({
     .refine((value) => phoneNumberRegex.test(value), {
       message: "Please input a valid phone number!",
     }),
-  email: z.optional(
-    z
-      .string()
-      .email({ message: "Please input a valid email!" })
-      .max(100, "Maximum 100 characters")
-  ),
+  email: z.string().max(100, "Maximum 100 characters").email().optional(),
 });

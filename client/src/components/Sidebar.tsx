@@ -10,7 +10,7 @@ const Sidebar = () => {
   const { links } = NavLinks["ADMIN"];
 
   return (
-    <aside className="2xl:basis-1/6 basis-1/5 w-full h-full flex flex-col py-8 px-3 border-r shadow-2xl">
+    <aside className="2xl:basis-1/6 basis-1/5 w-full h-screen flex flex-col py-8 px-3 border-r shadow-2xl">
       <h1 className="font-semibold text-lg text-center">
         Student Attendance Management
       </h1>
