@@ -10,6 +10,9 @@ import Information from "./Card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { StudentType } from "./../DataSiswa";
+import { Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 type DetailType = {
   student: StudentType | undefined;
@@ -31,47 +34,81 @@ const Detail = ({ student }: DetailType) => {
                   <AvatarImage src="https://github.com/shadcn.png" />
                 </Avatar>
                 <hr />
-                <div className="flex flex-col gap-1">
-                  <h1 className="text-lg font-medium text-wrap leading-tight">
-                    {student.student_name}
-                  </h1>
-                  <p className="text-sm font-light">{student.nisn}</p>
+                <div className="flex justify-between">
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-lg font-medium text-wrap leading-tight">
+                      {student.student_name}
+                    </h1>
+                    <p className="text-sm font-light">{student.nisn}</p>
+                  </div>
+                  <Link
+                    className="mt-2 hover:text-slate-500 transition-colors"
+                    to={"/students/?delete=" + student.nisn}
+                  >
+                    <Trash2 size={18} />
+                  </Link>
                 </div>
               </div>
               <div className="basis-3/5 grid gap-4 py-4">
                 <div className="flex flex-col gap-1">
                   <Label>NISN</Label>
-                  <span className="text-sm font-light">{student.nisn}</span>
+                  <Input
+                    value={student.nisn}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Full Name</Label>
-                  <span className="text-sm font-light">
-                    {student.student_name}
-                  </span>
+                  <Input
+                    value={student.student_name}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Class</Label>
-                  {student.class_id ? (
-                    <span className="text-sm font-light">{`${student.grade} ${student.shorten} ${student.identifier}`}</span>
-                  ) : null}
+                  <Input
+                    value={
+                      student.class_id
+                        ? `${student.grade} ${student.shorten} ${student.identifier}`
+                        : ""
+                    }
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Gender</Label>
-                  <span className="text-sm font-light">{student.gender}</span>
+                  <Input
+                    value={student.gender}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Address</Label>
-                  <span className="text-sm font-light">{student.address}</span>
+                  <Input
+                    value={student.address}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label>Phone Number</Label>
-                  <span className="text-sm font-light">
-                    {student.phoneNumber}
-                  </span>
+                  <Input
+                    value={student.phoneNumber}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label>Email Address</Label>
-                  <span className="text-sm font-light">{student.email}</span>
+                  <Label>{student.email}</Label>
+                  <Input
+                    value={student.phoneNumber}
+                    disabled
+                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
+                  />
                 </div>
               </div>
               <div className="basis-1/5 space-y-4 mr-10">

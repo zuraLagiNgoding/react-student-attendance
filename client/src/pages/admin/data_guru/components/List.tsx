@@ -23,6 +23,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 type ListTypes = {
   students: StudentType[];
   setStudent: Dispatch<SetStateAction<StudentType | undefined>>;
+
+  select: number | undefined;
+  setSelect: Dispatch<SetStateAction<number | undefined>>;
 };
 
 const majors = [
@@ -68,9 +71,8 @@ const majors = [
   },
 ];
 
-const List = ({ setStudent, students }: ListTypes) => {
+const List = ({ setStudent, students, setSelect, select }: ListTypes) => {
   const [open, setOpen] = React.useState(false);
-  const [select, setSelect] = React.useState<number>();
   const [search, setSearch] = React.useState<string>("");
   const [majorSearch, setMajorSearch] = React.useState<string>("");
   const [selectedMajor, setSelectedMajor] = React.useState<string>("");

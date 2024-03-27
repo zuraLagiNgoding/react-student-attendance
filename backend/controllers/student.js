@@ -1,4 +1,5 @@
-import { db } from "../db.js"
+import { db } from "../db.js";
+import bcrypt from "bcryptjs";
 
 export const getStudents = (req,res) => {
   const q =
@@ -16,11 +17,11 @@ export const getStudent = (req, res) => {
 };
 
 export const addStudent = (req, res) => {
-  const q =
+  const qStudent =
     "INSERT INTO students(`nisn`, `student_name`, `gender`, `address`, `class_id`, `phoneNumber`, `email`) VALUES (?)"
   ;
 
-  const values = [
+  const valuesStudent = [
     req.body.nisn,
     req.body.student_name,
     req.body.gender,
@@ -30,14 +31,40 @@ export const addStudent = (req, res) => {
     req.body.email,
   ];
 
-  db.query(q, [values], (err, data) => {
-    if (err) return res.send(err);
-    return res.status(200).json(data);
+  db.query(qStudent, [valuesStudent], (err, data) => {
+    if (err) {
+      return res.send(err)
+    }
+    else { 
+      const qUser =
+        "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)"
+      ;
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync("1", salt)
+
+      const valuesUser = [
+        req.body.nisn,
+        "STUDENT",
+        req.body.email,
+        hashedPassword
+      ];
+      
+      db.query(qUser, [valuesUser], (err) => {
+        if (err) return res.send(err);
+        return res.status(200).json(data);
+      })
+    };
   })
 };
 
 export const deleteStudent = (req, res) => {
+  const nisn = req.query.delete;
+  const q = "DELETE FROM students WHERE nisn=?";
 
+  db.query(q, [nisn], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("A student has been deleted.");
+  });
 };
 
 export const updateStudent = (req, res) => {
