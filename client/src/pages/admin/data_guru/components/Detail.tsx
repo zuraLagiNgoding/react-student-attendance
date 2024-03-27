@@ -9,7 +9,7 @@ import {
 import Information from "./Card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
-import { StudentType } from "./../DataSiswa";
+import { StudentType } from "../DataGuru";
 
 type DetailType = {
   student: StudentType | undefined;

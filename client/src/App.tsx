@@ -8,6 +8,8 @@ import DataJurusan from "./pages/admin/data_jurusan/DataJurusan";
 import SaveJurusan from "./pages/admin/data_jurusan/Save";
 import SaveKelas from "./pages/admin/data_kelas/Save";
 import SaveSiswa from "./pages/admin/data_siswa/Save"
+import DataGuru from "./pages/admin/data_guru/DataGuru";
+import SaveGuru from "./pages/admin/data_guru/Save"
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route path="/classes/save" element={<SaveKelas/>}/>
             <Route path="/students" element={<DataSiswa/>}/>
             <Route path="/students/save" element={<SaveSiswa/>}/>
+            <Route path="/teachers" element={<DataGuru/>}/>
+            <Route path="/teachers/save" element={<SaveGuru/>}/>
           </Route>
         </Routes>
       </Router>

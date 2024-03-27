@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-export const useFetch = <T>(url:string) => {
+export const useFetch = <T>(url: string) => {
   const [data, setData] = useState<T | []>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | boolean>(false);
@@ -18,7 +18,7 @@ export const useFetch = <T>(url:string) => {
       setLoading(false);
     };
     fetchData();
-  }, [url, data]);
+  }, [url]);
 
   const reFetch = async () => {
     setLoading(true);
@@ -26,13 +26,13 @@ export const useFetch = <T>(url:string) => {
       const res = await axios.get<T>(url);
       setData(res.data);
     } catch (e) {
-      setError(e as Error)
+      setError(e as Error);
     }
     setLoading(false);
   };
 
   return { data, loading, error, reFetch };
-}
+};
 
 export const useLastId = (url: string) => {
   const [generatedId, setGeneratedId] = useState("");

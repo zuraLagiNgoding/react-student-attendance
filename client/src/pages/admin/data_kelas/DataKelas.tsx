@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useFetch } from "@/hooks/fetcher";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
-  const { data } = useFetch<ClassesType[]>(
+  const { data, loading, reFetch } = useFetch<ClassesType[]>(
     "http://localhost:8800/backend/classes"
   );
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
   const handleDelete = async () => {
     try {
       await axios.delete("http://localhost:8800/backend/classes" + query);
+      reFetch()
       navigate("/classes");
     } catch (error) {
       console.log(error);
@@ -38,7 +39,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
         Report Data Kelas
       </h1>
       <div className="flex flex-col overflow-y-hidden">
-        <DataTable columns={columns} data={data} saveLabel="Class" />
+        <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Class" />
         {detail ? <DetailKelas /> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/classes")}>

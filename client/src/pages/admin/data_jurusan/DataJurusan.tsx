@@ -17,17 +17,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useFetch } from "@/hooks/fetcher";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
-  const { data } = useFetch<MajorsType[]>("http://localhost:8800/backend/majors");
+  const { data, loading, reFetch } = useFetch<MajorsType[]>("http://localhost:8800/backend/majors");
   const navigate = useNavigate();
   const query = useLocation().search;
-
-  // React.useEffect(() => {
-  //   console.log(isDelete)
-  // })
 
   const handleDelete = async () => {
     try {
       await axios.delete("http://localhost:8800/backend/majors" + query);
+      reFetch()
       navigate("/majors");
     } catch (error) {
       console.log(error);
@@ -40,7 +37,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
         Report Data Jurusan
       </h1>
       <div className="flex flex-col overflow-y-hidden">
-        <DataTable columns={columns} data={data} saveLabel="Major" />
+        <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Major" />
         {detail ? <DetailKelas /> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/majors")}>

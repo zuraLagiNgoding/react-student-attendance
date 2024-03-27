@@ -17,13 +17,13 @@ import { Command, CommandGroup } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { StudentType } from "../DataSiswa";
+import { StudentType } from "../DataGuru";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type ListTypes = {
   students: StudentType[];
-  setStudent: Dispatch<SetStateAction<StudentType | undefined>>
-}
+  setStudent: Dispatch<SetStateAction<StudentType | undefined>>;
+};
 
 const majors = [
   {
@@ -68,7 +68,7 @@ const majors = [
   },
 ];
 
-const List = ({setStudent, students} : ListTypes) => {
+const List = ({ setStudent, students }: ListTypes) => {
   const [open, setOpen] = React.useState(false);
   const [select, setSelect] = React.useState<number>();
   const [search, setSearch] = React.useState<string>("");
@@ -81,7 +81,7 @@ const List = ({setStudent, students} : ListTypes) => {
 
   const majorSearchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMajorSearch(event.target.value);
-    console.log(majorSearch)
+    console.log(majorSearch);
   };
 
   return (
@@ -167,12 +167,13 @@ const List = ({setStudent, students} : ListTypes) => {
           {students
             .filter((filtered) =>
               selectedMajor.length > 0
-                ? (filtered.shorten?.toLowerCase()
+                ? filtered.shorten
+                    ?.toLowerCase()
                     .includes(selectedMajor.toLowerCase()) &&
                   (filtered.student_name
                     .toLowerCase()
                     .includes(search.toLowerCase()) ||
-                  filtered.nisn.includes(search)))
+                    filtered.nisn.includes(search))
                 : filtered.student_name
                     .toLowerCase()
                     .includes(search.toLowerCase()) ||
