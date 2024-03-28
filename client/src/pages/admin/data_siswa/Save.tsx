@@ -70,7 +70,6 @@ const Save = () => {
         email: values.email,
       });
       navigate("/students");
-      console.log(values)
     } catch (error) {
       console.log(error);
     }

@@ -1,11 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Breadcrumbs from "./components/ui/breadcrumbs";
-import { Bell } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import { useContext } from "react";
+import { AuthContext } from "./context/authContext";
 // import SearchBar from "./components/ui/search-bar";
 
 const Layout = () => {
+
+    const { logout } = useContext(AuthContext);
+
   return (
     <div className="min-w-full max-w-full flex gap-2">
       <Sidebar />
@@ -14,7 +19,8 @@ const Layout = () => {
           <Breadcrumbs />
           <div className="flex items-center gap-4">
             {/* <SearchBar/> */}
-            <Bell size={20} />
+            <Bell size={20}/>
+            <LogOut onClick={logout} size={20}/>
           </div>
         </div>
         <Outlet />

@@ -1,13 +1,14 @@
-import { NavLinks } from "@/data/nav-links";
+import { NavLinks as links } from "@/data/nav-links";
 import { Link, useLocation } from "react-router-dom";
 import clsx from "clsx";
-import React from "react";
+import React, { useContext } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { MoreHorizontal } from "lucide-react";
+import { AuthContext } from "@/context/authContext";
 
 const Sidebar = () => {
   const location = useLocation();
-  const { links } = NavLinks["ADMIN"];
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <aside className="2xl:basis-1/6 basis-1/5 w-full h-screen flex flex-col py-8 px-3 border-r shadow-2xl">
@@ -47,10 +48,10 @@ const Sidebar = () => {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="font-medium text-sm">@Dimas Solar</h1>
-          <p className="text-xs">Administrator</p>
+          <h1 className="font-medium text-sm">@{currentUser?.username}</h1>
+          <p className="text-xs">{currentUser?.email}</p>
         </div>
-        <MoreHorizontal className="ml-auto"/>
+        <MoreHorizontal className="ml-auto" />
       </div>
     </aside>
   );

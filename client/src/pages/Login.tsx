@@ -1,9 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import img from "@/assets/auth.svg";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { LoginSchema } from "@/schemas/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "@/context/authContext";
 
 const Login = () => {
+  const { login } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: ""
+    }
+  })
+
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    try {
+      await login({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      });
+      navigate("/");
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="h-screen max-h-screen w-full flex overflow-hidden">
       <div className="relative 2xl:basis-[68%] basis-3/5 p-14 flex flex-col justify-between">
@@ -26,17 +57,63 @@ const Login = () => {
             Welcome back! Input your account credentials to continue.
           </h1>
         </div>
-        <form className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <Label>Username</Label>
-            <Input />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Password</Label>
-            <Input type="password" />
-          </div>
-          <Button className="py-5">Login</Button>
-        </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-6"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Username</FormLabel>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Input className="border-slate-800/30" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Email</FormLabel>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Input className="border-slate-800/30" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      className="border-slate-800/30"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button className="py-5">Login</Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
