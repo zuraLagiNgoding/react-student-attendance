@@ -1,4 +1,4 @@
-import { PanelsLeftBottom, School, Users, CalendarClock } from "lucide-react";
+import { PanelsLeftBottom, School, Users, CalendarClock, NotebookPen, Album, } from "lucide-react";
 
 export const NavLinks = [
   {
@@ -7,9 +7,9 @@ export const NavLinks = [
       {
         label: "Overview",
         href: "overview",
-        icon: PanelsLeftBottom
-      }
-    ]
+        icon: PanelsLeftBottom,
+      },
+    ],
   },
   {
     base: "Master Data",
@@ -17,28 +17,33 @@ export const NavLinks = [
       {
         label: "Data Jurusan",
         href: "majors",
-        icon: School
+        icon: Album,
       },
       {
         label: "Data Kelas",
         href: "classes",
-        icon: School
+        icon: School,
       },
       {
         label: "Data Siswa",
         href: "students",
-        icon: Users
-      },     
+        icon: Users,
+      },
       {
         label: "Data Guru",
         href: "teachers",
-        icon: Users
-      },     
+        icon: Users,
+      },
+      {
+        label: "Data Mata Pelajaran",
+        href: "subjects",
+        icon: NotebookPen,
+      },
       {
         label: "Data Jadwal",
         href: "siswa",
-        icon: CalendarClock
-      },     
-    ]
-  }
-]
+        icon: CalendarClock,
+      },
+    ],
+  },
+];

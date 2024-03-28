@@ -14,6 +14,8 @@ import SaveGuru from "./pages/admin/data_guru/Save";
 import NotFound from "./pages/NotFound";
 import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
+import DataMapel from "./pages/admin/data_mapel/DataMapel";
+import SaveMapel from "./pages/admin/data_mapel/Save";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -43,6 +45,9 @@ const Routing = () => {
                 <Route path="/majors" element={<DataJurusan />} />
                 <Route path="/majors/:id" element={<DataJurusan detail />} />
                 <Route path="/majors/save" element={<SaveJurusan />} />
+                <Route path="/subjects" element={<DataMapel />} />
+                <Route path="/subjects/:id" element={<DataMapel detail />} />
+                <Route path="/subjects/save" element={<SaveMapel />} />
                 <Route path="/classes" element={<DataKelas />} />
                 <Route path="/classes/:id" element={<DataKelas detail />} />
                 <Route path="/classes/save" element={<SaveKelas />} />
