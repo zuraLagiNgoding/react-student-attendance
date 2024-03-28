@@ -145,8 +145,8 @@ const Save = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="LK">Laki-Laki / Male</SelectItem>
-                        <SelectItem value="PR">Perempuan / Female</SelectItem>
+                        <SelectItem value="LK">Male</SelectItem>
+                        <SelectItem value="PR">Female</SelectItem>
                       </SelectContent>
                     </Select>
 

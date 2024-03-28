@@ -6,27 +6,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Information from "./Card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
-import { StudentType } from "../DataGuru";
+import { TeacherType } from "../DataGuru";
 import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 
 type DetailType = {
-  student: StudentType | undefined;
+  teacher: TeacherType | undefined;
 };
 
-const Detail = ({ student }: DetailType) => {
+const Detail = ({ teacher }: DetailType) => {
   return (
     <Card className="basis-4/6 h-auto">
       <CardHeader>
-        <CardTitle>Student Detail</CardTitle>
-        <CardDescription>Student Detail</CardDescription>
+        <CardTitle>Teacher Detail</CardTitle>
+        <CardDescription>Teacher Detail</CardDescription>
       </CardHeader>
       <CardContent className="">
-        {student ? (
+        {teacher ? (
           <div className="flex flex-col">
             <div className="flex items-start gap-9">
               <div className="basis-1/5 flex flex-col gap-4">
@@ -36,14 +35,14 @@ const Detail = ({ student }: DetailType) => {
                 <hr />
                 <div className="flex justify-between">
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-medium text-wrap leading-tight">
-                      {student.student_name}
+                    <h1 className="text-lg font-medium text-wrap leading-tight max-w-[80%]">
+                      {teacher.teacher_name}
                     </h1>
-                    <p className="text-sm font-light">{student.nisn}</p>
+                    <p className="text-sm font-light">{teacher.nip}</p>
                   </div>
                   <Link
                     className="mt-2 hover:text-slate-500 transition-colors"
-                    to={"/students/?delete=" + student.nisn}
+                    to={"/teachers/?delete=" + teacher.nip}
                   >
                     <Trash2 size={18} />
                   </Link>
@@ -51,9 +50,9 @@ const Detail = ({ student }: DetailType) => {
               </div>
               <div className="basis-3/5 grid gap-4 py-4">
                 <div className="flex flex-col gap-1">
-                  <Label>NISN</Label>
+                  <Label>NIP</Label>
                   <Input
-                    value={student.nisn}
+                    value={teacher.nip}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
@@ -61,19 +60,7 @@ const Detail = ({ student }: DetailType) => {
                 <div className="flex flex-col gap-1">
                   <Label>Full Name</Label>
                   <Input
-                    value={student.student_name}
-                    disabled
-                    className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Label>Class</Label>
-                  <Input
-                    value={
-                      student.class_id
-                        ? `${student.grade} ${student.shorten} ${student.identifier}`
-                        : ""
-                    }
+                    value={teacher.teacher_name}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
@@ -81,7 +68,7 @@ const Detail = ({ student }: DetailType) => {
                 <div className="flex flex-col gap-1">
                   <Label>Gender</Label>
                   <Input
-                    value={student.gender}
+                    value={teacher.gender}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
@@ -89,7 +76,7 @@ const Detail = ({ student }: DetailType) => {
                 <div className="flex flex-col gap-1">
                   <Label>Address</Label>
                   <Input
-                    value={student.address}
+                    value={teacher.address}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
@@ -97,30 +84,19 @@ const Detail = ({ student }: DetailType) => {
                 <div className="flex flex-col gap-1">
                   <Label>Phone Number</Label>
                   <Input
-                    value={student.phoneNumber}
+                    value={teacher.phone_number}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label>{student.email}</Label>
+                  <Label>Email</Label>
                   <Input
-                    value={student.phoneNumber}
+                    value={teacher.email}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
                 </div>
-              </div>
-              <div className="basis-1/5 space-y-4 mr-10">
-                <Information title="Tidak Hadir">
-                  <h1 className="text-5xl font-medium">7</h1>
-                </Information>
-                <Information title="Sakit">
-                  <h1 className="text-5xl font-medium">2</h1>
-                </Information>
-                <Information title="Izin">
-                  <h1 className="text-5xl font-medium">2</h1>
-                </Information>
               </div>
             </div>
           </div>

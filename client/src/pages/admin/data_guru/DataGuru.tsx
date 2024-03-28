@@ -9,24 +9,18 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import axios from "axios";
 // import { Button } from '@/components/ui/button'
 
-export interface StudentType {
-  nisn: string;
-  student_name: string;
-  class_id: string;
-  grade: "X" | "XI" | "XII";
-  identifier: string;
+export interface TeacherType {
+  nip: string;
+  teacher_name: string;
   gender: string;
   address: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
-
-  major_name: string;
-  shorten: string;
 }
 
 const DataGuru = () => {
-  const { data, reFetch } = useFetch<StudentType[]>("http://localhost:8800/backend/students");
-  const [student, setStudent] = React.useState<StudentType>();
+  const { data, reFetch } = useFetch<TeacherType[]>("http://localhost:8800/backend/teachers");
+  const [teacher, setTeacher] = React.useState<TeacherType>();
   const [select, setSelect] = React.useState<number>();
 
   const navigate = useNavigate();
@@ -34,11 +28,11 @@ const DataGuru = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:8800/backend/students/" + query);
+      await axios.delete("http://localhost:8800/backend/teachers/" + query);
       reFetch();
-      navigate("/students");
+      navigate("/teachers");
       setSelect(undefined);
-      setStudent(undefined);
+      setTeacher(undefined);
     } catch (error) {
       console.log(error);
     }
@@ -54,21 +48,21 @@ const DataGuru = () => {
           <Button>
             <Link to="save" className="flex items-center gap-2">
               <CirclePlus size={18} />
-              Add New Students
+              Add New Teachers
             </Link>
           </Button>
         </div>
         <div className="flex gap-5">
-          <List select={select} setSelect={setSelect} students={data} setStudent={setStudent} />
-          <Detail student={student} />
+          <List select={select} setSelect={setSelect} teachers={data} setTeacher={setTeacher} />
+          <Detail teacher={teacher} />
         </div>
       {query.includes("?delete") ? (
-        <Dialog defaultOpen onOpenChange={() => navigate("/students")}>
+        <Dialog defaultOpen onOpenChange={() => navigate("/teachers")}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Delete student information</DialogTitle>
+              <DialogTitle>Delete teacher information</DialogTitle>
               <DialogDescription>
-                You are about to delete this student information
+                You are about to delete this teacher information
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

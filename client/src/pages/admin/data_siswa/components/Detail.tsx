@@ -36,7 +36,7 @@ const Detail = ({ student }: DetailType) => {
                 <hr />
                 <div className="flex justify-between">
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-medium text-wrap leading-tight">
+                    <h1 className="text-lg font-medium text-wrap leading-tight max-w-[80%]">
                       {student.student_name}
                     </h1>
                     <p className="text-sm font-light">{student.nisn}</p>
@@ -103,9 +103,9 @@ const Detail = ({ student }: DetailType) => {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label>{student.email}</Label>
+                  <Label>Email</Label>
                   <Input
-                    value={student.phoneNumber}
+                    value={student.email}
                     disabled
                     className="disabled:cursor-default disabled:opacity-100 border-0 text-sm font-light"
                   />
