@@ -69,6 +69,7 @@ const Save = () => {
         phoneNumber: values.phoneNumber,
         email: values.email,
       });
+      console.log(values);
       navigate("/students");
     } catch (error) {
       console.log(error);

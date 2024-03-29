@@ -15,99 +15,99 @@ export const getStudent = (req, res) => {
   const classId = req.params.id; 
 };
 
-export const addStudent = (req, res) => {
-  const qGetLastId = "SELECT IFNULL(MAX(id) + 1, 1) AS next_id FROM users";
-
-  db.query(qGetLastId, (err, data) => {
-    if (err) {
-      return res.send(err)
-    }
-    else {
-    const next_id = data[0].next_id;
-
-    const qStudent =
-      "INSERT INTO students(`nisn`, `student_name`, `gender`, `address`, `class_id`, `phoneNumber`, `email`, `uid`) VALUES (?)"
-    ;
-
-    const valuesStudent = [
-      req.body.nisn,
-      req.body.student_name,
-      req.body.gender,
-      req.body.address,
-      req.body.class_id,
-      req.body.phoneNumber,
-      req.body.email,
-      next_id
-    ];
-
-    db.query(qStudent, [valuesStudent], (err, data) => {
-      if (err) {
-        return res.send(err)
-      }
-      else { 
-        const qUser =
-          "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)"
-        ;
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync("1", salt)
-
-        const valuesUser = [
-          req.body.nisn,
-          "STUDENT",
-          req.body.email,
-          hashedPassword
-        ];
-        
-        db.query(qUser, [valuesUser], (err) => {
-          if (err) return res.send(err);
-          return res.status(200).json(data);
-        })
-      };
-    });
-  }});
-
-};
-
 // export const addStudent = (req, res) => {
-//   const qUser =
-//     "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)";
-//   const salt = bcrypt.genSaltSync(10);
-//   const hashedPassword = bcrypt.hashSync("1", salt);
+//   const qGetLastId = "SELECT IFNULL(MAX(id) + 1, 1) AS next_id FROM users";
 
-//   const valuesUser = [req.body.nisn, "STUDENT", req.body.email, hashedPassword];
+//   db.query(qGetLastId, (err, data) => {
+//     if (err) {
+//       return res.send(err)
+//     }
+//     else {
+//     const next_id = data[0].next_id;
 
-//   db.query(qUser, [valuesUser], (err) => {
-//     if (err) return res.send(err);
-    
-//     const qGetLastId = "SELECT IFNULL(MAX(id) + 1, 1) AS next_id FROM users";
+//     const qStudent =
+//       "INSERT INTO students(`nisn`, `student_name`, `gender`, `address`, `class_id`, `phoneNumber`, `email`, `uid`) VALUES (?)"
+//     ;
 
-//     db.query(qGetLastId, (err, data) => {
+//     const valuesStudent = [
+//       req.body.nisn,
+//       req.body.student_name,
+//       req.body.gender,
+//       req.body.address,
+//       req.body.class_id,
+//       req.body.phoneNumber,
+//       req.body.email,
+//       next_id
+//     ];
+
+//     db.query(qStudent, [valuesStudent], (err, data) => {
 //       if (err) {
-//         return res.send(err);
-//       } else {
-//         const next_id = data[0].id;
+//         return res.send(err)
+//       }
+//       else { 
+//         const qUser =
+//           "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)"
+//         ;
+//         const salt = bcrypt.genSaltSync(10);
+//         const hashedPassword = bcrypt.hashSync("1", salt)
 
-//         const qStudent =
-//           "INSERT INTO students(`nisn`, `student_name`, `gender`, `address`, `class_id`, `phoneNumber`, `email`, `uid`) VALUES (?)";
-//         const valuesStudent = [
+//         const valuesUser = [
 //           req.body.nisn,
-//           req.body.student_name,
-//           req.body.gender,
-//           req.body.address,
-//           req.body.class_id,
-//           req.body.phoneNumber,
+//           "STUDENT",
 //           req.body.email,
-//           next_id,
+//           hashedPassword
 //         ];
-
-//         db.query(qStudent, [valuesStudent], (err, data) => {
+        
+//         db.query(qUser, [valuesUser], (err) => {
 //           if (err) return res.send(err);
 //           return res.status(200).json(data);
-//         });
-//       }
+//         })
+//       };
 //     });
-//   });
+//   }});
+
 // };
+
+export const addStudent = (req, res) => {
+  const qUser =
+    "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)";
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync("1", salt);
+
+  const valuesUser = [req.body.nisn, "STUDENT", req.body.email, hashedPassword];
+
+  db.query(qUser, [valuesUser], (err) => {
+    if (err) return res.send(err);
+    
+    const qGetLastId = "SELECT IFNULL(MAX(id), 1) AS next_id FROM users";
+
+    db.query(qGetLastId, (err, data) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        const next_id = data[0].next_id;
+
+        const qStudent =
+          "INSERT INTO students(`nisn`, `student_name`, `gender`, `address`, `class_id`, `phoneNumber`, `email`, `uid`) VALUES (?)";
+        const valuesStudent = [
+          req.body.nisn,
+          req.body.student_name,
+          req.body.gender,
+          req.body.address,
+          req.body.class_id,
+          req.body.phoneNumber,
+          req.body.email,
+          next_id,
+        ];
+
+        db.query(qStudent, [valuesStudent], (err, data) => {
+          if (err) return res.send(err);
+          return res.status(200).json(data);
+        });
+      }
+    });
+  });
+};
 
 export const deleteStudent = (req, res) => {
   const nisn = req.query.delete;

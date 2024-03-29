@@ -72,12 +72,14 @@ const Save = () => {
                     <FormControl>
                       <Input
                         type="text"
-                        maxLength={10}
+                        maxLength={18}
                         onKeyDown={(e) => {
                           if (
                             !/^[0-9]$/.test(e.key) &&
                             e.keyCode !== 8 &&
-                            e.keyCode !== 13
+                            e.keyCode !== 13 &&
+                            e.keyCode !== 37 &&
+                            e.keyCode !== 39 
                           ) {
                             e.preventDefault();
                           }

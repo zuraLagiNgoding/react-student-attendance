@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import axios from "axios";
-import React from "react";
 import DetailKelas from "./Detail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -34,12 +33,17 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
+    <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
         Report Data Kelas
       </h1>
       <div className="flex flex-col overflow-y-hidden">
-        <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Class" />
+        <DataTable
+          isLoading={loading}
+          columns={columns}
+          data={data}
+          saveLabel="Class"
+        />
         {detail ? <DetailKelas /> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/classes")}>

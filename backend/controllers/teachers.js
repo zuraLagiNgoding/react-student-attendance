@@ -16,38 +16,42 @@ export const getTeacher = (req, res) => {
 };
 
 export const addTeacher = (req, res) => {
-  const qTeacher =
-    "INSERT INTO teachers(`nip`, `teacher_name`, `gender`, `address`, `phone_number`, `email`) VALUES (?)";
-  const valuesTeacher = [
-    req.body.nip,
-    req.body.teacher_name,
-    req.body.gender,
-    req.body.address,
-    req.body.phone_number,
-    req.body.email,
-  ];
+  const qUser =
+    "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)";
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync("1", salt);
 
-  db.query(qTeacher, [valuesTeacher], (err, data) => {
-    if (err) {
-      return res.send(err);
-    } else {
-      const qUser =
-        "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)";
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync("1", salt);
+  const valuesUser = [req.body.nip, "TEACHER", req.body.email, hashedPassword];
 
-      const valuesUser = [
-        req.body.nip,
-        "TEACHER",
-        req.body.email,
-        hashedPassword,
-      ];
+  db.query(qUser, [valuesUser], (err) => {
+    if (err) return res.send(err);
 
-      db.query(qUser, [valuesUser], (err) => {
-        if (err) return res.send(err);
-        return res.status(200).json(data);
-      });
-    }
+    const qGetLastId = "SELECT IFNULL(MAX(id), 1) AS next_id FROM users";
+
+    db.query(qGetLastId, (err, data) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        const next_id = data[0].next_id;
+
+        const qTeacher =
+          "INSERT INTO teachers(`nip`, `teacher_name`, `gender`, `address`, `phone_number`, `email`, `uid`) VALUES (?)";
+         const valuesTeacher = [
+          req.body.nip,
+          req.body.teacher_name,
+          req.body.gender,
+          req.body.address,
+          req.body.phone_number,
+          req.body.email,
+          next_id,
+        ];
+
+        db.query(qTeacher, [valuesTeacher], (err, data) => {
+          if (err) return res.send(err);
+          return res.status(200).json(data);
+        });
+      }
+    });
   });
 };
 

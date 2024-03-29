@@ -7,7 +7,7 @@ export const TeacherSchema = z.object({
   nip: z
     .string()
     .min(1, { message: "NISN is required." })
-    .max(10, { message: "NISN not be longer than 18 characters." }),
+    .max(18, { message: "NISN not be longer than 18 characters." }),
   teacher_name: z
     .string()
     .min(1, { message: "Teacher's name is required." })

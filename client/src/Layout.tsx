@@ -14,7 +14,7 @@ const Layout = () => {
   return (
     <div className="min-w-full max-w-full flex gap-2">
       <Sidebar />
-      <div className="2xl:basis-5/6 basis-4/5 p-5 flex flex-col h-screen min-h-screen max-h-screen gap-10 w-full">
+      <div className="2xl:basis-5/6 basis-4/5 p-5 h-screen flex flex-col min-h-screen max-h-screen gap-10 w-full">
         <div className="flex items-center justify-between pr-4">
           <Breadcrumbs />
           <div className="flex items-center gap-4">
