@@ -16,6 +16,10 @@ import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
 import DataMapel from "./pages/admin/data_mapel/DataMapel";
 import SaveMapel from "./pages/admin/data_mapel/Save";
+import DataJadwal from "./pages/admin/data_jadwal/DataJadwal";
+import SaveJadwal from "./pages/admin/data_jadwal/Save";
+import LandingPage from "./pages/general/LandingPage";
+import JadwalMengajar from "./pages/general/teacher/jadwal_mengajar/JadwalMengajar";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -25,6 +29,7 @@ const Routing = () => {
       <>
         <Router>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
@@ -37,7 +42,6 @@ const Routing = () => {
         <>
           <Router>
             <Routes>
-              <Route path="/login" element={<Login />} />
               <Route path="/" element={<Layout />}>
                 <Route path="/" element={<Navigate to="/overview" />} />
                 <Route path="*" element={<NotFound />} />
@@ -48,6 +52,9 @@ const Routing = () => {
                 <Route path="/subjects" element={<DataMapel />} />
                 <Route path="/subjects/:id" element={<DataMapel detail />} />
                 <Route path="/subjects/save" element={<SaveMapel />} />
+                <Route path="/schedules" element={<DataJadwal />} />
+                <Route path="/schedules/:id" element={<DataMapel detail />} />
+                <Route path="/schedules/save" element={<SaveJadwal />} />
                 <Route path="/classes" element={<DataKelas />} />
                 <Route path="/classes/:id" element={<DataKelas detail />} />
                 <Route path="/classes/save" element={<SaveKelas />} />
@@ -56,6 +63,7 @@ const Routing = () => {
                 <Route path="/teachers" element={<DataGuru />} />
                 <Route path="/teachers/save" element={<SaveGuru />} />
               </Route>
+              <Route path="/login" element={<Login />} />
             </Routes>
           </Router>
         </>
@@ -63,13 +71,36 @@ const Routing = () => {
     } else if (currentUser.role === "STUDENT") {
       return (
         <>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="*" element={<NotFound />} />
-              <Route path="/overview" element={<GeneralOverview />} />
-            </Routes>
-          </Router>
+          <>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route path="/" element={<Navigate to="/overview" />} />
+                  <Route path="/overview" element={<GeneralOverview />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </Router>
+          </>
+        </>
+      );
+    } else if (currentUser.role === "TEACHER") {
+      return (
+        <>
+          <>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route path="/" element={<Navigate to="/overview" />} />
+                  <Route path="/overview" element={<GeneralOverview />} />
+                  <Route path="/schedule" element={<JadwalMengajar />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </Router>
+          </>
         </>
       );
     } else {

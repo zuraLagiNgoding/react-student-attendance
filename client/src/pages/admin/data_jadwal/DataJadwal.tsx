@@ -1,8 +1,7 @@
 import { DataTable } from "@/components/ui/data-table";
-import { SubjectsType, columns } from "./columns";
+import { SchedulesType, columns } from "./columns";
 import axios from "axios";
-import React from "react";
-import DetailMapel from "./Detail";
+import DetailJadwal from "./Detail";
 import {
   Dialog,
   DialogClose,
@@ -16,16 +15,16 @@ import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFetch } from "@/hooks/fetcher";
 
-const DataMapel = ({ detail = false }: { detail?: boolean }) => {
-  const { data, loading, reFetch } = useFetch<SubjectsType[]>("http://localhost:8800/backend/subjects");
+const DataJadwal = ({ detail = false }: { detail?: boolean }) => {
+  const { data, loading, reFetch } = useFetch<SchedulesType[]>("http://localhost:8800/backend/schedules");
   const navigate = useNavigate();
   const query = useLocation().search;
 
   const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:8800/backend/subjects" + query);
+      await axios.delete("http://localhost:8800/backend/schedules" + query);
       reFetch()
-      navigate("/subjects");
+      navigate("/schedules");
     } catch (error) {
       console.log(error);
     }
@@ -34,18 +33,18 @@ const DataMapel = ({ detail = false }: { detail?: boolean }) => {
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
-        Report Data Mata Pelajaran
+        Report Data Jadwal Pelajaran
       </h1>
       <div className="flex flex-col h-full overflow-y-hidden">
-        <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Subject" />
-        {detail ? <DetailMapel /> : null}
+        <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Schedule" />
+        {detail ? <DetailJadwal /> : null}
         {query.includes("?delete") ? (
-          <Dialog defaultOpen onOpenChange={() => navigate("/subjects")}>
+          <Dialog defaultOpen onOpenChange={() => navigate("/schedules")}>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Delete subject</DialogTitle>
+                <DialogTitle>Delete schedule</DialogTitle>
                 <DialogDescription>
-                  You are about to delete this subject
+                  You are about to delete this schedule
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
@@ -63,4 +62,4 @@ const DataMapel = ({ detail = false }: { detail?: boolean }) => {
   );
 };
 
-export default DataMapel;
+export default DataJadwal;

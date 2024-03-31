@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col justify-between gap-8 py-4 h-full overflow-y-auto">
         <div className="rounded-md border overflow-y-auto">
           <Table className="h-full relative">
-            <TableHeader className="sticky top-0 bg-white ">
+            <TableHeader className="sticky top-0 bg-white">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

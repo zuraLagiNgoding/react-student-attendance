@@ -1,15 +1,10 @@
 import { z } from "zod";
 
-export const ClassSchema = z.object({
-  class_id: z.string().min(1, { message: "ID is required." }),
-  grade: z
-    .string()
-    .min(1, { message: "Please select class major." })
-    .max(5, { message: "Maximum 5 characters." }),
-  identifier: z.coerce
-    .string()
-    .min(1, { message: "Class identifier is required." })
-    .max(5, { message: "Maximum 5 characters." }),
-  waliKelas: z.optional(z.string()),
-  major_id: z.string().min(1, { message: "Please select class major" }),
+export const ScheduleSchema = z.object({
+  schedule_id: z.string().min(1, { message: "ID is required." }),
+  day: z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
+  timestamps: z.string().min(1, { message: "Schedule time is required." }),
+  subject_id: z.string().min(1, { message: "Please select schedule subject." }),
+  teacher_id: z.string().min(1, { message: "Please select the teacher." }),
+  class_id: z.string().min(1, { message: "Please select schedule class." }),
 });

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 
 const Breadcrumbs = () => {
@@ -7,8 +7,8 @@ const Breadcrumbs = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex gap-2 items-center py-2">
-      <ChevronLeft onClick={() => navigate(-1)} className="cursor-pointer"/>
+    <div className="gap-2 items-center py-2 sm:flex hidden">
+      <ChevronLeft onClick={() => navigate(-1)} className="cursor-pointer" />
       <Link to="/" className="text-sm">
         Home
       </Link>
@@ -28,6 +28,6 @@ const Breadcrumbs = () => {
         ))}
     </div>
   );
-}
+};
 
-export default Breadcrumbs
+export default Breadcrumbs;

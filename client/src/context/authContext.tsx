@@ -5,7 +5,7 @@ import { LoginSchema } from "@/schemas/auth";
 
 interface currentUserType {
   id: string;
-  role: string;
+  role: "ADMIN" | "TEACHER" | "STUDENT";
   username: string;
   email: string;
   img?: string;
