@@ -21,9 +21,9 @@ export const getTeacherSchedules = (req, res) => {
     
     const search = req.query.result;
     const q =
-      "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id";
+      "SELECT schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE teachers.uid = ?";
     
-    db.query(q, (err, data) => {
+    db.query(q, [data.id], (err, data) => {
       if (err) return res.send(err);
       return res.status(200).json(data);
     });

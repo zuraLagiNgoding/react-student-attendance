@@ -37,7 +37,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const login = async (inputs: z.infer<typeof LoginSchema>) => {
     const res = await axios.post(
       "http://localhost:8800/backend/auth/login",
-      inputs
+      inputs,
+      { withCredentials: true }
     );
     setCurrentUser(res.data);
   };

@@ -46,7 +46,7 @@ const Sidebar = () => {
     <aside
       ref={navRef}
       className={clsx(
-        "2xl:basis-1/6 basis-1/5 bg-white overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
+        "2xl:basis-1/6 basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
         close && "w-[4.8rem]"
       )}
     >
@@ -115,7 +115,7 @@ const Sidebar = () => {
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <div className={clsx("max-w-[50%] sm:opacity-100", close && "opacity-0")}>
+        <div className={clsx("sm:max-w-[70%] max-w-[50%] sm:opacity-100", close && "opacity-0")}>
           <h1 className="font-medium sm:text-sm text-xs overflow-hidden text-ellipsis">
             @{currentUser?.username}
           </h1>

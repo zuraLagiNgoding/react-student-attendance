@@ -174,12 +174,12 @@ const Save = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="MONDAY">Monday</SelectItem>
-                        <SelectItem value="TUESDAY">Tuesday</SelectItem>
-                        <SelectItem value="WEDNESDAY">Wednesday</SelectItem>
-                        <SelectItem value="THURSDAY">Thursday</SelectItem>
-                        <SelectItem value="FRIDAY">Friday</SelectItem>
-                        <SelectItem value="SATURDAY">Saturday</SelectItem>
+                        <SelectItem value="Monday">Monday</SelectItem>
+                        <SelectItem value="Tuesday">Tuesday</SelectItem>
+                        <SelectItem value="Wednesday">Wednesday</SelectItem>
+                        <SelectItem value="Thursday">Thursday</SelectItem>
+                        <SelectItem value="Friday">Friday</SelectItem>
+                        <SelectItem value="Saturday">Saturday</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
