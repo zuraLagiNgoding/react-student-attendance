@@ -3,6 +3,7 @@ import studentRoutes from "./routes/students.js";
 import teacherRoutes from "./routes/teachers.js";
 import subjectRoutes from "./routes/subjects.js";
 import scheduleRoutes from "./routes/schedules.js";
+import attendanceRoutes from "./routes/attendances.js";
 import majorRoutes from "./routes/majors.js";
 import authRoutes from "./routes/auths.js";
 import express from "express";
@@ -33,6 +34,7 @@ app.use("/backend/teachers", teacherRoutes);
 app.use("/backend/majors", majorRoutes);
 app.use("/backend/subjects", subjectRoutes);
 app.use("/backend/schedules", scheduleRoutes);
+app.use("/backend/attendances", attendanceRoutes);
 
 app.listen(8800, () => {
   console.log("API Connected!");

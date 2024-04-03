@@ -2,6 +2,12 @@ import { useFetch } from "@/hooks/fetcher";
 import React from "react";
 import Card from "./components/ScheduleCard";
 import dayjs from "dayjs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export interface ScheduleType {
   schedule_id: string;
@@ -31,9 +37,25 @@ const JadwalMengajar = () => {
           <h1 className="text-xl font-semibold">Today</h1>
           <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
             {data
-              .filter((filter) => filter.day == dayjs().format("dddd"))
+              .filter(
+                (filter) =>
+                  filter.day == dayjs().format("dddd") &&
+                  dayjs().isAfter(
+                    dayjs().format("YYYY-MM-DD") + filter.start
+                  ) &&
+                  dayjs().isBefore(dayjs().format("YYYY-MM-DD") + filter.end)
+              )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
+              ))}
+            {data
+              .filter(
+                (filter) =>
+                  filter.day == dayjs().format("dddd") &&
+                  dayjs().isAfter(dayjs().format("YYYY-MM-DD") + filter.end)
+              )
+              .map((schedule) => (
+                <Card mute schedule={schedule} key={schedule.schedule_id} />
               ))}
           </div>
         </div>
@@ -47,6 +69,38 @@ const JadwalMengajar = () => {
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
               ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 w-full">
+          <h1 className="text-xl font-semibold">Coming</h1>
+          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+            <Accordion type="single" collapsible>
+              {Object.entries(
+                data.reduce((acc: Record<string, ScheduleType[]>, schedule) => {
+                  const day = schedule.day;
+                  if (!acc[day]) {
+                    acc[day] = [];
+                  }
+                  acc[day].push(schedule);
+                  return acc;
+                }, {})
+              )
+                .filter(
+                  ([day]) =>
+                    day !== dayjs().format("dddd") &&
+                    day !== dayjs().add(1, "day").format("dddd")
+                )
+                .map(([day, groupedSchedules]) => (
+                  <AccordionItem key={day} value={day}>
+                    <AccordionTrigger>{day}</AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-4">
+                      {groupedSchedules.map((schedule) => (
+                        <Card schedule={schedule} key={schedule.schedule_id} />
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+            </Accordion>
           </div>
         </div>
       </div>

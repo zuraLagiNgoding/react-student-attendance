@@ -64,6 +64,7 @@ const Save = () => {
   const form = useForm<z.infer<typeof ScheduleSchema>>({
     resolver: zodResolver(ScheduleSchema),
     defaultValues: {
+      day: "",
       schedule_id: "",
       timestamps: "",
       subject_id: "",
@@ -98,6 +99,7 @@ const Save = () => {
     const end = dayjs(dateEnd).format("HH:mm");
 
     form.reset({
+      day: "",
       schedule_id: generatedId,
       timestamps: start + "-" + end,
       subject_id: "",

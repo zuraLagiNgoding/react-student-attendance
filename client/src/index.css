@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -20,7 +20,7 @@
     margin: 0;
   }
   input[type="number"] {
-    appearance: textfield
+    appearance: textfield;
   }
 }
 
@@ -29,7 +29,8 @@
   max-height: var(--radix-popover-content-available-height);
 }
 
-.pixel-spinner, .pixel-spinner * {
+.pixel-spinner,
+.pixel-spinner * {
   box-sizing: border-box;
 }
 
@@ -45,39 +46,44 @@
 .pixel-spinner .pixel-spinner-inner {
   width: calc(70px / 7);
   height: calc(70px / 7);
-  background-color: #0EB87A;
-  color: #0EB87A;
-  box-shadow: 15px 15px  0 0,
-              -15px -15px  0 0,
-              15px -15px  0 0,
-              -15px 15px  0 0,
-              0 15px  0 0,
-              15px 0  0 0,
-              -15px 0  0 0,
-              0 -15px 0 0;
+  background-color: #0eb87a;
+  color: #0eb87a;
+  box-shadow: 15px 15px 0 0, -15px -15px 0 0, 15px -15px 0 0, -15px 15px 0 0,
+    0 15px 0 0, 15px 0 0 0, -15px 0 0 0, 0 -15px 0 0;
   animation: pixel-spinner-animation 2000ms linear infinite;
+}
+
+.alert::after {
+  opacity: 70%;
+  content: "";
+  position: absolute;
+  background-color: #0eb87a;
+  height: 3px;
+  bottom: 0px;
+  animation: alert-load 1.5s infinite forwards ease-in-out;
+}
+
+@keyframes alert-load {
+  0% {
+    width: 0%;
+    left: 0px;
+  }
+  100% {
+    width: 100%;
+    left: 100%;
+  }
 }
 
 @keyframes pixel-spinner-animation {
   50% {
-    box-shadow: 20px 20px 0px 0px,
-                -20px -20px 0px 0px,
-                20px -20px 0px 0px,
-                -20px 20px 0px 0px,
-                0px 10px 0px 0px,
-                10px 0px 0px 0px,
-                -10px 0px 0px 0px,
-                0px -10px 0px 0px;
+    box-shadow: 20px 20px 0px 0px, -20px -20px 0px 0px, 20px -20px 0px 0px,
+      -20px 20px 0px 0px, 0px 10px 0px 0px, 10px 0px 0px 0px, -10px 0px 0px 0px,
+      0px -10px 0px 0px;
   }
   75% {
-    box-shadow: 20px 20px 0px 0px,
-                -20px -20px 0px 0px,
-                20px -20px 0px 0px,
-                -20px 20px 0px 0px,
-                0px 10px 0px 0px,
-                10px 0px 0px 0px,
-                -10px 0px 0px 0px,
-                0px -10px 0px 0px;
+    box-shadow: 20px 20px 0px 0px, -20px -20px 0px 0px, 20px -20px 0px 0px,
+      -20px 20px 0px 0px, 0px 10px 0px 0px, 10px 0px 0px 0px, -10px 0px 0px 0px,
+      0px -10px 0px 0px;
   }
   100% {
     transform: rotate(360deg);

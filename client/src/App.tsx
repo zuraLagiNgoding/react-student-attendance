@@ -20,6 +20,8 @@ import DataJadwal from "./pages/admin/data_jadwal/DataJadwal";
 import SaveJadwal from "./pages/admin/data_jadwal/Save";
 import LandingPage from "./pages/general/LandingPage";
 import JadwalMengajar from "./pages/general/teacher/jadwal_mengajar/JadwalMengajar";
+import DaftarPresensi from "./pages/general/teacher/jadwal_mengajar copy/DaftarPresensi";
+import Presensi from "./pages/general/teacher/jadwal_mengajar copy/Presensi";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -95,6 +97,8 @@ const Routing = () => {
                   <Route path="/" element={<Navigate to="/overview" />} />
                   <Route path="/overview" element={<GeneralOverview />} />
                   <Route path="/schedule" element={<JadwalMengajar />} />
+                  <Route path="/attendance" element={<DaftarPresensi />} />
+                  <Route path="/attendance/:id" element={<Presensi />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />

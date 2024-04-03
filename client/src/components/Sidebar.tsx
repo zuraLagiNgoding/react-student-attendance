@@ -46,7 +46,7 @@ const Sidebar = () => {
     <aside
       ref={navRef}
       className={clsx(
-        "2xl:basis-1/6 basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
+        "2xl:basis-1/6 z-10 sm:basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
         close && "w-[4.8rem]"
       )}
     >

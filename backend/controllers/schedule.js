@@ -52,22 +52,43 @@ export const getSchedule = (req, res) => {
 };
 
 export const addSchedule = (req, res) => {
-  const q = "INSERT INTO schedules(`schedule_id`, `day`, `start`, `end`, `subject_id`, `teacher_id`, `class_id`) VALUES (?)";
+  const check =
+    "SELECT * FROM schedules WHERE ((? >= start AND ? < end) OR (? > start AND ? < end)) AND class_id = ? AND day = ?";
 
-  const values = [
-    req.body.id,
-    req.body.day,
+  const checkValues = [
+    req.body.start,
     req.body.start,
     req.body.end,
-    req.body.subject_id,
-    req.body.teacher_id,
+    req.body.end,
     req.body.class_id,
-  ];
+    req.body.day
+  ]
 
-  db.query(q, [values], (err, data) => {
+  db.query(check, checkValues, (err, data) => {
     if (err) return res.status(500).json(err);
-    return res.json("A new schedule has been created.");
-  });
+    if (data.length > 0) return res
+      .status(403)
+      .json(
+        "The schedule for that time and day already exists. Please choose a different time or day."
+      );
+    
+      const q = "INSERT INTO schedules(`schedule_id`, `day`, `start`, `end`, `subject_id`, `teacher_id`, `class_id`) VALUES (?)";
+    
+      const values = [
+        req.body.id,
+        req.body.day,
+        req.body.start,
+        req.body.end,
+        req.body.subject_id,
+        req.body.teacher_id,
+        req.body.class_id,
+      ];
+    
+      db.query(q, [values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.json("A new schedule has been created.");
+      });
+  })
 };
 
 export const deleteSchedule = (req, res) => {

@@ -1,31 +1,42 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
-import { ScheduleType } from "../JadwalMengajar";
+import { ScheduleType } from "../DaftarPresensi";
 import { Button } from "@/components/ui/button";
-import { Clock9 } from "lucide-react";
+import { NotebookPen } from "lucide-react";
 import dayjs from "dayjs";
-import clsx from "clsx";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useFetch } from "@/hooks/fetcher";
 
 interface CardProps {
   schedule: ScheduleType;
-  mute?: boolean;
 }
 
-const ScheduleCard = ({ schedule, mute }: CardProps) => {
+const ScheduleCard = ({ schedule }: CardProps) => {
+  // const { data: lastId } = useFetch(
+  //   "http://localhost:8800/backend/attendances/lastId"
+  // );
+  // React.useEffect(() => {
+  //   const submit = async () => {
+  //     await axios.post("http://localhost:8800/backend/attendances/", {
+  //       id: lastId[0].next_id as string,
+  //       schedule_id: schedule.schedule_id,
+  //       status: "incomplete",
+  //     });
+  //   }
+
+  //   if (
+  //     schedule.day == dayjs().format("dddd") &&
+  //     dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
+  //     dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end)
+  //   ) {
+  //     submit();
+  //   }
+  // }, [schedule.day, schedule.start, schedule.end, schedule.schedule_id, lastId])
+
   return (
-    <Card
-      className={clsx(
-        "relative min-h-[160px] max-h-[160px] overflow-hidden",
-        schedule.day == dayjs().format("dddd") &&  
-        dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
-          dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end)
-          ? "alert"
-          : "",
-        mute && "opacity-65"
-      )}
-    >
+    <Card className="min-h-[160px] max-h-[160px]">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col w-full gap-2 max-w-[80%] ">
           <CardTitle className="sm:text-base text-sm sm:text-ellipsis sm:text-nowrap text-wrap overflow-hidden">
@@ -49,14 +60,13 @@ const ScheduleCard = ({ schedule, mute }: CardProps) => {
         <Badge variant={"outline"}>
           {schedule.start} - {schedule.end}
         </Badge>
-        {
-        schedule.day == dayjs().format("dddd") &&  
+        {schedule.day == dayjs().format("dddd") &&
         dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
         dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end) ? (
-          <Link to="/attendance">
+          <Link to={"/attendance/" + schedule.schedule_id}>
             <Button size={"sm"} className="flex items-center gap-2">
-              <Clock9 size={16} />
-              Awaiting Attendance
+              <NotebookPen size={16} />
+              Start Attendance
             </Button>
           </Link>
         ) : (
