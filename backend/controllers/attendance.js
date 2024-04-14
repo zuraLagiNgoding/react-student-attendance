@@ -25,8 +25,9 @@ export const getToAttend = (req, res) => {
     db.query(qClass, [scheduleId, data.id], (err, classData) => {
       if (err) return res.send(err);
       const q = "SELECT students.nisn ,students.student_name FROM students WHERE students.class_id = ?";
+      const classId = classData[0].class_id
 
-      db.query(q, classData[0].class_id, (err, studentData) => {
+      db.query(q, classId, (err, studentData) => {
         if (err) return res.send(err);
         return res.status(200).json(studentData)
       })
@@ -35,9 +36,10 @@ export const getToAttend = (req, res) => {
 };
 
 export const getLastId = (req, res) => {
-  const q = "SELECT IFNULL(MAX(attendance_list_id) + 1, 1) AS next_id FROM attendance_list";
+  const schedule_id = req.params.id;
+  const q = `SELECT IFNULL((SELECT CASE WHEN MAX(SUBSTRING_INDEX(attendance_list_id, '-', -1) + 1) IS NULL THEN CONCAT(schedule_id, '-01') ELSE CONCAT(schedule_id, '-', LPAD(MAX(SUBSTRING_INDEX(attendance_list_id, '-', -1)) + 1, 2, '0')) END AS next_id FROM attendance_list WHERE schedule_id = ? ), CONCAT(?, '-01') ) AS next_id;`;
 
-  db.query(q, (err, data) => {
+  db.query(q, [schedule_id, schedule_id], (err, data) => {
     if (err) return res.send(err);
     return res.status(200).json(data);
   });
@@ -64,14 +66,33 @@ export const getUnique = (req, res) => {
   })
 }
 
-export const addAttendanceList = (req, res) => {
-  const q = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?, curdate())";
+export const addAttendance = (req, res) => {
+  const qList = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?, curdate())";
 
-  const values = [req.body.id, req.body.schedule_id, req.body.status];
+  const valuesList = [
+    req.body.attendance_list_id,
+    req.body.schedule_id,
+    "done",
+  ];
 
-  db.query(q, [values], (err, data) => {
+  db.query(qList, [valuesList], (err, data) => {
     if (err) return res.status(500).json(err);
-    return res.json("A new attendance list has been created.");
+
+    const qAttendance = "INSERT INTO attendances(`attendance_id`, `student_id`, `status`, `description`, `attendance_list_id`) VALUES ?";
+
+    const valueAttendance = 
+      req.body.attendance.map((attendance) => [
+        attendance.attendance_id,
+        attendance.student_id,
+        attendance.status,
+        attendance.description,
+        req.body.attendance_list_id,
+      ]);
+
+    db.query(qAttendance, [valueAttendance], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("A new attendance list has been created.");
+    })
   });
 };
 

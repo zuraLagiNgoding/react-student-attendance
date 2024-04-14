@@ -18,8 +18,13 @@ import { useFetch } from "@/hooks/fetcher";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
   const { data, loading, reFetch } = useFetch<MajorsType[]>("http://localhost:8800/backend/majors");
+  const [ isOpen, setIsOpen ] = React.useState(false);
   const navigate = useNavigate();
   const query = useLocation().search;
+
+  React.useEffect(() => {
+    reFetch();
+  }, [isOpen])
 
   const handleDelete = async () => {
     try {
@@ -43,7 +48,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
           data={data}
           saveLabel="Major"
         />
-        {detail ? <DetailKelas /> : null}
+        {detail ? <DetailKelas isOpen={isOpen} setIsOpen={setIsOpen}/> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/majors")}>
             <DialogContent className="sm:max-w-[425px]">

@@ -46,11 +46,16 @@ const Sidebar = () => {
     <aside
       ref={navRef}
       className={clsx(
-        "2xl:basis-1/6 z-10 sm:basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
-        close && "w-[4.8rem]"
+        "2xl:basis-1/6 z-20 sm:basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
+        close ? "w-[4rem] sm:px-3 px-1" : "px-3"
       )}
     >
-      <div className={clsx("flex justify-between items-center", close && "!justify-start")}>
+      <div
+        className={clsx(
+          "flex justify-between items-center",
+          close && "!justify-start"
+        )}
+      >
         <h1
           className={clsx(
             "text-primary text-lg my-4 transition-all sm:opacity-100",
@@ -79,7 +84,7 @@ const Sidebar = () => {
             <h1
               className={clsx(
                 "2xl:text-xs text-[12px] font-light opacity-65 transition-all sm:opacity-100",
-                close && "!opacity-0"
+                close && "opacity-0"
               )}
             >
               {base.base}
@@ -99,7 +104,10 @@ const Sidebar = () => {
                   >
                     <link.icon size={18} className="min-w-[18px]" />
                     <span
-                      className={clsx("transition-all sm:opacity-100", close && "opacity-0")}
+                      className={clsx(
+                        "transition-all sm:opacity-100",
+                        close && "opacity-0"
+                      )}
                     >
                       {link.label}
                     </span>
@@ -115,7 +123,12 @@ const Sidebar = () => {
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <div className={clsx("sm:max-w-[70%] max-w-[50%] sm:opacity-100", close && "opacity-0")}>
+        <div
+          className={clsx(
+            "sm:max-w-[70%] max-w-[50%] sm:opacity-100",
+            close && "opacity-0"
+          )}
+        >
           <h1 className="font-medium sm:text-sm text-xs overflow-hidden text-ellipsis">
             @{currentUser?.username}
           </h1>

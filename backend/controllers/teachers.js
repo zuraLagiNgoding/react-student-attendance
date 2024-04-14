@@ -13,6 +13,13 @@ export const getTeachers = (req, res) => {
 
 export const getTeacher = (req, res) => {
   const teacherId = req.params.id;
+
+  const q = "SELECT * FROM teachers WHERE nip=?;";
+
+  db.query(q, [teacherId], (err, data) => {
+    if (err) return res.send(err);
+    return res.status(200).json(data);
+  });
 };
 
 export const addTeacher = (req, res) => {
@@ -65,4 +72,22 @@ export const deleteTeacher = (req, res) => {
   });
 };
 
-export const updateTeacher = (req, res) => {};
+export const updateTeacher = (req, res) => {
+  const teacherId = req.params.id;
+  const q =
+    "UPDATE teachers SET teacher_name = ?, address = ?, gender = ?, phone_number = ?, email = ? WHERE nip= ?";
+
+  const values = [
+    req.body.name,
+    req.body.address,
+    req.body.gender,
+    req.body.phone_number,
+    req.body.email,
+    teacherId,
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("A teacher has been updated.");
+  });
+};

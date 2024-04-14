@@ -17,9 +17,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useFetch } from "@/hooks/fetcher";
 
 const DataMapel = ({ detail = false }: { detail?: boolean }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   const { data, loading, reFetch } = useFetch<SubjectsType[]>("http://localhost:8800/backend/subjects");
   const navigate = useNavigate();
   const query = useLocation().search;
+
+  React.useEffect(() => {
+    reFetch();
+  }, [isOpen]);
 
   const handleDelete = async () => {
     try {
@@ -38,7 +43,7 @@ const DataMapel = ({ detail = false }: { detail?: boolean }) => {
       </h1>
       <div className="flex flex-col h-full overflow-y-hidden">
         <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Subject" />
-        {detail ? <DetailMapel /> : null}
+        {detail ? <DetailMapel isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/subjects")}>
             <DialogContent className="sm:max-w-[425px]">

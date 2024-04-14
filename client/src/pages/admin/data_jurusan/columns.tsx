@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
@@ -70,18 +69,11 @@ export const columns: ColumnDef<MajorsType>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(majors.major_id)}
-              >
-                Copy class ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/" + majors.major_id}>Edit Major Detail</Link>
+                <Link to={"/majors/" + majors.major_id}>View</Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/majors/?delete=" + majors.major_id}>Delete Major</Link>
+                <Link to={"/majors/?delete=" + majors.major_id}>Delete</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

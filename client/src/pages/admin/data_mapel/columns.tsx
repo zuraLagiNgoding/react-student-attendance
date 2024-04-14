@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
@@ -74,18 +73,11 @@ export const columns: ColumnDef<SubjectsType>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(subjects.subject_id)}
-              >
-                Copy subject ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/subjects/" + subjects.subject_id}>Edit Subject Detail</Link>
+                <Link to={"/subjects/" + subjects.subject_id}>View</Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/subjects/?delete=" + subjects.subject_id}>Delete Subject</Link>
+                <Link to={"/subjects/?delete=" + subjects.subject_id}>Delete</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

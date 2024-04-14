@@ -14,13 +14,19 @@ import DetailKelas from "./Detail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useFetch } from "@/hooks/fetcher";
+import React from "react";
 
 const DataKelas = ({ detail = false }: { detail?: boolean }) => {
   const { data, loading, reFetch } = useFetch<ClassesType[]>(
     "http://localhost:8800/backend/classes"
   );
+  const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
   const query = useLocation().search;
+
+  React.useEffect(() => {
+    reFetch();
+  }, [isOpen]);
 
   const handleDelete = async () => {
     try {
@@ -44,7 +50,7 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
           data={data}
           saveLabel="Class"
         />
-        {detail ? <DetailKelas /> : null}
+        {detail ? <DetailKelas isOpen={isOpen} setIsOpen={setIsOpen}/> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/classes")}>
             <DialogContent className="sm:max-w-[425px]">

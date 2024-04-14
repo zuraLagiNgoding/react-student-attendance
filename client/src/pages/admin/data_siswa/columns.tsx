@@ -4,71 +4,75 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export type ClassesType = {
-  class_id: string;
-  grade: "X" | "XI" | "XII";
-  identifier: string;
-  waliKelas?: string;
-  major_id: string;
-  major_name: string;
+export type StudentsType = {
+  nisn: string;
+  student_name: string;
+  grade: string;
   shorten: string;
+  identifier: string;
+  address: string;
+  gender: string;
+  phoneNumber: string;
+  email: string;
 };
 
-export const columns: ColumnDef<ClassesType>[] = [
+export const columns: ColumnDef<StudentsType>[] = [
   {
-    accessorKey: "class_id",
+    accessorKey: "nisn",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Class ID
+          NISN
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const student = row.original.nisn;
+
+      return <Link className="text-primary" to={"/students/" + student}>{student}</Link>;
+    },
   },
   {
-    accessorKey: "grade",
+    accessorKey: "student_name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Grade
+          Student Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    enableGlobalFilter: false,
   },
   {
-    accessorKey: "shorten",
-    header: "Major",
-    enableGlobalFilter: false,
-  },
-  {
-    accessorKey: "identifier",
+    id: "class",
     header: "Class",
-    enableGlobalFilter: false,
-  },
-  {
-    accessorKey: "waliKelas",
-    header: "Wali Kelas",
+    cell: ({ row }) => {
+      const schedules = row.original;
+
+      return (
+        <>
+          {schedules.grade} {schedules.shorten} {schedules.identifier}
+        </>
+      );
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const classes = row.original;
+      const students = row.original;
 
       return (
         <>
@@ -82,13 +86,12 @@ export const columns: ColumnDef<ClassesType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Link to={"/classes/" + classes.class_id}>
+                <Link to={"/students/" + students.nisn}>
                   View
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/classes/?delete=" + classes.class_id}>
+                <Link to={"/students/" + students.nisn}>
                   Delete
                 </Link>
               </DropdownMenuItem>

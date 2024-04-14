@@ -59,5 +59,20 @@ export const deleteClass = (req, res) => {
 };
 
 export const updateClass = (req, res) => {
+  const classId = req.params.id;
+  const q =
+    "UPDATE classes SET grade = ?, major_id = ?, identifier = ?, waliKelas = ? WHERE class_id= ?";
 
+  const values = [
+    req.body.grade, 
+    req.body.major_id, 
+    req.body.identifier, 
+    req.body.waliKelas, 
+    classId
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("A class has been updated.");
+  });
 };

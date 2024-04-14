@@ -61,4 +61,19 @@ export const deleteMajor = (req, res) => {
   });
 };
 
-export const updateMajor = (req, res) => {};
+export const updateMajor = (req, res) => {
+  const majorId = req.params.id;
+  const q =
+    "UPDATE majors SET major_name = ?, shorten = ? WHERE major_id= ?";
+
+  const values = [
+    req.body.name, 
+    req.body.shorten,
+    majorId
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("A new major has been created.");
+  });
+};

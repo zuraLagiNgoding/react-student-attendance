@@ -12,7 +12,8 @@ export const StudentSchema = z.object({
     .string()
     .min(1, { message: "Student's name is required." })
     .max(100, { message: "Maximum 100 characters." }),
-  gender: z.enum(["LK", "PR"]),
+  gender: z.string()
+    .min(1, { message: "Gender is required." }),
   address: z.string().min(1, { message: "Student's address is required." }),
   class_id: z.string().min(1, { message: "Please select student's class" }),
   phoneNumber: z

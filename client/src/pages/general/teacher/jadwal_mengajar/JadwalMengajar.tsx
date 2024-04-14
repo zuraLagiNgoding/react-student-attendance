@@ -29,7 +29,7 @@ const JadwalMengajar = () => {
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
-      <h1 className="text-3xl font-bold leading-none text-neutral-900">
+      <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
         List of Schedules
       </h1>
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-6 overflow-y-auto">

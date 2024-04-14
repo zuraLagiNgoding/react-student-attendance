@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { NotebookPen } from "lucide-react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { useFetch } from "@/hooks/fetcher";
 
 interface CardProps {
   schedule: ScheduleType;
@@ -36,7 +34,7 @@ const ScheduleCard = ({ schedule }: CardProps) => {
   // }, [schedule.day, schedule.start, schedule.end, schedule.schedule_id, lastId])
 
   return (
-    <Card className="min-h-[160px] max-h-[160px]">
+    <Card className="min-h-[160px] sm:max-h-[160px] max-h-[180px]">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col w-full gap-2 max-w-[80%] ">
           <CardTitle className="sm:text-base text-sm sm:text-ellipsis sm:text-nowrap text-wrap overflow-hidden">

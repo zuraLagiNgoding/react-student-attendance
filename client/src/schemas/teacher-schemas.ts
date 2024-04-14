@@ -12,7 +12,7 @@ export const TeacherSchema = z.object({
     .string()
     .min(1, { message: "Teacher's name is required." })
     .max(100, { message: "Maximum 100 characters." }),
-  gender: z.enum(["LK", "PR"]),
+  gender: z.string().min(1, { message: "Gender is required." }),
   address: z.string().min(1, { message: "Teacher's address is required." }),
   phone_number: z
     .string()

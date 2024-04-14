@@ -80,12 +80,12 @@ export function DataTable<TData, TValue>({
           />
         </div>
 
-        <Button>
-          <Link to="save" className="flex items-center gap-2">
+        <Link to="save">
+          <Button className="flex items-center gap-2">
             <CirclePlus size={18} />
             Add New {saveLabel}
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
       <div className="flex flex-col justify-between gap-8 py-4 h-full overflow-y-auto">
         <div className="rounded-md border overflow-y-auto">

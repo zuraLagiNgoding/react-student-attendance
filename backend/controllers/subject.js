@@ -50,4 +50,19 @@ export const deleteSubject = (req, res) => {
   });
 };
 
-export const updateSubject = (req, res) => {};
+export const updateSubject = (req, res) => {
+  const subjectId = req.params.id;
+  const q =
+    "UPDATE subjects SET subject_name = ?, subject_code = ? WHERE subject_id= ?";
+
+  const values = [
+    req.body.name,
+    req.body.code,
+    subjectId,
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("A subject has been updated.");
+  });
+};

@@ -17,7 +17,7 @@ const ScheduleCard = ({ schedule, mute }: CardProps) => {
   return (
     <Card
       className={clsx(
-        "relative min-h-[160px] max-h-[160px] overflow-hidden",
+        "relative min-h-[160px] sm:max-h-[160px] max-h-[180px] overflow-hidden",
         schedule.day == dayjs().format("dddd") &&  
         dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
           dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end)

@@ -61,8 +61,10 @@ const Routing = () => {
                 <Route path="/classes/:id" element={<DataKelas detail />} />
                 <Route path="/classes/save" element={<SaveKelas />} />
                 <Route path="/students" element={<DataSiswa />} />
+                <Route path="/students/:id" element={<DataSiswa detail/>} />
                 <Route path="/students/save" element={<SaveSiswa />} />
                 <Route path="/teachers" element={<DataGuru />} />
+                <Route path="/teachers/:id" element={<DataGuru detail/>} />
                 <Route path="/teachers/save" element={<SaveGuru />} />
               </Route>
               <Route path="/login" element={<Login />} />
@@ -98,6 +100,7 @@ const Routing = () => {
                   <Route path="/overview" element={<GeneralOverview />} />
                   <Route path="/schedule" element={<JadwalMengajar />} />
                   <Route path="/attendance" element={<DaftarPresensi />} />
+                  <Route path="/attendance/records" element={<DaftarPresensi />} />
                   <Route path="/attendance/:id" element={<Presensi />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
