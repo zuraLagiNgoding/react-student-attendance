@@ -55,7 +55,7 @@ const Routing = () => {
                 <Route path="/subjects/:id" element={<DataMapel detail />} />
                 <Route path="/subjects/save" element={<SaveMapel />} />
                 <Route path="/schedules" element={<DataJadwal />} />
-                <Route path="/schedules/:id" element={<DataMapel detail />} />
+                <Route path="/schedules/:id" element={<DataJadwal detail />} />
                 <Route path="/schedules/save" element={<SaveJadwal />} />
                 <Route path="/classes" element={<DataKelas />} />
                 <Route path="/classes/:id" element={<DataKelas detail />} />

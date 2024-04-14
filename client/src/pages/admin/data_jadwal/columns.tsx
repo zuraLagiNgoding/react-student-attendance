@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,6 +16,7 @@ export type SchedulesType = {
   start: string;
   end: string;
   subject_name: string;
+  subject_code: string;
   teacher_name: string;
   grade: string;
   shorten: string;
@@ -102,23 +102,14 @@ export const columns: ColumnDef<SchedulesType>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigator.clipboard.writeText(schedules.schedule_id)
-                }
-              >
-                Copy schedule ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link to={"/schedules/" + schedules.schedule_id}>
-                  Edit Schedule Detail
+                  View
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link to={"/schedules/?delete=" + schedules.schedule_id}>
-                  Delete Schedule
+                  Delete
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

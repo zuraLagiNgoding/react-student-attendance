@@ -43,7 +43,7 @@ export const getLastId = (req, res) => {
 export const getSchedule = (req, res) => {
   const scheduleId = req.params.id;
   const q =
-    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id";
+    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE schedule_id = ?";
 
   db.query(q, [scheduleId], (err, data) => {
     if (err) return res.send(err);
@@ -101,4 +101,44 @@ export const deleteSchedule = (req, res) => {
   });
 };
 
-export const updateSchedule = (req, res) => {};
+export const updateSchedule = (req, res) => {
+  const check =
+    "SELECT * FROM schedules WHERE ((? >= start AND ? < end) OR (? > start AND ? < end)) AND class_id = ? AND day = ?";
+
+  const checkValues = [
+    req.body.start,
+    req.body.start,
+    req.body.end,
+    req.body.end,
+    req.body.class_id,
+    req.body.day
+  ]
+
+  db.query(check, checkValues, (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length > 1) return res
+      .status(403)
+      .json(
+        "The schedule for that time and day already exists. Please choose a different time or day."
+      );
+
+    const scheduleId = req.params.id;
+    const q =
+      "UPDATE schedules SET day = ?, start = ?, end = ?, subject_id = ?, class_id = ?, teacher_id = ? WHERE schedule_id= ?";
+
+    const values = [
+      req.body.day,
+      req.body.start,
+      req.body.end,
+      req.body.subject_id,
+      req.body.class_id,
+      req.body.teacher_id,
+      scheduleId,
+    ];
+
+    db.query(q, values, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("A schedule has been updated.");
+    });
+  })
+};

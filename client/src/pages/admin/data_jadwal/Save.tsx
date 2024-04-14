@@ -33,17 +33,17 @@ import { Check, ChevronsUpDown, Clock9, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TimePicker } from "@/components/ui/time-picker";
 import { ClassesType } from "../data_kelas/columns";
-import { TeacherType } from "../data_guru/DataGuru";
 import { useFetch } from "@/hooks/fetcher";
 import { SubjectsType } from "../data_mapel/columns";
 import { Command, CommandGroup } from "@/components/ui/command";
+import { TeachersType } from "../data_guru/columns";
 
 const Save = () => {
   const { data: classes } = useFetch<ClassesType[]>(
     "http://localhost:8800/backend/classes"
   );
 
-  const { data: teachers } = useFetch<TeacherType[]>(
+  const { data: teachers } = useFetch<TeachersType[]>(
     "http://localhost:8800/backend/teachers"
   );
 

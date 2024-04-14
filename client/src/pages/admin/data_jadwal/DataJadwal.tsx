@@ -14,8 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFetch } from "@/hooks/fetcher";
+import React from "react";
 
 const DataJadwal = ({ detail = false }: { detail?: boolean }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   const { data, loading, reFetch } = useFetch<SchedulesType[]>("http://localhost:8800/backend/schedules");
   const navigate = useNavigate();
   const query = useLocation().search;
@@ -37,7 +39,7 @@ const DataJadwal = ({ detail = false }: { detail?: boolean }) => {
       </h1>
       <div className="flex flex-col h-full overflow-y-hidden">
         <DataTable isLoading={loading} columns={columns} data={data} saveLabel="Schedule" />
-        {detail ? <DetailJadwal /> : null}
+        {detail ? <DetailJadwal isOpen={isOpen} setIsOpen={setIsOpen}/> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/schedules")}>
             <DialogContent className="sm:max-w-[425px]">
