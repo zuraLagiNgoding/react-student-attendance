@@ -1,7 +1,7 @@
 import { NavLinks } from "@/data/nav-links";
 import { Link, useLocation } from "react-router-dom";
 import clsx from "clsx";
-import React, { useContext } from "react";
+import React, { Dispatch, SetStateAction, useContext } from "react";
 import { AuthContext } from "@/context/authContext";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -15,9 +15,12 @@ import { LogOut, MoreHorizontal, PanelLeftClose, PanelLeftOpen } from "lucide-re
 import { Button } from "./ui/button";
 
 type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED";
+interface SidebarProps {
+  close: boolean,
+  setClose: Dispatch<SetStateAction<boolean>>
+}
 
-const Sidebar = () => {
-  const [ close, setClose ] = React.useState(true); 
+const Sidebar = ({ close, setClose }: SidebarProps) => {
   const { currentUser, logout } = useContext(AuthContext);
   const role: roleType = currentUser?.role || "UNNASSIGNED";
   const navRef = React.useRef<HTMLInputElement>(null);
@@ -46,22 +49,12 @@ const Sidebar = () => {
     <aside
       ref={navRef}
       className={clsx(
-        "2xl:basis-1/6 z-20 sm:basis-1/5 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r shadow-2xl sm:relative fixed transition-all",
-        close ? "w-[4rem] sm:px-3 px-1" : "px-3"
+        "2xl:basis-1/6 z-20 sm:basis-1/5 sm:translate-x-0 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r sm:relative fixed transition-all",
+        close && "translate-x-[-20rem]"
       )}
     >
-      <div
-        className={clsx(
-          "flex justify-between items-center",
-          close && "!justify-start"
-        )}
-      >
-        <h1
-          className={clsx(
-            "text-primary text-lg my-4 transition-all sm:opacity-100",
-            close && "opacity-0 w-0"
-          )}
-        >
+      <div className="flex justify-between items-center">
+        <h1 className="text-primary text-lg my-4 transition-all sm:opacity-100">
           Presynce
         </h1>
         {close ? (
@@ -81,12 +74,7 @@ const Sidebar = () => {
       <div className="py-4">
         {links.map((base) => (
           <React.Fragment key={base.base}>
-            <h1
-              className={clsx(
-                "2xl:text-xs text-[12px] font-light opacity-65 transition-all sm:opacity-100",
-                close && "opacity-0"
-              )}
-            >
+            <h1 className="2xl:text-xs text-[12px] font-light opacity-65 transition-all sm:opacity-100">
               {base.base}
             </h1>
             <ul className="flex flex-col py-2 space-y-1.5 overflow-y-auto overflow-x-hidden">
@@ -96,19 +84,14 @@ const Sidebar = () => {
                     onClick={() => setClose(false)}
                     to={link.href}
                     className={clsx(
-                      "rounded-md text-sm font-medium text-slate-800 px-4 py-3 inline-flex gap-2 items-center leading-none w-full",
+                      "rounded-md text-sm font-medium text-slate-800/70 px-4 py-3 inline-flex gap-2 items-center leading-none w-full",
                       location.pathname == "/" + link.href
                         ? "bg-primary/[0.10] !text-primary/100"
                         : "hover:bg-primary/[0.08]"
                     )}
                   >
                     <link.icon size={18} className="min-w-[18px]" />
-                    <span
-                      className={clsx(
-                        "transition-all sm:opacity-100",
-                        close && "opacity-0"
-                      )}
-                    >
+                    <span className="transition-all sm:opacity-100">
                       {link.label}
                     </span>
                   </Link>

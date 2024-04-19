@@ -41,14 +41,14 @@ const DataKelas = ({ detail = false }: { detail?: boolean }) => {
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
         Report Data Jurusan
       </h1>
-      <div className="flex flex-col overflow-y-hidden">
+      <div className="flex flex-col h-full overflow-y-hidden">
         <DataTable
           isLoading={loading}
           columns={columns}
           data={data}
           saveLabel="Major"
         />
-        {detail ? <DetailKelas isOpen={isOpen} setIsOpen={setIsOpen}/> : null}
+        {detail ? <DetailKelas isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
         {query.includes("?delete") ? (
           <Dialog defaultOpen onOpenChange={() => navigate("/majors")}>
             <DialogContent className="sm:max-w-[425px]">

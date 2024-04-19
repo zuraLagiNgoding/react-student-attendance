@@ -11,6 +11,52 @@ export const getAttendances = (req, res) => {
   });
 };
 
+export const getRecap = (req, res) => {
+  const classId = req.params.id;
+  const q =
+    "SELECT students.nisn, students.student_name, attendance_list.created_at, attendances.status, schedules.day, subjects.subject_name FROM attendances LEFT JOIN students ON attendances.student_id = students.nisn LEFT JOIN attendance_list ON attendances.attendance_list_id = attendance_list.attendance_list_id LEFT JOIN schedules ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON subjects.subject_id = schedules.subject_id WHERE students.class_id = ?";
+
+  db.query(q, [classId], (err, data) => {
+    if(err) return res.send(err);
+    
+    const transformedData = {};
+    data.forEach(({ nisn, student_name, created_at, status, day, subject_name }) => {
+      if (!transformedData[nisn]) {
+        transformedData[nisn] = { nisn, student_name, attendance: [] };
+      }
+      transformedData[nisn].attendance.push({ created_at, status, subject_name ,day });
+    });
+
+    // Converting object to array
+    const result = Object.values(transformedData);
+
+    return res.status(200).json(result);
+  })
+}
+
+export const getSubjects = (req, res) => {
+  const classId = req.params.id;
+  const q =
+    "SELECT subjects.subject_code, subjects.subject_name, schedules.day FROM subjects LEFT JOIN schedules ON schedules.subject_id = subjects.subject_id WHERE schedules.class_id = ?";
+
+  db.query(q, [classId], (err, data) => {
+    if(err) return res.send(err);
+    
+    const transformedData = {};
+    data.forEach(({ subject_code, subject_name, day }) => {
+      if (!transformedData[day]) {
+        transformedData[day] = { day, subjects: [] };
+      }
+      transformedData[day].subjects.push({ subject_code, subject_name });
+    });
+
+    // Converting object to array
+    const result = Object.values(transformedData);
+
+    return res.status(200).json(result);
+  })
+}
+
 export const getToAttend = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json("Not logged in yet!");

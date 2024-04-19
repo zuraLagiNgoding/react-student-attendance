@@ -13,6 +13,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { PopoverClose } from '@radix-ui/react-popover';
+import { ScheduleType } from "./DaftarPresensi";
+import dayjs from "dayjs";
 
 type StudentAttendanceType = {
   nisn: string;
@@ -23,13 +26,29 @@ const statuses = [ "Hadir", "Izin", "Sakit", "Alfa" ];
 
 const Presensi = () => {
   const [generatedId, setGeneratedId] = React.useState("");
-  const [isOpen, setIsOpen] = React.useState(-1);
   const location = useLocation();
   const navigate = useNavigate();
   const scheduleId = location.pathname.split("/")[location.pathname.split("/").length - 1];
   const { data } = useFetch<StudentAttendanceType[]>(
     "http://localhost:8800/backend/attendances/getToAttend/" + scheduleId
   );
+  const { data: schedule } = useFetch<ScheduleType[]>(
+    "http://localhost:8800/backend/schedules/" + scheduleId
+  );
+
+  React.useEffect(() => {
+    if (schedule.length > 0) {
+      if (
+        dayjs().format("dddd") === schedule[0].day &&
+        dayjs().isAfter(dayjs().format("YYYY-MM-DD" + schedule[0].start)) &&
+        dayjs().isBefore(dayjs().format("YYYY-MM-DD" + schedule[0].end))
+      ) {
+        null
+      } else {
+        navigate("/404");
+      }
+    }
+  }, [schedule, navigate])
 
   const form = useForm<z.infer<typeof AttendanceSchema>>({
     resolver: zodResolver(AttendanceSchema),
@@ -64,7 +83,7 @@ const Presensi = () => {
     form.reset({
       attendance_list_id: "-",
       attendance: data.map((student) => ({
-        attendance_id: student.nisn + "-" + generatedId.toString().split("-")[1],
+        attendance_id: student.nisn + "-" + generatedId.toString(),
         status: "",
         student_id: student.student_name,
         description: "",
@@ -130,7 +149,7 @@ const Presensi = () => {
                               <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                                 <Input
                                   {...field}
-                                  className="border-0 text-xs"
+                                  className="border-0 text-xs disabled:opacity-100"
                                   disabled
                                   value={student.student_name}
                                 />
@@ -144,28 +163,32 @@ const Presensi = () => {
                             name={`attendance.${index}.status`}
                             render={({ field }) => (
                               <FormItem className="">
-                                <FormControl>
-                                  <Badge onClick={() => setIsOpen(index)} className="w-[100px] flex justify-center">
-                                    {field.value
-                                      ? field.value
-                                      : "Select Status"}
-                                  </Badge>
-                                </FormControl>
-                                <Popover open={true}>
+                                <Popover>
+                                  <FormControl>
+                                    <PopoverTrigger>
+                                      <Badge className="w-[100px] flex justify-center">
+                                        {field.value
+                                          ? field.value
+                                          : "Select Status"}
+                                      </Badge>
+                                    </PopoverTrigger>
+                                  </FormControl>
                                   <PopoverContent className="overflow-hidden p-0">
                                     <ul className="text-center">
                                       {statuses.map((status) => (
                                         <li
+                                          key={status}
                                           className="py-0.5 px-2 border-b"
                                           onClick={() => {
                                             form.setValue(
                                               `attendance.${index}.status`,
                                               status
                                             );
-                                            setIsOpen(-1);
                                           }}
                                         >
-                                          {status}
+                                          <PopoverClose>
+                                            {status}
+                                          </PopoverClose>
                                         </li>
                                       ))}
                                     </ul>

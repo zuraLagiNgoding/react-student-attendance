@@ -14,6 +14,8 @@ export interface ScheduleType {
   subject_name: string;
   teacher_name: string;
   class_name: string;
+  created_at: Date;
+  status: string;
 }
 
 const DaftarPresensi = () => {
@@ -37,7 +39,8 @@ const DaftarPresensi = () => {
                   dayjs().isAfter(
                     dayjs().format("YYYY-MM-DD" + filter.start)
                   ) &&
-                  dayjs().isBefore(dayjs().format("YYYY-MM-DD" + filter.end))
+                  dayjs().isBefore(dayjs().format("YYYY-MM-DD" + filter.end)) &&
+                  !filter.status
               )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
@@ -50,8 +53,8 @@ const DaftarPresensi = () => {
             {data
               .filter(
                 (filter) =>
-                  filter.day == dayjs().format("dddd") &&
-                  dayjs().isAfter(dayjs().format("YYYY-MM-DD" + filter.end))
+                  dayjs().isSame(dayjs(filter.created_at), "day") &&
+                  filter.status == "done"
               )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
@@ -65,7 +68,8 @@ const DaftarPresensi = () => {
               .filter(
                 (filter) =>
                   filter.day == dayjs().format("dddd") &&
-                  dayjs().isAfter(dayjs().format("YYYY-MM-DD" + filter.end))
+                  dayjs().isAfter(dayjs().format("YYYY-MM-DD" + filter.end)) &&
+                  !filter.status
               )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />

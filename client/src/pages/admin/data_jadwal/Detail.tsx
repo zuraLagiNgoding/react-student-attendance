@@ -571,33 +571,51 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
           </>
         ) : (
           <div className="grid gap-4 py-4">
-            {/* <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="id">Schedule ID</Label>
               <Input
                 id="id"
-                value={data?.subject_id}
+                value={data?.schedule_id}
                 disabled
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="subject_name">Schedule</Label>
+              <Label htmlFor="subject">Subject</Label>
               <Input
-                id="subject_name"
+                id="subject"
                 value={data?.subject_name}
                 disabled
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="code">Schedule Code</Label>
+              <Label htmlFor="class">Class</Label>
               <Input
-                id="code"
-                value={data?.subject_code}
+                id="class"
+                value={data?.grade + " " + data?.shorten + " " + data?.identifier}
                 disabled
                 className="col-span-3"
               />
-            </div> */}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="schedule">Schedule</Label>
+              <Input
+                id="schedule"
+                value={data?.day + ", " + data?.start + "-" + data?.end}
+                disabled
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="teacher">Teacher</Label>
+              <Input
+                id="teacher"
+                value={data?.teacher_name}
+                disabled
+                className="col-span-3"
+              />
+            </div>
           </div>
         )}
       </SheetContent>

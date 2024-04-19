@@ -20,8 +20,10 @@ import DataJadwal from "./pages/admin/data_jadwal/DataJadwal";
 import SaveJadwal from "./pages/admin/data_jadwal/Save";
 import LandingPage from "./pages/general/LandingPage";
 import JadwalMengajar from "./pages/general/teacher/jadwal_mengajar/JadwalMengajar";
-import DaftarPresensi from "./pages/general/teacher/jadwal_mengajar copy/DaftarPresensi";
-import Presensi from "./pages/general/teacher/jadwal_mengajar copy/Presensi";
+import DaftarPresensi from "./pages/general/teacher/presensi/DaftarPresensi";
+import Presensi from "./pages/general/teacher/presensi/Presensi";
+import DaftarRecap from "./pages/general/teacher/recap/DaftarRecap";
+import Recap from "./pages/general/teacher/recap/Recap";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -46,8 +48,8 @@ const Routing = () => {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route path="/" element={<Navigate to="/overview" />} />
-                <Route path="*" element={<NotFound />} />
                 <Route path="/overview" element={<AdminOverview />} />
+                <Route path="*" element={<NotFound />} />
                 <Route path="/majors" element={<DataJurusan />} />
                 <Route path="/majors/:id" element={<DataJurusan detail />} />
                 <Route path="/majors/save" element={<SaveJurusan />} />
@@ -100,7 +102,8 @@ const Routing = () => {
                   <Route path="/overview" element={<GeneralOverview />} />
                   <Route path="/schedule" element={<JadwalMengajar />} />
                   <Route path="/attendance" element={<DaftarPresensi />} />
-                  <Route path="/attendance/records" element={<DaftarPresensi />} />
+                  <Route path="/attendance/records" element={<DaftarRecap />} />
+                  <Route path="/attendance/records/:id" element={<Recap />} />
                   <Route path="/attendance/:id" element={<Presensi />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
