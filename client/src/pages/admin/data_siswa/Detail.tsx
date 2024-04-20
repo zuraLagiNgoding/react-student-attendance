@@ -16,7 +16,6 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Check, ChevronsUpDown, Eye, Search, SquarePen } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -149,12 +148,6 @@ const DetailSiswa = ({isOpen, setIsOpen}: DetailProps) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="grid gap-4 py-4"
               >
-                <div className="flex w-full items-center justify-center">
-                  <Avatar className="w-[50%] h-auto">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </div>
                 <FormField
                   control={form.control}
                   name="nisn"
@@ -369,12 +362,6 @@ const DetailSiswa = ({isOpen, setIsOpen}: DetailProps) => {
           </>
         ) : (
           <div className="grid gap-4 py-4">
-            <div className="flex w-full items-center justify-center">
-              <Avatar className="w-[50%] h-auto">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="id">NISN</Label>
               <Input

@@ -157,7 +157,7 @@ const Recap = () => {
                       <>
                         <TableRow key={recap.nisn} className="relative">
                           <TableCell>{recap.nisn}</TableCell>
-                          <TableCell className="sticky left-0 bg-white">
+                          <TableCell className="sticky left-0 bg-white/80">
                             {recap.student_name}
                           </TableCell>
                           {[...Array(days)].map((_, dayIndex) => {
@@ -231,7 +231,7 @@ const Recap = () => {
                               }
                             }
                             return (
-                              <TableCell key={dayIndex}>
+                              <TableCell key={dayIndex} >
                                 <div
                                   className="flex w-full items-center justify-center cursor-pointer transition-all hover:opacity-75"
                                   onClick={() => {
@@ -274,12 +274,12 @@ const Recap = () => {
                                 <>
                                   {day.subjects.map((subject) => (
                                     <TableRow
-                                      className="bg-primary/5 hover:bg-primary/[0.04]"
+                                      className="bg-primary/5 hover:bg-primary/[0.04] group relative"
                                       key={subject.subject_name}
                                     >
                                       <TableCell
                                         colSpan={2}
-                                        className="font-medium"
+                                        className="font-medium group-hover:underline "
                                       >
                                         {subject.subject_name}
                                       </TableCell>

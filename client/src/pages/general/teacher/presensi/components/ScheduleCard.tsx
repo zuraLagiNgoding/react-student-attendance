@@ -50,7 +50,7 @@ const ScheduleCard = ({ schedule }: CardProps) => {
         ) : (
           <>
             {schedule.status === "done" ? (
-              <Link to={""}>
+              <Link to={"/attendance/" + schedule.schedule_id + "?view=1"}>
                 <Button
                   size={"sm"}
                   className="bg-sky-500 hover:bg-sky-500/80 flex items-center gap-2"
@@ -61,8 +61,9 @@ const ScheduleCard = ({ schedule }: CardProps) => {
               </Link>
             ) : (
               <>
-                {dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.end) && schedule.status !== "done" ?
-                  <Link to={""}>
+                {dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.end) &&
+                schedule.status !== "done" ? (
+                  <Link to={"/attendance/" + schedule.schedule_id}>
                     <Button
                       size={"sm"}
                       className="bg-yellow-500 hover:bg-yellow-500/80 flex items-center gap-2"
@@ -71,9 +72,7 @@ const ScheduleCard = ({ schedule }: CardProps) => {
                       Fill Attendance
                     </Button>
                   </Link>
-                  :
-                  null
-                }
+                ) : null}
               </>
             )}
           </>

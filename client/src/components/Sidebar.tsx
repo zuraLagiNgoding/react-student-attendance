@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import clsx from "clsx";
 import React, { Dispatch, SetStateAction, useContext } from "react";
 import { AuthContext } from "@/context/authContext";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { LogOut, MoreHorizontal, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { LogOut, MoreHorizontal, PanelLeftClose, PanelLeftOpen, UserCircle2 } from "lucide-react";
 import { Button } from "./ui/button";
 
 type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED";
@@ -102,10 +101,7 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
         ))}
       </div>
       <div className="w-full flex gap-4 ml-1.5 justify-start items-center mt-auto">
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <UserCircle2 className="text-primary" size={28}/>
         <div
           className={clsx(
             "sm:max-w-[70%] max-w-[50%] sm:opacity-100",

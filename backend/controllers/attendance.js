@@ -12,6 +12,16 @@ export const getAttendances = (req, res) => {
   });
 };
 
+export const getAttendanceList = (req, res) => {
+  const scheduleId = req.params.id
+  const q = "SELECT attendance_list.attendance_list_id, attendances.student_id, students.student_name ,attendances.status, attendances.description, attendances.attendance_id FROM attendance_list LEFT JOIN attendances ON attendances.attendance_list_id = attendance_list.attendance_list_id LEFT JOIN students ON attendances.student_id = students.nisn WHERE schedule_id = ? AND created_at = curdate();";
+
+  db.query(q, [scheduleId], (err, data) => {
+    if (err) return res.send(err);
+    return res.status(200).json(data);
+  });
+};
+
 export const getRecaps = (req, res) => {
   const classId = req.params.id;
   const q =
@@ -188,4 +198,20 @@ export const deleteAttendance = (req, res) => {
   });
 };
 
-export const updateAttendance = (req, res) => {};
+export const updateAttendanceList = (req, res) => {
+  const q = "UPDATE attendances SET status = ?, description = ? WHERE attendance_id = ?";
+  const values = req.body.attendance;
+
+  values.forEach((value) => {
+    const { status, description, attendance_id } = value;
+    db.query(q, [status, description, attendance_id], (err, result) => {
+      if (err) {
+        console.error("Error updating row:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+    });
+  });
+
+  res.json({ message: "Bulk update successful" });
+};
+

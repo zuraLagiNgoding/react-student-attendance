@@ -11,6 +11,11 @@ export const NavLinks = {
             href: "overview",
             icon: PanelsLeftBottom,
           },
+          {
+            label: "Record Absen",
+            href: "attendance/records",
+            icon: Clipboard,
+          },
         ],
       },
       {
@@ -132,8 +137,7 @@ export const NavLinks = {
     links: [
       {
         base: "",
-        links: [
-        ],
+        links: [],
       },
     ],
   },

@@ -21,7 +21,7 @@ export const getTeacherSchedules = (req, res) => {
     
     const search = req.query.result;
     const q =
-      "SELECT schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN attendance_list ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE teachers.uid = ?";
+      "SELECT s.*, sub.subject_name, t.teacher_name, CONCAT(c.grade, ' ', m.shorten, ' ', c.identifier) as class_name FROM schedules s LEFT JOIN (SELECT DISTINCT schedule_id FROM attendance_list) AS al ON s.schedule_id = al.schedule_id LEFT JOIN subjects sub ON s.subject_id = sub.subject_id LEFT JOIN teachers t ON s.teacher_id = t.nip LEFT JOIN classes c ON s.class_id = c.class_id LEFT JOIN majors m ON c.major_id = m.major_id WHERE t.uid = ?";
     
     db.query(q, [data.id], (err, data) => {
       if (err) return res.send(err);

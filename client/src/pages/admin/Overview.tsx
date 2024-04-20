@@ -9,67 +9,134 @@ import {
   XAxis,
   YAxis,
   ResponsiveContainer,
+  Tooltip,
+  CartesianGrid,
+  TooltipProps,
 } from "recharts";
 import React from 'react'
 import { useFetch } from "@/hooks/fetcher";
 import { StudentsType } from "./data_siswa/columns";
 import { TeachersType } from "./data_guru/columns";
+import dayjs from "dayjs";
+import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-const data = [
-  {
-    name: "Jan",
-    value: 4000,
-  },
-  {
-    name: "Feb",
-    value: 3000,
-  },
-  {
-    name: "Mar",
-    value: 2500,
-  },
-  {
-    name: "Apr",
-    value: 4000,
-  },
-  {
-    name: "May",
-    value: 3500,
-  },
-  {
-    name: "Jun",
-    value: 4000,
-  },
-  {
-    name: "Jul",
-    value: 2000,
-  },
-  {
-    name: "Aug",
-    value: 1500,
-  },
-  {
-    name: "Sep",
-    value: 1000,
-  },
-  {
-    name: "Oct",
-    value: 2000,
-  },
-  {
-    name: "Nov",
-    value: 2500,
-  },
-  {
-    name: "Des",
-    value: 4000,
-  },
+interface RecapsType {
+  nisn: string;
+  student_name: string;
+  attendance: {
+    created_at: string;
+    status: string;
+    subject_name: string;
+    day: string;
+  }[];
+}
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
-const Overview = () => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) => {
+  if (active)
+    return (
+      <div className="rounded-md bg-white shadow-2xl py-4 px-6">
+        <h1 className="font-medium">{label}</h1>
+        <p className="text-sm font-light">{payload && payload[0].value} Students</p>
+      </div>
+    );
+};
 
+const Overview = () => {
+  const { data:recap } = useFetch<RecapsType[]>("http://localhost:8800/backend/attendances/recaps");
   const { data:students } = useFetch<StudentsType[]>("http://localhost:8800/backend/students");
   const { data:teachers } = useFetch<TeachersType[]>("http://localhost:8800/backend/teachers");
+  const [ totalAbsence, setTotalAbsence ] = React.useState(0);
+  const [attendanceCounts, setAttendanceCounts] = React.useState<{
+    name: string;
+    values: number;
+  }[]>([]);
+
+  React.useEffect(() => {
+    const calculateTotalAbsence = () => {
+      let totalAbsence = 0;
+      recap.forEach((student) => {
+        student.attendance.forEach((attendance) => {
+          if (
+            attendance.status !== "Hadir" &&
+            dayjs().isSame(attendance.created_at, 'date')
+          ) {
+            totalAbsence++;
+          }
+        });
+      });
+      setTotalAbsence(totalAbsence);
+    };
+    calculateTotalAbsence();
+  }, [recap]);
+
+  React.useEffect(() => {
+    const calculateAttendanceCounts = () => {
+      const attendanceCounts = monthNames.map((monthName, index) => {
+        const month = index;
+        const days = new Date(dayjs().year(), month + 1, 0).getDate();
+        let hadirCount = 0;
+
+        for (let dayIndex = 0; dayIndex < days; dayIndex++) {
+          const attendancesForDay = recap.reduce((acc, studentRecap) => {
+            const attendances = studentRecap.attendance.filter((att) => {
+              const date = dayjs(att.created_at);
+              return (
+                date.get("date") === dayIndex + 1 &&
+                date.get("month") === month &&
+                date.get("year") === dayjs().year()
+              );
+            });
+            if (attendances.length > 0) {
+              if (attendances.every((att) => att.status === "Hadir")) {
+                acc++;
+              } else if (
+                attendances.some((att) => att.status === "Hadir") &&
+                attendances.some(
+                  (att) => att.status === "Sakit" || att.status === "Izin"
+                )
+              ) {
+                acc++;
+              } else if (
+                attendances.some((att) => att.status === "Izin") &&
+                attendances.some(
+                  (att) => att.status === "Hadir"
+                )
+              ) {
+                acc++;
+              }
+            }
+            return acc;
+          }, 0);
+          hadirCount += attendancesForDay;
+        }
+
+        return { name: monthName, values: hadirCount };
+      });
+      setAttendanceCounts(attendanceCounts);
+    };
+    calculateAttendanceCounts();
+  }, [recap]);
+
+  console.log(attendanceCounts)
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -102,7 +169,7 @@ const Overview = () => {
               </CardHeader>
               <CardContent className="flex h-full w-full items-center">
                 <ResponsiveContainer width={"100%"} height={"75%"}>
-                  <BarChart data={data}>
+                  <BarChart data={attendanceCounts}>
                     <XAxis
                       dataKey="name"
                       tickLine={false}
@@ -116,7 +183,9 @@ const Overview = () => {
                       stroke="#0EB87A"
                       fontSize={12}
                     />
-                    <Bar dataKey="value" fill="#0EB87A" radius={[4, 4, 0, 0]} />
+                    <Tooltip content={<CustomTooltip/>}/>
+                    <CartesianGrid opacity={0.45} vertical={false}/>
+                    <Bar dataKey="values" fill="#0EB87A" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -164,7 +233,7 @@ const Overview = () => {
             </CardHeader>
             <CardContent className="flex relative justify-between">
               <h1 className="text-3xl font-semibold leading-none text-primary">
-                {teachers.length}
+                {totalAbsence}
               </h1>
             </CardContent>
           </Card>
