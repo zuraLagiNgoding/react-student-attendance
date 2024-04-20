@@ -7,6 +7,7 @@ import { Clock9 } from "lucide-react";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
+import { useFetch } from "@/hooks/fetcher";
 
 interface CardProps {
   schedule: ScheduleType;
@@ -14,12 +15,17 @@ interface CardProps {
 }
 
 const ScheduleCard = ({ schedule, mute }: CardProps) => {
+
+  const { data: filledData } = useFetch<ScheduleType[]>(
+    "http://localhost:8800/backend/schedules/teacher/filled"
+  );
+
   return (
     <Card
       className={clsx(
         "relative min-h-[160px] sm:max-h-[160px] max-h-[180px] overflow-hidden",
-        schedule.day == dayjs().format("dddd") &&  
-        dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
+        schedule.day == dayjs().format("dddd") &&
+          dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
           dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end)
           ? "alert"
           : "",
@@ -49,10 +55,15 @@ const ScheduleCard = ({ schedule, mute }: CardProps) => {
         <Badge variant={"outline"}>
           {schedule.start} - {schedule.end}
         </Badge>
-        {
-        schedule.day == dayjs().format("dddd") &&  
+        {schedule.day == dayjs().format("dddd") &&
         dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
-        dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end) ? (
+        dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end) &&
+        !filledData.some(
+          (item) =>
+            dayjs(item.created_at).isSame(dayjs(schedule.created_at), "date") &&
+            item.status === "done" &&
+            item.schedule_id === schedule.schedule_id
+        ) ? (
           <Link to="/attendance">
             <Button size={"sm"} className="flex items-center gap-2">
               <Clock9 size={16} />

@@ -8,14 +8,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useFetch } from "@/hooks/fetcher";
 import { AttendanceSchema } from "@/schemas/attendance-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { PopoverClose } from '@radix-ui/react-popover';
-import { ScheduleType } from "./DaftarPresensi";
-import dayjs from "dayjs";
+import { toast } from "sonner";
+import { CircleX } from "lucide-react";
 
 type StudentAttendanceType = {
   nisn: string;
@@ -32,23 +32,6 @@ const Presensi = () => {
   const { data } = useFetch<StudentAttendanceType[]>(
     "http://localhost:8800/backend/attendances/getToAttend/" + scheduleId
   );
-  const { data: schedule } = useFetch<ScheduleType[]>(
-    "http://localhost:8800/backend/schedules/" + scheduleId
-  );
-
-  React.useEffect(() => {
-    if (schedule.length > 0) {
-      if (
-        dayjs().format("dddd") === schedule[0].day &&
-        dayjs().isAfter(dayjs().format("YYYY-MM-DD" + schedule[0].start)) &&
-        dayjs().isBefore(dayjs().format("YYYY-MM-DD" + schedule[0].end))
-      ) {
-        null
-      } else {
-        navigate("/404");
-      }
-    }
-  }, [schedule, navigate])
 
   const form = useForm<z.infer<typeof AttendanceSchema>>({
     resolver: zodResolver(AttendanceSchema),
@@ -105,7 +88,17 @@ const Presensi = () => {
       });
       navigate("/attendance");
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) { 
+        if (error.response && error.response.status === 409) {
+          toast("Already took attendance today", {
+            icon: <CircleX size={18} className="text-red-500" />,
+          });
+        } else {
+          toast(error.message, {
+            icon: <CircleX size={18} className="text-red-500" />,
+          });
+        }
+      }
     }
   };
 
@@ -204,7 +197,7 @@ const Presensi = () => {
               </Table>
             </div>
             <div className="flex justify-end gap-4">
-              <Button type="submit">Done</Button>
+              <Button disabled={data.length === 0} type="submit">Done</Button>
             </div>
           </div>
         </form>

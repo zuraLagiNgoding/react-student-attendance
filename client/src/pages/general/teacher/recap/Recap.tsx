@@ -63,12 +63,27 @@ const Recap = () => {
             dayjs(att.created_at).format("M") ===
               (parseInt(month as string) + 1).toString()
         );
-        if (
-          attendancesForDay.length > 0 &&
-          attendancesForDay[0].status === "Hadir"
-        ) {
-          return dayTotal + 1;
-        }
+        if (attendancesForDay.length > 0)
+          if (
+            attendancesForDay[0].status === "Hadir" &&
+            attendancesForDay.every((att) => att.status === "Hadir")
+          ) {
+            return dayTotal + 1;
+          } else if (
+            attendancesForDay[0].status === "Hadir" &&
+            attendancesForDay.some(
+              (att) => att.status === "Sakit" || att.status === "Izin"
+            )
+          ) {
+            return dayTotal + 1;
+          } else if (
+            attendancesForDay[0].status === "Izin" &&
+            attendancesForDay.some(
+              (att) => att.status === "Hadir"
+            )
+          ) {
+            return dayTotal + 1;
+          }
         return dayTotal;
       }, 0);
     });
@@ -90,12 +105,27 @@ const Recap = () => {
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
         Recap
       </h1>
-      <div className="flex flex-col overflow-y-hidden">
-        <div className="flex flex-col justify-between gap-4 py-4 h-full overflow-y-auto">
-          <h1 className="sm:text-2xl text-xl font-medium leading-none text-neutral-900">
-            Week 1
-          </h1>
-          <div className="rounded-md border overflow-y-auto">
+      <div className="flex flex-col h-full w-full overflow-hidden">
+        <div className="flex flex-col gap-4 py-4 h-full w-full overflow-auto">
+          <TableCaption className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-2">
+              <Circle className="fill-current text-primary" size={12} />
+              Hadir
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Circle className="fill-current text-sky-500" size={12} />
+              Izin
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Circle className="fill-current text-red-500" size={12} />
+              Sakit
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Circle className="fill-current text-neutral-500" size={12} />
+              Alfa
+            </div>
+          </TableCaption>
+          <div className="rounded-md border overflow-y-auto overflow-x-auto">
             <Table className="h-full relative sm:text-sm text-xs">
               <TableHeader className="sticky top-0 bg-white z-10">
                 <TableRow>
@@ -125,15 +155,17 @@ const Recap = () => {
                       onOpenChange={() => setCollapse(undefined)}
                     >
                       <>
-                        <TableRow key={recap.nisn}>
+                        <TableRow key={recap.nisn} className="relative">
                           <TableCell>{recap.nisn}</TableCell>
-                          <TableCell>{recap.student_name}</TableCell>
+                          <TableCell className="sticky left-0 bg-white">
+                            {recap.student_name}
+                          </TableCell>
                           {[...Array(days)].map((_, dayIndex) => {
+                            let status;
                             const attendancesForDay = recap.attendance.filter(
-                              (att) =>
+                              (att) =>                                
                                 dayjs(att.created_at).date() === dayIndex + 1
                             );
-                            let status;
                             if (attendancesForDay.length > 0) {
                               const firstStatus = attendancesForDay[0].status;
                               const otherStatuses = attendancesForDay
@@ -393,24 +425,6 @@ const Recap = () => {
               </TableFooter>
             </Table>
           </div>
-          <TableCaption className="flex items-center justify-center gap-4">
-            <div className="flex items-center justify-center gap-2">
-              <Circle className="fill-current text-primary" size={12} />
-              Hadir
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <Circle className="fill-current text-sky-500" size={12} />
-              Izin
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <Circle className="fill-current text-red-500" size={12} />
-              Sakit
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <Circle className="fill-current text-neutral-500" size={12} />
-              Alfa
-            </div>
-          </TableCaption>
         </div>
       </div>
     </div>

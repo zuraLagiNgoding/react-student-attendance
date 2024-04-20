@@ -21,6 +21,25 @@ export const getTeacherSchedules = (req, res) => {
     
     const search = req.query.result;
     const q =
+      "SELECT schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN attendance_list ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE teachers.uid = ?";
+    
+    db.query(q, [data.id], (err, data) => {
+      if (err) return res.send(err);
+      return res.status(200).json(data);
+    });
+  })
+
+};
+
+export const getFilledTeacherSchedules = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json("Not logged in yet!");
+
+  jwt.verify(token, "halo", (err, data) => {
+    if (err) return res.status(403).json("Token is not valid!")
+    
+    const search = req.query.result;
+    const q =
       "SELECT attendance_list.created_at, attendance_list.status, schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN attendance_list ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE teachers.uid = ?";
     
     db.query(q, [data.id], (err, data) => {

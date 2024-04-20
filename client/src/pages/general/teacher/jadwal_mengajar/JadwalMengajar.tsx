@@ -20,6 +20,8 @@ export interface ScheduleType {
   subject_name: string;
   teacher_name: string;
   class_name: string;
+  created_at: Date;
+  status: string;
 }
 
 const JadwalMengajar = () => {
@@ -40,9 +42,6 @@ const JadwalMengajar = () => {
               .filter(
                 (filter) =>
                   filter.day == dayjs().format("dddd") &&
-                  dayjs().isAfter(
-                    dayjs().format("YYYY-MM-DD") + filter.start
-                  ) &&
                   dayjs().isBefore(dayjs().format("YYYY-MM-DD") + filter.end)
               )
               .map((schedule) => (

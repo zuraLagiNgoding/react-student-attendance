@@ -10,12 +10,12 @@ import clsx from "clsx";
 const Layout = () => {
   const [close, setClose] = React.useState(true); 
   return (
-    <div className="relative min-w-full max-w-full flex overflow-x-hidden">
+    <div className="relative flex w-[100vw] overflow-x-hidden">
       <Sidebar close={close} setClose={setClose} />
-      <div className="2xl:basis-5/6 sm:basis-4/5 px-5 py-8 h-screen flex flex-col min-h-screen max-h-screen gap-10 w-full">
+      <div className="2xl:basis-5/6 sm:basis-4/5 px-5 py-8 h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full overflow-x-hidden gap-10">
         <div className="flex items-center justify-between sm:pr-4 sm:my-0 my-4">
           <Menu
-            className="cursor-pointer md:hidden block"
+            className="cursor-pointer sm:hidden block"
             size={20}
             onClick={() => setClose(false)}
           />
@@ -31,7 +31,7 @@ const Layout = () => {
       <div
         onClick={() => setClose(true)}
         className={clsx(
-          "absolute z-10 w-full h-screen bg-black/65 md:hidden",
+          "absolute z-10 w-full h-screen bg-black/65 sm:hidden",
           !close ? "block" : "hidden"
         )}
       ></div>

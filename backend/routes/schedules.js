@@ -2,6 +2,7 @@ import express from "express";
 import {
   addSchedule,
   deleteSchedule,
+  getFilledTeacherSchedules,
   getLastId,
   getSchedule,
   getSchedules,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.get("/", getSchedules);
 router.get("/teacher", getTeacherSchedules);
+router.get("/teacher/filled", getFilledTeacherSchedules);
 router.get("/lastId", getLastId);
 router.get("/:id", getSchedule);
 router.post("/", addSchedule);

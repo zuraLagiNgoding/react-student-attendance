@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 import { ScheduleType } from "../DaftarPresensi";
 import { Button } from "@/components/ui/button";
-import { NotebookPen } from "lucide-react";
+import { Eye, NotebookPen } from "lucide-react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 
@@ -12,27 +12,6 @@ interface CardProps {
 }
 
 const ScheduleCard = ({ schedule }: CardProps) => {
-  // const { data: lastId } = useFetch(
-  //   "http://localhost:8800/backend/attendances/lastId"
-  // );
-  // React.useEffect(() => {
-  //   const submit = async () => {
-  //     await axios.post("http://localhost:8800/backend/attendances/", {
-  //       id: lastId[0].next_id as string,
-  //       schedule_id: schedule.schedule_id,
-  //       status: "incomplete",
-  //     });
-  //   }
-
-  //   if (
-  //     schedule.day == dayjs().format("dddd") &&
-  //     dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
-  //     dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end)
-  //   ) {
-  //     submit();
-  //   }
-  // }, [schedule.day, schedule.start, schedule.end, schedule.schedule_id, lastId])
-
   return (
     <Card className="min-h-[160px] sm:max-h-[160px] max-h-[180px]">
       <CardHeader className="flex flex-row justify-between">
@@ -60,7 +39,8 @@ const ScheduleCard = ({ schedule }: CardProps) => {
         </Badge>
         {schedule.day == dayjs().format("dddd") &&
         dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.start) &&
-        dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end) ? (
+        dayjs().isBefore(dayjs().format("YYYY-MM-DD") + schedule.end) &&
+        schedule.status !== "done" ? (
           <Link to={"/attendance/" + schedule.schedule_id}>
             <Button size={"sm"} className="flex items-center gap-2">
               <NotebookPen size={16} />
@@ -68,7 +48,35 @@ const ScheduleCard = ({ schedule }: CardProps) => {
             </Button>
           </Link>
         ) : (
-          <></>
+          <>
+            {schedule.status === "done" ? (
+              <Link to={""}>
+                <Button
+                  size={"sm"}
+                  className="bg-sky-500 hover:bg-sky-500/80 flex items-center gap-2"
+                >
+                  <Eye size={16} />
+                  View
+                </Button>
+              </Link>
+            ) : (
+              <>
+                {dayjs().isAfter(dayjs().format("YYYY-MM-DD") + schedule.end) && schedule.status !== "done" ?
+                  <Link to={""}>
+                    <Button
+                      size={"sm"}
+                      className="bg-yellow-500 hover:bg-yellow-500/80 flex items-center gap-2"
+                    >
+                      <NotebookPen size={16} />
+                      Fill Attendance
+                    </Button>
+                  </Link>
+                  :
+                  null
+                }
+              </>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

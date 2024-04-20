@@ -1,5 +1,6 @@
 import { db } from "../db.js";
 import jwt from 'jsonwebtoken';
+import cron from "node-cron"
 
 export const getAttendances = (req, res) => {
   const search = req.query.result
@@ -10,6 +11,29 @@ export const getAttendances = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const getRecaps = (req, res) => {
+  const classId = req.params.id;
+  const q =
+    "SELECT students.nisn, students.student_name, attendance_list.created_at, attendances.status, schedules.day, subjects.subject_name FROM attendances LEFT JOIN students ON attendances.student_id = students.nisn LEFT JOIN attendance_list ON attendances.attendance_list_id = attendance_list.attendance_list_id LEFT JOIN schedules ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON subjects.subject_id = schedules.subject_id";
+
+  db.query(q, [classId], (err, data) => {
+    if(err) return res.send(err);
+    
+    const transformedData = {};
+    data.forEach(({ nisn, student_name, created_at, status, day, subject_name }) => {
+      if (!transformedData[nisn]) {
+        transformedData[nisn] = { nisn, student_name, attendance: [] };
+      }
+      transformedData[nisn].attendance.push({ created_at, status, subject_name ,day });
+    });
+
+    // Converting object to array
+    const result = Object.values(transformedData);
+
+    return res.status(200).json(result);
+  })
+}
 
 export const getRecap = (req, res) => {
   const classId = req.params.id;
@@ -71,12 +95,14 @@ export const getToAttend = (req, res) => {
     db.query(qClass, [scheduleId, data.id], (err, classData) => {
       if (err) return res.send(err);
       const q = "SELECT students.nisn ,students.student_name FROM students WHERE students.class_id = ?";
-      const classId = classData[0].class_id
-
-      db.query(q, classId, (err, studentData) => {
-        if (err) return res.send(err);
-        return res.status(200).json(studentData)
-      })
+      if (classData.length > 0) {
+        const classId = classData[0].class_id
+  
+        db.query(q, classId, (err, studentData) => {
+          if (err) return res.send(err);
+          return res.status(200).json(studentData)
+        })
+      }
     });
   });
 };
@@ -113,33 +139,43 @@ export const getUnique = (req, res) => {
 }
 
 export const addAttendance = (req, res) => {
-  const qList = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?, curdate())";
+  const qCheck = "SELECT * FROM attendance_list WHERE schedule_id = ? AND created_at = curdate()"
 
-  const valuesList = [
-    req.body.attendance_list_id,
-    req.body.schedule_id,
-    "done",
-  ];
-
-  db.query(qList, [valuesList], (err, data) => {
+  db.query(qCheck, [req.body.schedule_id], (err, data) => {
     if (err) return res.status(500).json(err);
 
-    const qAttendance = "INSERT INTO attendances(`attendance_id`, `student_id`, `status`, `description`, `attendance_list_id`) VALUES ?";
+    if (data.length > 0)
+    return res.status(409).json({ message: "Already took attendance today" });
 
-    const valueAttendance = 
-      req.body.attendance.map((attendance) => [
-        attendance.attendance_id,
-        attendance.student_id,
-        attendance.status,
-        attendance.description,
-        req.body.attendance_list_id,
-      ]);
-
-    db.query(qAttendance, [valueAttendance], (err, data) => {
+    const qList = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?, curdate())";
+  
+    const valuesList = [
+      req.body.attendance_list_id,
+      req.body.schedule_id,
+      "done",
+    ];
+  
+    db.query(qList, [valuesList], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.json("A new attendance list has been created.");
-    })
+  
+      const qAttendance = "INSERT INTO attendances(`attendance_id`, `student_id`, `status`, `description`, `attendance_list_id`) VALUES ?";
+  
+      const valueAttendance = 
+        req.body.attendance.map((attendance) => [
+          attendance.attendance_id,
+          attendance.student_id,
+          attendance.status,
+          attendance.description,
+          req.body.attendance_list_id,
+        ]);
+  
+      db.query(qAttendance, [valueAttendance], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.json("A new attendance list has been created.");
+      })
+    });
   });
+
 };
 
 export const deleteAttendance = (req, res) => {

@@ -22,6 +22,9 @@ const DaftarPresensi = () => {
   const { data } = useFetch<ScheduleType[]>(
     "http://localhost:8800/backend/schedules/teacher"
   );
+  const { data:filledData } = useFetch<ScheduleType[]>(
+    "http://localhost:8800/backend/schedules/teacher/filled"
+  );
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -34,13 +37,24 @@ const DaftarPresensi = () => {
           <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
             {data
               .filter(
-                (filter) =>
-                  filter.day == dayjs().format("dddd") &&
+                (schedule) =>
+                  schedule.day === dayjs().format("dddd") &&
                   dayjs().isAfter(
-                    dayjs().format("YYYY-MM-DD" + filter.start)
+                    dayjs().format("YYYY-MM-DD" + schedule.start)
                   ) &&
-                  dayjs().isBefore(dayjs().format("YYYY-MM-DD" + filter.end)) &&
-                  !filter.status
+                  dayjs().isBefore(
+                    dayjs().format("YYYY-MM-DD" + schedule.end)
+                  ) &&
+                  dayjs().isSame(schedule.created_at, "date") &&
+                  !filledData.some(
+                    (item) =>
+                      dayjs(item.created_at).isSame(
+                        dayjs(schedule.created_at),
+                        "date"
+                      ) &&
+                      item.status === "done" &&
+                      item.schedule_id === schedule.schedule_id
+                  )
               )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
@@ -50,12 +64,8 @@ const DaftarPresensi = () => {
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Filled In</h1>
           <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
-            {data
-              .filter(
-                (filter) =>
-                  dayjs().isSame(dayjs(filter.created_at), "day") &&
-                  filter.status == "done"
-              )
+            {filledData
+              .filter((filter) => dayjs().isSame(filter.created_at, "date"))
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
               ))}
@@ -66,10 +76,21 @@ const DaftarPresensi = () => {
           <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
             {data
               .filter(
-                (filter) =>
-                  filter.day == dayjs().format("dddd") &&
-                  dayjs().isAfter(dayjs().format("YYYY-MM-DD" + filter.end)) &&
-                  !filter.status
+                (schedule) =>
+                  schedule.day === dayjs().format("dddd") &&
+                  dayjs().isAfter(
+                    dayjs().format("YYYY-MM-DD" + schedule.end)
+                  ) &&
+                  dayjs().isSame(schedule.created_at, "date") &&
+                  !filledData.some(
+                    (item) =>
+                      dayjs(item.created_at).isSame(
+                        dayjs(schedule.created_at),
+                        "date"
+                      ) &&
+                      item.status === "done" &&
+                      item.schedule_id === schedule.schedule_id
+                  )
               )
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
