@@ -44,25 +44,25 @@ const Login = () => {
 
   return (
     <div className="h-screen max-h-screen w-full flex md:flex-row flex-col md:justify-start justify-between overflow-hidden">
-      <div className="relative 2xl:basis-[68%] md:basis-3/5 md:p-14 md:gap-0 gap-[50%] flex flex-col justify-between">
-        <h1 className="text-primary text-2xl">Presynce</h1>
+      <div className="relative 2xl:basis-[68%] md:basis-3/5 md:p-14 md:gap-0 gap-4 flex flex-col justify-between p-8">
+        <h1 className="text-primary sm:text-2xl text-xl">Presynce</h1>
         <div className="items-center justify-center md:flex hidden">
           <img
             src={img}
             className="2xl:w-[calc(100vh*0.85)] w-[calc(100vh*0.60)]"
           />
         </div>
-        <h1 className="text-slate-800 font-semibold 2xl:text-6xl md:text-5xl text-3xl">
+        <h1 className="text-slate-800 font-semibold 2xl:text-6xl md:text-5xl text-3xl sm:block hidden">
           Effortless <span className="text-primary">Student</span> and{" "}
           <span className="text-primary">Attendance</span> Management.
         </h1>
       </div>
-      <div className="2xl:basis-[32%] md:basis-2/5 w-full flex flex-col 2xl:px-24 md:py-14 md:gap-[35%] gap-5 border-l">
+      <div className="2xl:basis-[32%] md:basis-2/5 w-full flex flex-col 2xl:px-24 md:py-14 md:gap-[35%] gap-5 border-l p-8 md:mb-0 mb-12">
         <div className="flex flex-col md:gap-3 gap-2">
-          <h1 className="md:text-4xl text-xl font-medium text-primary">
+          <h1 className="md:text-4xl text-2xl font-medium text-primary">
             Login
           </h1>
-          <h1 className="md:text-lg text-sm text-slate-800">
+          <h1 className="text-lg text-slate-800">
             Welcome back! Input your account credentials to continue.
           </h1>
         </div>

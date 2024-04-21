@@ -48,6 +48,8 @@ type AttendanceListType = {
 const statuses = ["Hadir", "Izin", "Sakit", "Alfa"];
 
 const Save = () => {
+  const [allChecked, setAllChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState<number[]>([]);
   const [generatedId, setGeneratedId] = React.useState("");
   const location = useLocation();
   const navigate = useNavigate();
@@ -128,6 +130,41 @@ const Save = () => {
     }
   };
 
+  const handleCheckboxChange = (index: number) => {
+    const updatedChecked = [...checked];
+    const indexInChecked = updatedChecked.indexOf(index);
+    if (indexInChecked === -1) {
+        updatedChecked.push(index);
+    } else {
+        updatedChecked.splice(indexInChecked, 1);
+    }
+    setChecked(updatedChecked);
+  };
+
+  const handleAllCheckboxChange = () => {
+    setAllChecked(!allChecked)
+    if (checked.length === data.length && allChecked) {
+      setChecked([]);
+    } else if (checked.length < data.length && allChecked) {
+      setChecked([]);
+    } else if (checked.length == 0 && allChecked) {
+      setAllChecked(false)
+    } else if (checked.length < data.length && checked.length > 0) {
+      const newChecked: number[] = [];
+      data.forEach((_, index) => {
+        newChecked.push(index);
+      });
+      setChecked(newChecked);
+    } else {
+      const newChecked: number[] = [];
+      data.forEach((_, index) => {
+        newChecked.push(index);
+      });
+      setChecked(newChecked);
+    }
+  };
+
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -138,13 +175,74 @@ const Save = () => {
           className="flex flex-col overflow-y-hidden"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col justify-between gap-8 py-4 h-full overflow-y-auto">
+          <div className="flex flex-col justify-between gap-3 py-4 h-full overflow-y-auto">
+            <div className="w-full flex gap-2">
+              <Badge
+                className="flex items-center gap-2 cursor-pointer py-1 px-3 hover:text-primary border-slate-800/30"
+                variant={"outline"}
+                onClick={() => {
+                  if (checked.length > 0) {
+                    checked.forEach((index) => {
+                      form.setValue(`attendance.${index}.status`, "Hadir");
+                    });
+                  }
+                }}
+              >
+                <Circle className="fill-current text-primary" size={12} />
+                Hadir
+              </Badge>
+              <Badge
+                className="flex items-center gap-2 cursor-pointer py-1 px-3 hover:text-primary border-slate-800/30"
+                variant={"outline"}
+                onClick={() => {
+                  if (checked.length > 0) {
+                    checked.forEach((index) => {
+                      form.setValue(`attendance.${index}.status`, "Sakit");
+                    });
+                  }
+                }}
+              >
+                <Circle className="fill-current text-red-500" size={12} />
+                Sakit
+              </Badge>
+              <Badge
+                className="flex items-center gap-2 cursor-pointer py-1 px-3 hover:text-primary border-slate-800/30"
+                variant={"outline"}
+                onClick={() => {
+                  if (checked.length > 0) {
+                    checked.forEach((index) => {
+                      form.setValue(`attendance.${index}.status`, "Izin");
+                    });
+                  }
+                }}
+              >
+                <Circle className="fill-current text-sky-500" size={12} />
+                Izin
+              </Badge>
+              <Badge
+                className="flex items-center gap-2 cursor-pointer py-1 px-3 hover:text-primary border-slate-800/30"
+                variant={"outline"}
+                onClick={() => {
+                  if (checked.length > 0) {
+                    checked.forEach((index) => {
+                      form.setValue(`attendance.${index}.status`, "Alfa");
+                    });
+                  }
+                }}
+              >
+                <Circle className="fill-current text-neutral-500" size={12} />
+                Alfa
+              </Badge>
+            </div>
             <div className="rounded-md border overflow-y-auto">
               <Table className="h-full relative sm:text-sm text-xs">
                 <TableHeader className="sticky top-0 bg-white z-10">
                   <TableRow>
                     <TableHead className="sm:w-10 w-8">
-                      <Checkbox />
+                      <Checkbox
+                        checked={allChecked}
+                        onCheckedChange={() => handleAllCheckboxChange()}
+                      />
                     </TableHead>
                     <TableHead>Student Name</TableHead>
                     <TableHead className="text-center">Status</TableHead>
@@ -158,7 +256,13 @@ const Save = () => {
                     .map((student, index) => (
                       <TableRow key={student.nisn}>
                         <TableCell>
-                          <Checkbox />
+                          <Checkbox
+                            checked={checked.includes(index)}
+                            onCheckedChange={() => {
+                              handleCheckboxChange(index);
+                              console.log(checked);
+                            }}
+                          />
                         </TableCell>
                         <TableCell>
                           <FormField
@@ -268,7 +372,7 @@ const Save = () => {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-4 mt-6">
               <Button disabled={data.length === 0} type="submit">
                 Done
               </Button>

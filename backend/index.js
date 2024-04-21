@@ -1,4 +1,5 @@
 import classRoutes from "./routes/classes.js";
+import classRoomRoutes from "./routes/classrooms.js";
 import studentRoutes from "./routes/students.js";
 import teacherRoutes from "./routes/teachers.js";
 import subjectRoutes from "./routes/subjects.js";
@@ -6,6 +7,7 @@ import scheduleRoutes from "./routes/schedules.js";
 import attendanceRoutes from "./routes/attendances.js";
 import majorRoutes from "./routes/majors.js";
 import authRoutes from "./routes/auths.js";
+import userRoutes from "./routes/users.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -27,7 +29,9 @@ app.use(cookieParser());
 
 //routes
 app.use("/backend/auth", authRoutes);
+app.use("/backend/users", userRoutes);
 app.use("/backend/classes", classRoutes);
+app.use("/backend/classrooms", classRoomRoutes);
 app.use("/backend/students", studentRoutes);
 app.use("/backend/students", studentRoutes);
 app.use("/backend/teachers", teacherRoutes);

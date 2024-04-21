@@ -65,7 +65,7 @@ const DaftarPresensi = () => {
           <h1 className="text-xl font-semibold">Filled In</h1>
           <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
             {filledData
-              .filter((filter) => dayjs().isSame(filter.created_at, "date"))
+              .filter((filter) => dayjs().isSame(filter.created_at, "date") && filter.day === dayjs().format("dddd"))
               .map((schedule) => (
                 <Card schedule={schedule} key={schedule.schedule_id} />
               ))}

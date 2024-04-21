@@ -1,13 +1,20 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Login from "./pages/Login";
 import Layout from "./Layout";
 import AdminOverview from "./pages/admin/Overview";
-import GeneralOverview from "./pages/general/Overview"
+import TeacherOverview from "./pages/general/teacher/Overview";
+import StudentOverview from "./pages/general/student/Overview";
 import DataKelas from "./pages/admin/data_kelas/DataKelas";
 import DataSiswa from "./pages/admin/data_siswa/DataSiswa";
 import DataJurusan from "./pages/admin/data_jurusan/DataJurusan";
 import SaveJurusan from "./pages/admin/data_jurusan/Save";
 import SaveKelas from "./pages/admin/data_kelas/Save";
+import SaveRuang from "./pages/admin/data_ruang/Save";
 import SaveSiswa from "./pages/admin/data_siswa/Save";
 import DataGuru from "./pages/admin/data_guru/DataGuru";
 import SaveGuru from "./pages/admin/data_guru/Save";
@@ -24,6 +31,8 @@ import DaftarPresensi from "./pages/general/teacher/presensi/DaftarPresensi";
 import Presensi from "./pages/general/teacher/presensi/Presensi";
 import DaftarRecap from "./pages/general/teacher/recap/DaftarRecap";
 import Recap from "./pages/general/teacher/recap/Recap";
+import JadwalKelas from "./pages/general/student/jadwal_kelas/JadwalKelas";
+import DataRuang from "./pages/admin/data_ruang/DataMapel";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -65,6 +74,9 @@ const Routing = () => {
                 <Route path="/classes" element={<DataKelas />} />
                 <Route path="/classes/:id" element={<DataKelas detail />} />
                 <Route path="/classes/save" element={<SaveKelas />} />
+                <Route path="classrooms" element={<DataRuang />} />
+                <Route path="classrooms/:id" element={<DataRuang detail />} />
+                <Route path="classrooms/save" element={<SaveRuang />} />
                 <Route path="/students" element={<DataSiswa />} />
                 <Route path="/students/:id" element={<DataSiswa detail />} />
                 <Route path="/students/save" element={<SaveSiswa />} />
@@ -85,7 +97,8 @@ const Routing = () => {
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="/" element={<Navigate to="/overview" />} />
-                  <Route path="/overview" element={<GeneralOverview />} />
+                  <Route path="/overview" element={<StudentOverview />} />
+                  <Route path="/schedule" element={<JadwalKelas />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
@@ -102,7 +115,7 @@ const Routing = () => {
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="/" element={<Navigate to="/overview" />} />
-                  <Route path="/overview" element={<GeneralOverview />} />
+                  <Route path="/overview" element={<TeacherOverview />} />
                   <Route path="/schedule" element={<JadwalMengajar />} />
                   <Route path="/attendance" element={<DaftarPresensi />} />
                   <Route path="/attendance/records" element={<DaftarRecap />} />
@@ -119,13 +132,13 @@ const Routing = () => {
     } else {
       logout();
     }
-  } 
+  }
 };
 
 function App() {
   return (
     <>
-      <Routing/>
+      <Routing />
     </>
   );
 }
