@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { Command, CommandGroup } from "@/components/ui/command";
 import { MajorsType } from "../data_jurusan/columns";
 import { useFetch } from "@/hooks/fetcher";
+import { TeachersType } from "../data_guru/columns";
 
 interface DetailProps {
   isOpen: boolean;
@@ -42,6 +43,10 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
 
   const { data: majors } = useFetch<MajorsType[]>(
     "http://localhost:8800/backend/majors"
+  );
+
+  const { data: teachers } = useFetch<TeachersType[]>(
+    "http://localhost:8800/backend/teachers"
   );
 
   const form = useForm<z.infer<typeof ClassSchema>>({
@@ -77,7 +82,9 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
         major_id: majors.find((major) => major.major_name == values.major_id)
           ?.major_id,
         identifier: values.identifier,
-        waliKelas: values.waliKelas,
+        waliKelas: teachers.find(
+          (teacher) => teacher.teacher_name === values.waliKelas
+        )?.nip,
       });
       toast("Data kelas telah di update.", {
         icon: <CheckCircle2 size={18} className="text-primary" />,
@@ -90,9 +97,14 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
   };
 
   const [search, setSearch] = React.useState<string>("");
+  const [teacherSearch, setTeacherSearch] = React.useState<string>("");
 
   const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
+  };
+
+  const teacherSearchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeacherSearch(event.target.value);
   };
 
   return (
@@ -284,10 +296,79 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
                   name="waliKelas"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-4 items-center gap-4">
-                      <FormLabel>Wali Kelas</FormLabel>
-                      <FormControl>
-                        <Input {...field} className="col-span-3 !m-0" />
-                      </FormControl>
+                      <FormLabel>Teacher</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild className="col-span-3 !m-0">
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? teachers.find(
+                                    (item) => item.teacher_name === field.value
+                                  )?.teacher_name
+                                : "Select Teacher"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search
+                                size={16}
+                                className="text-primary inline"
+                              />
+                              <input
+                                placeholder="Search teacher..."
+                                value={teacherSearch}
+                                onChange={teacherSearchHandler}
+                                onBlur={() => setTeacherSearch("")}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
+                            </div>
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {teachers
+                                  .filter((filtered) =>
+                                    filtered.teacher_name
+                                      .toLowerCase()
+                                      .includes(teacherSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.nip}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "waliKelas",
+                                          item.teacher_name
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item.teacher_name
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.teacher_name}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -315,7 +396,9 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
               <Label htmlFor="major_name">Class</Label>
               <Input
                 id="major_name"
-                value={data?.grade + " " + data?.shorten + " " + data?.identifier}
+                value={
+                  data?.grade + " " + data?.shorten + " " + data?.identifier
+                }
                 disabled
                 className="col-span-3"
               />

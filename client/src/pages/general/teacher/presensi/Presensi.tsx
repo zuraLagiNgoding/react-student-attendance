@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { Circle, CircleX, MoreHorizontal, SquarePen, X } from "lucide-react";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -115,16 +115,13 @@ const Save = () => {
         })),
       });
       navigate("/attendance");
+      toast.success("Proccess successfuly!")
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response && error.response.status === 409) {
-          toast("Already took attendance today", {
-            icon: <CircleX size={18} className="text-red-500" />,
-          });
+          toast.error("Already took attendance today!");
         } else {
-          toast(error.message, {
-            icon: <CircleX size={18} className="text-red-500" />,
-          });
+          toast.error(error.message);
         }
       }
     }

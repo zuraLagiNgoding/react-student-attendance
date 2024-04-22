@@ -3,6 +3,7 @@ import {
   addClass,
   deleteClass,
   getClass,
+  getClassByStudent,
   getClasses,
   getLastId,
   updateClass,
@@ -11,6 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/", getClasses);
+router.get("/student", getClassByStudent);
 router.get("/lastId", getLastId);
 router.get("/:id", getClass);
 router.post("/", addClass);

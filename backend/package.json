@@ -17,7 +17,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.9.3",
     "node-cron": "^3.0.3",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "socket.io": "^4.7.5"
   },
   "license": "ISC",
   "description": ""

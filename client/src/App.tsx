@@ -33,6 +33,8 @@ import DaftarRecap from "./pages/general/teacher/recap/DaftarRecap";
 import Recap from "./pages/general/teacher/recap/Recap";
 import JadwalKelas from "./pages/general/student/jadwal_kelas/JadwalKelas";
 import DataRuang from "./pages/admin/data_ruang/DataMapel";
+import { Toaster } from "react-hot-toast";
+import Inbox from "./pages/general/Inbox";
 
 const Routing = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -83,6 +85,7 @@ const Routing = () => {
                 <Route path="/teachers" element={<DataGuru />} />
                 <Route path="/teachers/:id" element={<DataGuru detail />} />
                 <Route path="/teachers/save" element={<SaveGuru />} />
+                <Route path="/inbox" element={<Inbox/>}/>
               </Route>
               <Route path="/login" element={<Login />} />
             </Routes>
@@ -98,7 +101,8 @@ const Routing = () => {
                 <Route path="/" element={<Layout />}>
                   <Route path="/" element={<Navigate to="/overview" />} />
                   <Route path="/overview" element={<StudentOverview />} />
-                  <Route path="/schedule" element={<JadwalKelas />} />
+                  <Route path="/class" element={<JadwalKelas />} />
+                  <Route path="/inbox" element={<Inbox/>}/>
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
@@ -121,6 +125,7 @@ const Routing = () => {
                   <Route path="/attendance/records" element={<DaftarRecap />} />
                   <Route path="/attendance/records/:id" element={<Recap />} />
                   <Route path="/attendance/:id" element={<Presensi />} />
+                  <Route path="/inbox" element={<Inbox/>}/>
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
@@ -138,6 +143,7 @@ const Routing = () => {
 function App() {
   return (
     <>
+      <Toaster/>
       <Routing />
     </>
   );

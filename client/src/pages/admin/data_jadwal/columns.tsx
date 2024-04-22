@@ -11,6 +11,8 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type SchedulesType = {
+  classroom_id: string;
+  classroom_name: string;
   schedule_id: string;
   day: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
   start: string;
@@ -35,6 +37,19 @@ export const columns: ColumnDef<SchedulesType>[] = [
           Schedule ID
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    id: "classroom_id",
+    header: "Room",
+    cell: ({ row }) => {
+      const schedules = row.original;
+
+      return (
+        <>
+          {schedules.classroom_name}
+        </>
       );
     },
   },
@@ -103,9 +118,7 @@ export const columns: ColumnDef<SchedulesType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Link to={"/schedules/" + schedules.schedule_id}>
-                  View
-                </Link>
+                <Link to={"/schedules/" + schedules.schedule_id}>View</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to={"/schedules/?delete=" + schedules.schedule_id}>

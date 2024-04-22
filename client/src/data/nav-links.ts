@@ -100,9 +100,9 @@ export const NavLinks = {
             icon: PanelsLeftBottom,
           },
           {
-            label: "Jadwal Kelas",
-            href: "schedule",
-            icon: Clock,
+            label: "Class Detail",
+            href: "class",
+            icon: School,
           },
         ],
       },

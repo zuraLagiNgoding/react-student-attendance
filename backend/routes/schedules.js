@@ -6,6 +6,7 @@ import {
   getLastId,
   getSchedule,
   getSchedules,
+  getStudentSchedules,
   getTeacherSchedules,
   updateSchedule,
 } from "../controllers/schedule.js";
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.get("/", getSchedules);
 router.get("/teacher", getTeacherSchedules);
+router.get("/student", getStudentSchedules);
 router.get("/teacher/filled", getFilledTeacherSchedules);
 router.get("/lastId", getLastId);
 router.get("/:id", getSchedule);

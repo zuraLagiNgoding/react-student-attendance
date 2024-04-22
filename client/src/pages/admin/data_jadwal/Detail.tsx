@@ -31,6 +31,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { TimePicker } from "@/components/ui/time-picker";
 import { Command, CommandGroup } from "@/components/ui/command";
+import { ClassRoomsType } from "../data_ruang/columns";
 
 interface DetailProps {
   isOpen: boolean;
@@ -40,6 +41,10 @@ interface DetailProps {
 const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
   const { data: classes } = useFetch<ClassesType[]>(
     "http://localhost:8800/backend/classes"
+  );
+
+  const { data: classrooms } = useFetch<ClassRoomsType[]>(
+    "http://localhost:8800/backend/classrooms"
   );
 
   const { data: teachers } = useFetch<TeachersType[]>(
@@ -103,6 +108,9 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
         day: values.day,
         start: values.timestamps.split("-")[0],
         end: values.timestamps.split("-")[1],
+        classroom_id: classrooms.find(
+          (classroom) => classroom.classroom_name === values.classroom_id
+        )?.classroom_id,
         teacher_id: teachers.find(
           (teacher) => teacher.teacher_name === values.teacher_id
         )?.nip,
@@ -126,10 +134,27 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
     }
   };
 
-  const [search, setSearch] = React.useState<string>("");
+  const [subjectSearch, setSubjectSearch] = React.useState<string>("");
+  const [classSearch, setClassSearch] = React.useState<string>("");
+  const [classroomSearch, setClassroomSearch] = React.useState<string>("");
+  const [teacherSearch, setTeacherSearch] = React.useState<string>("");
 
-  const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  const subjectSearchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSubjectSearch(event.target.value);
+  };
+
+  const classroomSearchHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setClassroomSearch(event.target.value);
+  };
+
+  const classSearchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClassSearch(event.target.value);
+  };
+
+  const teacherSearchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeacherSearch(event.target.value);
   };
 
   return (
@@ -321,9 +346,9 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                               />
                               <input
                                 placeholder="Search subject..."
-                                value={search}
-                                onChange={searchHandler}
-                                onBlur={() => setSearch("")}
+                                value={subjectSearch}
+                                onChange={subjectSearchHandler}
+                                onBlur={() => setSubjectSearch("")}
                                 className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                               />
                             </div>
@@ -334,10 +359,10 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                                     (filtered) =>
                                       filtered.subject_code
                                         .toLowerCase()
-                                        .includes(search.toLowerCase()) ||
+                                        .includes(subjectSearch.toLowerCase()) ||
                                       filtered.subject_name
                                         .toLowerCase()
-                                        .includes(search.toLowerCase())
+                                        .includes(subjectSearch.toLowerCase())
                                   )
                                   .map((item) => (
                                     <div
@@ -421,8 +446,8 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                               />
                               <input
                                 placeholder="Search class..."
-                                value={search}
-                                onChange={searchHandler}
+                                value={classSearch}
+                                onChange={classSearchHandler}
                                 className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                               />
                             </div>
@@ -433,16 +458,16 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                                     (filtered) =>
                                       filtered.grade
                                         .toLowerCase()
-                                        .includes(search.toLowerCase()) ||
+                                        .includes(classSearch.toLowerCase()) ||
                                       filtered.major_name
                                         .toLowerCase()
-                                        .includes(search.toLowerCase()) ||
+                                        .includes(classSearch.toLowerCase()) ||
                                       filtered.shorten
                                         .toLowerCase()
-                                        .includes(search.toLowerCase()) ||
+                                        .includes(classSearch.toLowerCase()) ||
                                       filtered.identifier
                                         .toLowerCase()
-                                        .includes(search.toLowerCase())
+                                        .includes(classSearch.toLowerCase())
                                   )
                                   .map((item) => (
                                     <div
@@ -481,6 +506,88 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                 />
                 <FormField
                   control={form.control}
+                  name="classroom_id"
+                  render={({ field }) => (
+                    <FormItem className="grid grid-cols-4 items-center gap-4">
+                      <FormLabel>Teacher</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild className="col-span-3 !m-0">
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? classrooms.find(
+                                    (item) => item.classroom_name === field.value
+                                  )?.classroom_name
+                                : "Select Teacher"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search
+                                size={16}
+                                className="text-primary inline"
+                              />
+                              <input
+                                placeholder="Search teacher..."
+                                value={classroomSearch}
+                                onChange={classroomSearchHandler}
+                                onBlur={() => setClassroomSearch("")}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
+                            </div>
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {classrooms
+                                  .filter((filtered) =>
+                                    filtered.classroom_name
+                                      .toLowerCase()
+                                      .includes(classroomSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.classroom_id}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "classroom_id",
+                                          item.classroom_name
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item.classroom_name
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.classroom_name}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="teacher_id"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-4 items-center gap-4">
@@ -500,7 +607,7 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                                 ? teachers.find(
                                     (item) => item.teacher_name === field.value
                                   )?.teacher_name
-                                : "Select Subject"}
+                                : "Select Teacher"}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
@@ -513,10 +620,10 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                                 className="text-primary inline"
                               />
                               <input
-                                placeholder="Search subject..."
-                                value={search}
-                                onChange={searchHandler}
-                                onBlur={() => setSearch("")}
+                                placeholder="Search teacher..."
+                                value={teacherSearch}
+                                onChange={teacherSearchHandler}
+                                onBlur={() => setTeacherSearch("")}
                                 className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                               />
                             </div>
@@ -526,7 +633,7 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
                                   .filter((filtered) =>
                                     filtered.teacher_name
                                       .toLowerCase()
-                                      .includes(search.toLowerCase())
+                                      .includes(teacherSearch.toLowerCase())
                                   )
                                   .map((item) => (
                                     <div
@@ -603,6 +710,15 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
               <Input
                 id="schedule"
                 value={data?.day + ", " + data?.start + "-" + data?.end}
+                disabled
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="room">Room</Label>
+              <Input
+                id="room"
+                value={data?.classroom_name}
                 disabled
                 className="col-span-3"
               />

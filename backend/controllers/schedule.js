@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 export const getSchedules = (req, res) => {
   const search = req.query.result
   const q =
-    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id";
+    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id LEFT JOIN classrooms ON schedules.classroom_id = classrooms.classroom_id";
 
   db.query(q, (err, data) => {
     if (err) return res.send(err);
@@ -19,9 +19,25 @@ export const getTeacherSchedules = (req, res) => {
   jwt.verify(token, "halo", (err, data) => {
     if (err) return res.status(403).json("Token is not valid!")
     
-    const search = req.query.result;
     const q =
-      "SELECT s.*, sub.subject_name, t.teacher_name, CONCAT(c.grade, ' ', m.shorten, ' ', c.identifier) as class_name FROM schedules s LEFT JOIN (SELECT DISTINCT schedule_id FROM attendance_list) AS al ON s.schedule_id = al.schedule_id LEFT JOIN subjects sub ON s.subject_id = sub.subject_id LEFT JOIN teachers t ON s.teacher_id = t.nip LEFT JOIN classes c ON s.class_id = c.class_id LEFT JOIN majors m ON c.major_id = m.major_id WHERE t.uid = ?";
+      "SELECT clr.classroom_name, s.*, sub.subject_name, t.teacher_name, CONCAT(c.grade, ' ', m.shorten, ' ', c.identifier) as class_name FROM schedules s LEFT JOIN (SELECT DISTINCT schedule_id FROM attendance_list) AS al ON s.schedule_id = al.schedule_id LEFT JOIN subjects sub ON s.subject_id = sub.subject_id LEFT JOIN teachers t ON s.teacher_id = t.nip LEFT JOIN classes c ON s.class_id = c.class_id LEFT JOIN majors m ON c.major_id = m.major_id LEFT JOIN classrooms clr ON s.classroom_id = clr.classroom_id WHERE t.uid = ?";
+    
+    db.query(q, [data.id], (err, data) => {
+      if (err) return res.send(err);
+      return res.status(200).json(data);
+    });
+  })
+};
+
+export const getStudentSchedules = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json("Not logged in yet!");
+
+  jwt.verify(token, "halo", (err, data) => {
+    if (err) return res.status(403).json("Token is not valid!")
+    
+    const q =
+      "SELECT clr.classroom_name, s.*, sub.subject_name, t.teacher_name FROM schedules s LEFT JOIN (SELECT DISTINCT schedule_id FROM attendance_list) AS al ON s.schedule_id = al.schedule_id LEFT JOIN subjects sub ON s.subject_id = sub.subject_id LEFT JOIN teachers t ON s.teacher_id = t.nip LEFT JOIN classes c ON s.class_id = c.class_id LEFT JOIN majors m ON c.major_id = m.major_id LEFT JOIN classrooms clr ON s.classroom_id = clr.classroom_id LEFT JOIN students stu ON stu.class_id = c.class_id WHERE stu.uid = ?";
     
     db.query(q, [data.id], (err, data) => {
       if (err) return res.send(err);
@@ -40,7 +56,7 @@ export const getFilledTeacherSchedules = (req, res) => {
     
     const search = req.query.result;
     const q =
-      "SELECT attendance_list.created_at, attendance_list.status, schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN attendance_list ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE teachers.uid = ?";
+      "SELECT classrooms.classroom_name, attendance_list.created_at, attendance_list.status, schedules.*, subjects.subject_name, teachers.teacher_name, CONCAT(classes.grade, ' ', majors.shorten, ' ', classes.identifier) as class_name FROM schedules LEFT JOIN attendance_list ON attendance_list.schedule_id = schedules.schedule_id LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id LEFT JOIN classrooms ON schedules.classroom_id = classrooms.classroom_id WHERE teachers.uid = ?";
     
     db.query(q, [data.id], (err, data) => {
       if (err) return res.send(err);
@@ -62,7 +78,7 @@ export const getLastId = (req, res) => {
 export const getSchedule = (req, res) => {
   const scheduleId = req.params.id;
   const q =
-    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id WHERE schedule_id = ?";
+    "SELECT * FROM schedules LEFT JOIN subjects ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip LEFT JOIN classes ON schedules.class_id = classes.class_id LEFT JOIN majors ON classes.major_id = majors.major_id LEFT JOIN classrooms ON schedules.classroom_id = classrooms.classroom_id WHERE schedule_id = ?";
 
   db.query(q, [scheduleId], (err, data) => {
     if (err) return res.send(err);
@@ -91,7 +107,7 @@ export const addSchedule = (req, res) => {
         "The schedule for that time and day already exists. Please choose a different time or day."
       );
     
-      const q = "INSERT INTO schedules(`schedule_id`, `day`, `start`, `end`, `subject_id`, `teacher_id`, `class_id`) VALUES (?)";
+      const q = "INSERT INTO schedules(`schedule_id`, `day`, `start`, `end`, `subject_id`, `teacher_id`, `class_id`, `classroom_id`) VALUES (?)";
     
       const values = [
         req.body.id,
@@ -101,6 +117,7 @@ export const addSchedule = (req, res) => {
         req.body.subject_id,
         req.body.teacher_id,
         req.body.class_id,
+        req.body.classroom_id,
       ];
     
       db.query(q, [values], (err, data) => {
@@ -143,7 +160,7 @@ export const updateSchedule = (req, res) => {
 
     const scheduleId = req.params.id;
     const q =
-      "UPDATE schedules SET day = ?, start = ?, end = ?, subject_id = ?, class_id = ?, teacher_id = ? WHERE schedule_id= ?";
+      "UPDATE schedules SET day = ?, start = ?, end = ?, subject_id = ?, class_id = ?, teacher_id = ?, classroom_id = ? WHERE schedule_id= ?";
 
     const values = [
       req.body.day,
@@ -152,6 +169,7 @@ export const updateSchedule = (req, res) => {
       req.body.subject_id,
       req.body.class_id,
       req.body.teacher_id,
+      req.body.classroom_id,
       scheduleId,
     ];
 

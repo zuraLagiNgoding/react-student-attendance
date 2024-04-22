@@ -13,6 +13,7 @@ export const ScheduleSchema = z.object({
     return endTime.isValid() && endTime.isAfter(startTime);
   }, {message: "End time should be later than start time."}),
   subject_id: z.string().min(1, { message: "Please select schedule subject." }),
+  classroom_id: z.string().min(1, { message: "Please select room schedule." }),
   teacher_id: z.string().min(1, { message: "Please select the teacher." }),
   class_id: z.string().min(1, { message: "Please select schedule class." }),
 });

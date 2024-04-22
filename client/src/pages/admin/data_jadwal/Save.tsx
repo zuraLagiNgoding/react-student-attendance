@@ -17,13 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ScheduleSchema } from "@/schemas/schedule-schemas";
 import { useNavigate } from "react-router-dom";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -37,10 +30,24 @@ import { useFetch } from "@/hooks/fetcher";
 import { SubjectsType } from "../data_mapel/columns";
 import { Command, CommandGroup } from "@/components/ui/command";
 import { TeachersType } from "../data_guru/columns";
+import { ClassRoomsType } from "../data_ruang/columns";
+
+const days = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+]
 
 const Save = () => {
   const { data: classes } = useFetch<ClassesType[]>(
     "http://localhost:8800/backend/classes"
+  );
+
+  const { data: classrooms } = useFetch<ClassRoomsType[]>(
+    "http://localhost:8800/backend/classrooms"
   );
 
   const { data: teachers } = useFetch<TeachersType[]>(
@@ -65,6 +72,7 @@ const Save = () => {
     resolver: zodResolver(ScheduleSchema),
     defaultValues: {
       day: "",
+      classroom_id: "",
       schedule_id: "",
       timestamps: "",
       subject_id: "",
@@ -99,12 +107,13 @@ const Save = () => {
     const end = dayjs(dateEnd).format("HH:mm");
 
     form.reset({
-      day: "",
+      day: form.watch("day"),
+      classroom_id: form.watch("classroom_id"),
       schedule_id: generatedId,
       timestamps: start + "-" + end,
-      subject_id: "",
-      teacher_id: "",
-      class_id: "",
+      subject_id: form.watch("subject_id"),
+      teacher_id: form.watch("teacher_id"),
+      class_id: form.watch("class_id"),
     });
   }, [form, generatedId, dateStart, dateEnd]);
 
@@ -115,6 +124,7 @@ const Save = () => {
         day: values.day,
         start: values.timestamps.split("-")[0],
         end: values.timestamps.split("-")[1],
+        classroom_id: classrooms.find(classroom => classroom.classroom_name === values.classroom_id)?.classroom_id,
         teacher_id: teachers.find(teacher => teacher.teacher_name === values.teacher_id)?.nip,
         subject_id: subjects.find(subject => subject.subject_code === values.subject_id)?.subject_id,
         class_id:  classes.find(
@@ -128,14 +138,25 @@ const Save = () => {
     }
   };
 
-  // const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setInput(event.target.value);
-  // };
+  const [subjectSearch, setSubjectSearch] = React.useState<string>("");
+  const [classSearch, setClassSearch] = React.useState<string>("");
+  const [classroomSearch, setClassroomSearch] = React.useState<string>("");
+  const [teacherSearch, setTeacherSearch] = React.useState<string>("");
 
-  const [search, setSearch] = React.useState<string>("");
+  const searchSubjectHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSubjectSearch(event.target.value);
+  };
 
-  const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  const searchClassroomHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClassroomSearch(event.target.value);
+  };
+
+  const searchClassHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClassSearch(event.target.value);
+  };
+
+  const searchTeacherHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeacherSearch(event.target.value);
   };
 
   return (
@@ -166,24 +187,57 @@ const Save = () => {
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                     <FormLabel>Day</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue/>
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Monday">Monday</SelectItem>
-                        <SelectItem value="Tuesday">Tuesday</SelectItem>
-                        <SelectItem value="Wednesday">Wednesday</SelectItem>
-                        <SelectItem value="Thursday">Thursday</SelectItem>
-                        <SelectItem value="Friday">Friday</SelectItem>
-                        <SelectItem value="Saturday">Saturday</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl className="w-full">
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between w-full",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? days.find((item) => item === field.value)
+                              : "Select Day"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="overflow-hidden p-0">
+                        <Command>
+                          <CommandGroup>
+                            <div className="overflow-y-auto max-h-[300px]">
+                              {days.map((item) => (
+                                  <div
+                                    key={item}
+                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                    onClick={() => {
+                                      form.setValue(
+                                        "day",
+                                        item
+                                      );
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "max-h-4 max-w-4 text-primary basis-1/6",
+                                        field.value === item
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <h1 className="basis-5/6 leading-tight">
+                                      {item}
+                                    </h1>
+                                  </div>
+                                ))}
+                            </div>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -254,9 +308,8 @@ const Save = () => {
                             <Search size={16} className="text-primary inline" />
                             <input
                               placeholder="Search subject..."
-                              value={search}
-                              onChange={searchHandler}
-                              onBlur={() => setSearch("")}
+                              value={subjectSearch}
+                              onChange={searchSubjectHandler}
                               className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                             />
                           </div>
@@ -267,10 +320,10 @@ const Save = () => {
                                   (filtered) =>
                                     filtered.subject_code
                                       .toLowerCase()
-                                      .includes(search.toLowerCase()) ||
+                                      .includes(subjectSearch.toLowerCase()) ||
                                     filtered.subject_name
                                       .toLowerCase()
-                                      .includes(search.toLowerCase())
+                                      .includes(subjectSearch.toLowerCase())
                                 )
                                 .map((item) => (
                                   <div
@@ -351,9 +404,8 @@ const Save = () => {
                             <Search size={16} className="text-primary inline" />
                             <input
                               placeholder="Search class..."
-                              value={search}
-                              onChange={searchHandler}
-                              onBlur={() => setSearch("")}
+                              value={classSearch}
+                              onChange={searchClassHandler}
                               className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                             />
                           </div>
@@ -364,16 +416,16 @@ const Save = () => {
                                   (filtered) =>
                                     filtered.grade
                                       .toLowerCase()
-                                      .includes(search.toLowerCase()) ||
+                                      .includes(classSearch.toLowerCase()) ||
                                     filtered.major_name
                                       .toLowerCase()
-                                      .includes(search.toLowerCase()) ||
+                                      .includes(classSearch.toLowerCase()) ||
                                     filtered.shorten
                                       .toLowerCase()
-                                      .includes(search.toLowerCase()) ||
+                                      .includes(classSearch.toLowerCase()) ||
                                     filtered.identifier
                                       .toLowerCase()
-                                      .includes(search.toLowerCase())
+                                      .includes(classSearch.toLowerCase())
                                 )
                                 .map((item) => (
                                   <div
@@ -412,6 +464,84 @@ const Save = () => {
               />
               <FormField
                 control={form.control}
+                name="classroom_id"
+                render={({ field }) => (
+                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                    <FormLabel>Room</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl className="w-full">
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between w-full",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? classrooms.find(
+                                  (item) => item.classroom_name === field.value
+                                )?.classroom_name
+                              : "Select Room"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="overflow-hidden p-0">
+                        <Command>
+                          <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                            <Search size={16} className="text-primary inline" />
+                            <input
+                              placeholder="Search classroom..."
+                              value={classroomSearch}
+                              onChange={searchClassroomHandler}
+                              className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                            />
+                          </div>
+                          <CommandGroup>
+                            <div className="overflow-y-auto max-h-[300px]">
+                              {classrooms
+                                .filter((filtered) =>
+                                  filtered.classroom_name
+                                    .toLowerCase()
+                                    .includes(classroomSearch.toLowerCase())
+                                )
+                                .map((item) => (
+                                  <div
+                                    key={item.classroom_id}
+                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                    onClick={() => {
+                                      form.setValue(
+                                        "classroom_id",
+                                        item.classroom_name
+                                      );
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "max-h-4 max-w-4 text-primary basis-1/6",
+                                        field.value === item.classroom_name
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <h1 className="basis-5/6 leading-tight">
+                                      {item.classroom_name}
+                                    </h1>
+                                  </div>
+                                ))}
+                            </div>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="teacher_id"
                 render={({ field }) => (
                   <FormItem className="grid w-full max-w-sm items-center gap-1.5">
@@ -431,7 +561,7 @@ const Save = () => {
                               ? teachers.find(
                                   (item) => item.teacher_name === field.value
                                 )?.teacher_name
-                              : "Select Subject"}
+                              : "Select Teacher"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
@@ -441,10 +571,9 @@ const Save = () => {
                           <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
                             <Search size={16} className="text-primary inline" />
                             <input
-                              placeholder="Search subject..."
-                              value={search}
-                              onChange={searchHandler}
-                              onBlur={() => setSearch("")}
+                              placeholder="Search teacher..."
+                              value={teacherSearch}
+                              onChange={searchTeacherHandler}
                               className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
                             />
                           </div>
@@ -454,7 +583,7 @@ const Save = () => {
                                 .filter((filtered) =>
                                   filtered.teacher_name
                                     .toLowerCase()
-                                    .includes(search.toLowerCase())
+                                    .includes(teacherSearch.toLowerCase())
                                 )
                                 .map((item) => (
                                   <div

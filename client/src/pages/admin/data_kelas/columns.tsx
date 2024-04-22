@@ -16,6 +16,7 @@ export type ClassesType = {
   grade: "X" | "XI" | "XII";
   identifier: string;
   waliKelas?: string;
+  teacher_name?: string;
   major_id: string;
   major_name: string;
   shorten: string;
@@ -64,6 +65,13 @@ export const columns: ColumnDef<ClassesType>[] = [
   {
     accessorKey: "waliKelas",
     header: "Wali Kelas",
+    cell: ({ row }) => {
+      const classes = row.original;
+
+      return (
+        <>{classes.teacher_name}</>
+      );
+    },
   },
   {
     id: "actions",
@@ -82,15 +90,11 @@ export const columns: ColumnDef<ClassesType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Link to={"/classes/" + classes.class_id}>
-                  View
-                </Link>
+                <Link to={"/classes/" + classes.class_id}>View</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link to={"/classes/?delete=" + classes.class_id}>
-                  Delete
-                </Link>
+                <Link to={"/classes/?delete=" + classes.class_id}>Delete</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
