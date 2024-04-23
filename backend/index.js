@@ -13,6 +13,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
+import axios from "axios";
 
 const io = new Server({
   cors: {
@@ -72,8 +73,6 @@ const getUser = (userId) => {
 }
 
 io.on("connection", (socket) => {
-  console.log("user has connected")
-  console.log(activeUser)
   //get active user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
@@ -86,6 +85,17 @@ io.on("connection", (socket) => {
     io.to(receiver.socketId).emit("getNewNotification", {
       ping: true
     })
+  })
+
+  socket.on("readMessage", ({ messageId }) => {
+    axios
+      .put(`http://localhost:8800/backend/messages/read/${messageId}`)
+      .then(() => {
+        console.log(`Message with ID ${messageId} marked as read`);
+      })
+      .catch((error) => {
+        console.error("Error marking message as read:", error);
+      });
   })
 
   socket.on("disconnect", () => {

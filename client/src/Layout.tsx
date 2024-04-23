@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Breadcrumbs from "./components/ui/breadcrumbs";
 import { Bell, Circle, Inbox, Menu } from "lucide-react";
@@ -19,14 +19,18 @@ import { AuthContext } from "./context/authContext";
 import toast from "react-hot-toast";
 // import SearchBar from "./components/ui/search-bar";
 
-interface NotificationType {
+export interface NotificationType {
   message_id: number;
   subject: string;
   message: string;
   sender_id: number;
   start_date: Date;
   end_date: Date;
-  student_name: string;
+  student_name?: string;
+  teacher_name?: string;
+  send_at: Date;
+  message_read: "0" | "1";
+  class_name: string
 }
 
 const Layout = () => {
@@ -34,6 +38,7 @@ const Layout = () => {
   const [ openNotification, setOpenNotification ] = React.useState(false);
   const { socket, updateSocket } = useSocketStore();
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   const { data: notifications, reFetch } = useFetch<NotificationType[]>(
     `http://localhost:8800/backend/messages/unread`
@@ -107,7 +112,7 @@ const Layout = () => {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="md:w-[400px] w-[300px]"
+                className="md:w-[400px] w-[300px] min-h-[350px]"
                 align="end"
               >
                 <DropdownMenuLabel className="text-lg">
@@ -115,7 +120,7 @@ const Layout = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuGroup>
                   {notifications.map((notification) => (
-                    <DropdownMenuItem className="gap-4">
+                    <DropdownMenuItem className="gap-4" onClick={() => navigate(`/inbox/${notification.message_id}`)}>
                       <Circle
                         className="fill-current text-sky-300 basis-[5%]"
                         size={8}
@@ -123,7 +128,8 @@ const Layout = () => {
                       <div className="basis-[95%] overflow-hidden">
                         <h1 className="capitalize text-slate-800/80 ">
                           <span className="font-medium normal-case text-neutral-900">
-                            {notification.student_name}
+                            {notification.student_name && notification.student_name}
+                            {notification.teacher_name && notification.teacher_name}
                           </span>
                           {" " + notification.subject}
                         </h1>

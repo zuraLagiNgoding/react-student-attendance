@@ -1,8 +1,10 @@
 import express from "express";
-import { getUnreadMessages, sendAbsence } from "../controllers/message.js";
+import { getAllMessages, getUnreadMessages, readMessage, sendAbsence } from "../controllers/message.js";
 const router = express.Router();
 
 router.post("/absence", sendAbsence);
 router.get("/unread", getUnreadMessages);
+router.put("/read/:id", readMessage);
+router.get("/all", getAllMessages);
 
 export default router;
