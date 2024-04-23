@@ -48,7 +48,7 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
     <aside
       ref={navRef}
       className={clsx(
-        "2xl:basis-1/6 z-20 sm:basis-[15%] sm:translate-x-0 translate-x-0 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r sm:relative fixed transition-all",
+        "lg:basis-1/6 sm:basis-[5%] z-20 sm:translate-x-0 translate-x-0 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r sm:relative fixed transition-all",
         close && "translate-x-[-25rem]"
       )}
     >

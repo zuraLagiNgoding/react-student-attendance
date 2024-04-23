@@ -76,7 +76,7 @@ const JadwalKelas = () => {
         subject: "Absence request : " +values.type,
         message: values.message,
         start: values.date.from.toISOString().substring(0, 10),
-        end: values.date.to.toISOString().substring(0, 10),
+        end: values.date.to?.toISOString().substring(0, 10),
         receiver_id: studentClass.uid
       }, { withCredentials: true });
       if (socket) {

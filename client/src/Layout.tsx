@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Breadcrumbs from "./components/ui/breadcrumbs";
 import { Bell, Circle, Inbox, Menu } from "lucide-react";
@@ -39,6 +39,7 @@ const Layout = () => {
   const { socket, updateSocket } = useSocketStore();
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   
   const { data: notifications, reFetch } = useFetch<NotificationType[]>(
     `http://localhost:8800/backend/messages/unread`
@@ -87,7 +88,7 @@ const Layout = () => {
   return (
     <div className="relative flex w-[100vw] overflow-x-hidden">
       <Sidebar close={close} setClose={setClose} />
-      <div className="2xl:basis-5/6 sm:basis-[85%] px-4 py-8 h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full sm:overflow-x-hidden gap-10">
+      <div className="lg:basis-5/6 sm:basis-[95%] px-4 py-8 h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full sm:overflow-x-hidden gap-10">
         <div className="flex items-center justify-between sm:pr-4 sm:my-0 my-4">
           <Menu
             className="cursor-pointer sm:hidden block"
@@ -95,7 +96,8 @@ const Layout = () => {
             onClick={() => setClose(false)}
           />
           <Breadcrumbs />
-          <div className="flex items-center justify-between md:gap-3 gap-0.5">
+          {/* <SearchBar/> */}
+          <div className={clsx("flex items-center justify-between md:gap-3 gap-0.5", !location.pathname.includes("inbox") ? "visible" : "invisible")}>
             {/* <SearchBar/> */}
             <Link to="/inbox">
               <div className="hover:bg-primary/10 p-1.5 rounded">

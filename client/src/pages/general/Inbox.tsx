@@ -221,14 +221,15 @@ const Inbox = () => {
                     <hr />
                     <div className="pl-4 pr-6 py-5 flex flex-col h-full whitespace-pre-line text-sm text-neutral-600 leading-relaxed">
                       <p>{selectedMessage?.message}</p>
-                      <Button
+                      <div
                         className={clsx(
-                          "lg:mt-8 mt-4 w-fit",
+                          "flex gap-2 lg:mt-8 mt-4 w-fit",
                           selectedMessage?.message === "" && "!mt-0"
                         )}
                       >
-                        Confirm Application
-                      </Button>
+                        <Button className="w-fit">Confirm Application</Button>
+                        <Button className="w-fit" variant={"outline"}>Decline</Button>
+                      </div>
                     </div>
                   </ScrollArea>
                 </div>
