@@ -30,6 +30,8 @@ import { Circle, CircleX, MoreHorizontal, SquarePen, X } from "lucide-react";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { SchedulesType } from "@/pages/admin/data_jadwal/columns";
+import dayjs from "dayjs";
 
 type StudentAttendanceType = {
   nisn: string;
@@ -57,6 +59,9 @@ const Save = () => {
     location.pathname.split("/")[location.pathname.split("/").length - 1];
   const { data } = useFetch<StudentAttendanceType[]>(
     "http://localhost:8800/backend/attendances/getToAttend/" + scheduleId
+  );
+  const { data:schedules } = useFetch<SchedulesType[]>(
+    "http://localhost:8800/backend/schedules/" + scheduleId
   );
 
   const form = useForm<z.infer<typeof AttendanceSchema>>({
@@ -101,29 +106,33 @@ const Save = () => {
   }, [form, data, generatedId]);
 
   const onSubmit = async (values: z.infer<typeof AttendanceSchema>) => {
-    try {
-      await axios.post("http://localhost:8800/backend/attendances/", {
-        attendance_list_id: generatedId,
-        schedule_id: scheduleId,
-        attendance: values.attendance.map((attendance) => ({
-          attendance_id: attendance.attendance_id,
-          student_id: data.find(
-            (student) => student.student_name === attendance.student_id
-          )?.nisn,
-          status: attendance.status,
-          description: attendance.description,
-        })),
-      });
-      navigate("/attendance");
-      toast.success("Proccess successfuly!")
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response && error.response.status === 409) {
-          toast.error("Already took attendance today!");
-        } else {
-          toast.error(error.message);
+    if (schedules[0].day === dayjs().format("dddd")) {
+      try {
+        await axios.post("http://localhost:8800/backend/attendances/", {
+          attendance_list_id: generatedId,
+          schedule_id: scheduleId,
+          attendance: values.attendance.map((attendance) => ({
+            attendance_id: attendance.attendance_id,
+            student_id: data.find(
+              (student) => student.student_name === attendance.student_id
+            )?.nisn,
+            status: attendance.status,
+            description: attendance.description,
+          })),
+        });
+        navigate("/attendance");
+        toast.success("Proccess successfuly!")
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response && error.response.status === 409) {
+            toast.error("Already took attendance today!");
+          } else {
+            toast.error(error.message);
+          }
         }
       }
+    } else {
+      toast.error("Can't do this right now.");
     }
   };
 
