@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,9 +14,10 @@ import { ApplyAbsenceSchema } from '@/schemas/messages-schemas';
 import { useSocketStore } from '@/store/useSocketStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import clsx from 'clsx';
 import { format } from 'date-fns';
-import { CalendarIcon, MailPlus } from 'lucide-react';
-import React from 'react'
+import { CalendarIcon, MailPlus, MoreHorizontal, Trash2 } from 'lucide-react';
+import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -55,24 +58,64 @@ const JadwalKelas = () => {
   const { socket } = useSocketStore();
   const { data:schedules } = useFetch<StudentSchedulesType[]>("http://localhost:8800/backend/schedules/student")
   const { data:classes } = useFetch<StudentClassesType[]>("http://localhost:8800/backend/classes/student")
+  const [ imagePreview, setImagePreview ] = React.useState<string | null>(null);
+  const [ image, setImage ] = React.useState<File | null>(null);
+  const [ showDateEnd, setShowDateEnd ] = React.useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const studentClass = classes[0];
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof ApplyAbsenceSchema>>({
     resolver: zodResolver(ApplyAbsenceSchema),
     defaultValues: {
+      image: "",
       message: "",
       type: "",
       date: {
-        from: new Date(),
-        to: new Date()
+        from: undefined,
+        to: undefined
       },
     },
   });
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setImagePreview(null);
+      return;
+    } else {
+      setImage(file)
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImage = async () => {
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image)
+
+      try {
+        const res = await axios.post(
+          "http://localhost:8800/backend/upload", formData
+        );
+        return res.data;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
   const onSubmit = async (values: z.infer<typeof ApplyAbsenceSchema>) => {
+    const imgUrl = await uploadImage();
+
     try {
       await axios.post(`http://localhost:8800/backend/messages/absence`, {
+        image: image ? imgUrl : "",
         subject: "Absence request : " +values.type,
         message: values.message,
         start: values.date.from.toISOString().substring(0, 10),
@@ -90,6 +133,10 @@ const JadwalKelas = () => {
     }
   };
 
+  // const onSubmit = (values: z.infer<typeof ApplyAbsenceSchema>) => {
+  //   console.log(values)
+  // };
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -106,43 +153,43 @@ const JadwalKelas = () => {
                   <MailPlus size={16} />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="min-w-[650px]">
+              <DialogContent className="sm:min-w-[650px] max-h-[60%] overflow-auto pb-0">
                 <DialogHeader>
                   <DialogTitle>Apply Absence</DialogTitle>
                 </DialogHeader>
+                <ScrollArea></ScrollArea>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="space-y-5">
-                      <div className="grid grid-cols-2 gap-x-4">
-                        <FormField
-                          control={form.control}
-                          name="type"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Absence Type</FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select absence type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="Sakit">Sakit</SelectItem>
-                                  <SelectItem value="Izin">Izin</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormItem>
-                          )}
-                        />
+                    <div className="sm:space-y-5 space-y-2 relative">
+                      <FormField
+                        control={form.control}
+                        name="type"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Absence Type</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select absence type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Sakit">Sakit</SelectItem>
+                                <SelectItem value="Izin">Izin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )}
+                      />
 
-                        <FormField
+                      <FormField
                           control={form.control}
                           name="date"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className='sm:block hidden'>
                               <FormLabel>Date</FormLabel>
                               <FormControl>
                                 <Popover>
@@ -203,7 +250,113 @@ const JadwalKelas = () => {
                             </FormItem>
                           )}
                         />
+
+                      <FormField
+                        control={form.control}
+                        name="date.from"
+                        render={({ field }) => (
+                          <FormItem className='sm:hidden block'>
+                            <FormLabel>
+                              {showDateEnd
+                                ? "Absence From/To Date"
+                                : " Date"}
+                            </FormLabel>
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      id="date"
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start text-left font-normal",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                      {field.value ? (
+                                        format(field.value, "LLL dd, y")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="min-w-max p-0"
+                                  align="center"
+                                >
+                                  <Calendar
+                                    initialFocus
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div
+                        onClick={() => setShowDateEnd(true)}
+                        className={clsx(
+                          "items-center justify-center sm:hidden",
+                          showDateEnd ? "hidden" : "flex"
+                        )}
+                      >
+                        <MoreHorizontal />
                       </div>
+
+                      <FormField
+                        control={form.control}
+                        name="date.to"
+                        render={({ field }) => (
+                          <FormItem
+                            className={clsx(
+                              showDateEnd ? "sm:hidden block" : "hidden"
+                            )}
+                          >
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      id="date"
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start text-left font-normal mt-2",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                      {field.value ? (
+                                        format(field.value, "LLL dd, y")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="min-w-max p-0"
+                                  align="center"
+                                >
+                                  <Calendar
+                                    initialFocus
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
                       <FormField
                         control={form.control}
@@ -218,7 +371,48 @@ const JadwalKelas = () => {
                         )}
                       />
 
-                      <div className="grid grid-cols-2 gap-x-4">
+                      <FormField
+                        control={form.control}
+                        name="image"
+                        render={({ field }) => (
+                          <FormItem className={clsx()}>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                ref={fileInputRef && field.ref}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  handleImageChange(e);
+                                }}
+                                type="file"
+                              />
+                            </FormControl>
+                            <FormMessage/>
+                          </FormItem>
+                        )}
+                      />
+
+                      {imagePreview && (
+                        <div className="w-full relative">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="max-w-full"
+                          />
+                          <Trash2
+                            onClick={() => {
+                              setImagePreview(null);
+                              form.setValue("image", "");
+                              if (fileInputRef.current) {
+                                fileInputRef.current.value = "";
+                              }
+                            }}
+                            className="absolute top-3 right-3 text-red-500"
+                          />
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-x-4 sticky bottom-0 bg-white pb-6 pt-2">
                         <DialogClose>
                           <Button
                             className="w-full"

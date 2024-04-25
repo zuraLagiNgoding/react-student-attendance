@@ -14,6 +14,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import axios from "axios";
+import multer from "multer";
 
 const io = new Server({
   cors: {
@@ -36,6 +37,21 @@ app.use(
   })
 );
 app.use(cookieParser());
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../client/public/upload");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post("/backend/upload", upload.single("image"), function (req, res) {
+  const file = req.file;
+  res.status(200).json(file.filename);
+});
 
 //routes
 app.use("/backend/auth", authRoutes);
@@ -82,9 +98,11 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ receiverId }) => {
     //getting receiver id and ping the the receiver to refetch
     const receiver = getUser(receiverId);
-    io.to(receiver.socketId).emit("getNewNotification", {
-      ping: true
-    })
+    if (receiver) {
+      io.to(receiver.socketId).emit("getNewNotification", {
+        ping: true
+      })
+    }
   })
 
   socket.on("readMessage", ({ messageId }) => {

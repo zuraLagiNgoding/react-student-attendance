@@ -52,12 +52,12 @@ const Login = () => {
             className="2xl:w-[calc(100vh*0.85)] w-[calc(100vh*0.60)]"
           />
         </div>
-        <h1 className="text-slate-800 font-semibold 2xl:text-6xl md:text-5xl text-3xl sm:block hidden">
+        <h1 className="text-slate-800 font-semibold 2xl:text-6xl md:text-5xl sm:text-3xl text-2xl block ">
           Effortless <span className="text-primary">Student</span> and{" "}
           <span className="text-primary">Attendance</span> Management.
         </h1>
       </div>
-      <div className="2xl:basis-[32%] md:basis-2/5 w-full flex flex-col 2xl:px-24 md:py-14 md:gap-[35%] gap-5 border-l p-8 md:mb-0 mb-12">
+      <div className="2xl:basis-[32%] md:basis-2/5 w-full flex flex-col 2xl:px-24 md:py-14 md:justify-between gap-5 border-l p-8 md:mb-0 mb-12">
         <div className="flex flex-col md:gap-3 gap-2">
           <h1 className="md:text-4xl text-2xl font-medium text-primary">
             Login

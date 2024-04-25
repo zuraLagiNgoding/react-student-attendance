@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Circle, CornerUpRight, Pencil } from "lucide-react";
 import React, { useRef } from "react";
-import { CardTitle } from "@/components/ui/card";
 import { NotificationType } from "@/Layout";
 import { useFetch } from "@/hooks/fetcher";
 import clsx from "clsx";
@@ -12,6 +11,7 @@ import { useSocketStore } from "@/store/useSocketStore";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Inbox = () => {
   const { socket } = useSocketStore();
@@ -80,7 +80,7 @@ const Inbox = () => {
   };
 
   return (
-    <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
+    <div className="flex flex-col h-full gap-6 overflow-y-auto flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
         Inbox
       </h1>
@@ -88,10 +88,19 @@ const Inbox = () => {
         <div className="relative flex h-full w-full rounded-md border shadow-lg overflow-hidden">
           <div className="flex flex-col w-full xl:basis-5/12 lg:basis-6/12 overflow-hidden">
             <div className="p-3 border-b">
-              <Button className="justify-start gap-2" variant={"outline"}>
-                <Pencil size={16} />
-                Compose
-              </Button>
+              <Dialog>
+                <DialogTrigger>
+                  <Button className="justify-start gap-2" variant={"outline"}>
+                    <Pencil size={16} />
+                    Compose
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>New Message</DialogTitle>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <ScrollArea className="flex flex-col p-3 w-full h-full">
@@ -123,7 +132,7 @@ const Inbox = () => {
                   </div>
                   <div className="flex basis-11/12 flex-col w-full gap-1 overflow-hidden">
                     <CardHeader className="flex-row justify-between w-full pl-0 pb-0 pt-3.5">
-                      <CardTitle className="flex flex-col w-[calc(100%-80px)] lg:gap-2 gap-1">
+                      <div className="flex flex-col w-[calc(100%-80px)] lg:gap-2 gap-1">
                         <h1 className="lg:text-base text-sm text-ellipsis lg:max-w-[90%] max-w-[85%] overflow-hidden">
                           {message.student_name && message.student_name}
                           {message.teacher_name && message.teacher_name}
@@ -131,7 +140,7 @@ const Inbox = () => {
                         <h1 className="font-normal lg:text-sm text-xs">
                           {message.subject}
                         </h1>
-                      </CardTitle>
+                      </div>
                       <h1 className="text-xs">
                         {timeAgo(new Date(message.send_at))}
                       </h1>
@@ -219,17 +228,35 @@ const Inbox = () => {
                       </div>
                     </div>
                     <hr />
-                    <div className="pl-4 pr-6 py-5 flex flex-col h-full whitespace-pre-line text-sm text-neutral-600 leading-relaxed">
-                      <p>{selectedMessage?.message}</p>
-                      <div
-                        className={clsx(
-                          "flex gap-2 lg:mt-8 mt-4 w-fit",
-                          selectedMessage?.message === "" && "!mt-0"
-                        )}
-                      >
-                        <Button className="w-fit">Confirm Application</Button>
-                        <Button className="w-fit" variant={"outline"}>Decline</Button>
-                      </div>
+                    <div className="pl-4 pr-6 py-5 flex flex-col gap-3 h-full whitespace-pre-line text-sm text-neutral-600 leading-relaxed">
+                      {selectedMessage &&
+                      <>
+                        {selectedMessage.message &&
+                          <p>{selectedMessage.message}</p>
+                        }
+                        {selectedMessage.img &&
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={"../upload/" + selectedMessage.img}
+                              alt=""
+                              className="max-w-[200px] rounded-md"
+                            />
+                          </div>
+                        }
+                        <div
+                          className={clsx(
+                            "flex gap-2 lg:mt-8 mt-1 w-fit",
+                            selectedMessage.img === "" && "!mt-0",
+                            selectedMessage.message === "" && "!mt-0"
+                          )}
+                        >
+                          <Button className="w-fit">Confirm Application</Button>
+                          <Button className="w-fit" variant={"outline"}>
+                            Decline
+                          </Button>
+                        </div>
+                      </>
+                      }
                     </div>
                   </ScrollArea>
                 </div>

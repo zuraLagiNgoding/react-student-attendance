@@ -30,7 +30,8 @@ export interface NotificationType {
   teacher_name?: string;
   send_at: Date;
   message_read: "0" | "1";
-  class_name: string
+  class_name: string;
+  img: string
 }
 
 const Layout = () => {
@@ -88,7 +89,7 @@ const Layout = () => {
   return (
     <div className="relative flex w-[100vw] overflow-x-hidden">
       <Sidebar close={close} setClose={setClose} />
-      <div className="lg:basis-5/6 sm:basis-[95%] px-4 py-8 h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full sm:overflow-x-hidden gap-10">
+      <div className="lg:basis-5/6 sm:basis-[95%] px-4 py-8 h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full sm:overflow-x-auto gap-10">
         <div className="flex items-center justify-between sm:pr-4 sm:my-0 my-4">
           <Menu
             className="cursor-pointer sm:hidden block"

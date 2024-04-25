@@ -13,7 +13,7 @@ import ScheduleCard from "../teacher/jadwal_mengajar/components/ScheduleCard";
 
 interface UserType {
   nip: string;
-  teacher_name: string;
+  student_name: string;
   email: string;
 }
 
@@ -52,12 +52,17 @@ const Information = () => {
   );
 };
 
+
+
 const Overview = () => {
   const { data: users } = useFetch<UserType[]>(
-    "http://localhost:8800/backend/users/teacher"
+    "http://localhost:8800/backend/users"
   );
   const user = users[0];
 
+  React.useEffect(() => {
+    console.log(users)
+  }, [users])
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap overflow-x-hidden">
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
@@ -77,7 +82,7 @@ const Overview = () => {
               <div className="flex items-center gap-2">
                 <Sun className="text-orange-400" size={32} />
                 <h1 className="sm:text-2xl text-lg font-semibold leading-none text-neutral-900">
-                  Welcome, {user?.teacher_name}!
+                  Welcome, {user?.student_name}!
                 </h1>
               </div>
             </div>

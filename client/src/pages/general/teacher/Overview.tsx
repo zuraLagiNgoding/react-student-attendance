@@ -143,7 +143,7 @@ const Information = () => {
 
 const Overview = () => {
   const { data: users } = useFetch<UserType[]>(
-    "http://localhost:8800/backend/users/teacher"
+    "http://localhost:8800/backend/users"
   );
   const user = users[0];
 

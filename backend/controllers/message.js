@@ -9,11 +9,12 @@ export const sendAbsence = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "INSERT INTO messages(`subject`, `message`, `start_date`, `end_date`, `message_read`, `sender_id`, `receiver_id`, `send_at`) VALUES (?)";
+      "INSERT INTO messages(`subject`, `message`, `img`, `start_date`, `end_date`, `message_read`, `sender_id`, `receiver_id`, `send_at`) VALUES (?)";
 
     const values = [
       req.body.subject,
       req.body.message,
+      req.body.image,
       req.body.start,
       req.body.end,
       `0`,
