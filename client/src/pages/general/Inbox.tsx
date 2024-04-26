@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Circle, CornerUpRight, Pencil, Trash2 } from "lucide-react";
+import { Check, ChevronsUpDown, Circle, CornerUpRight, Pencil, Search, Trash2 } from "lucide-react";
 import React, { useRef } from "react";
 import { NotificationType } from "@/Layout";
 import { useFetch } from "@/hooks/fetcher";
@@ -20,6 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Command, CommandGroup } from "@/components/ui/command";
+import { TeachersType } from "../admin/data_guru/columns";
 
 
 
@@ -31,8 +35,13 @@ const Inbox = () => {
   const reFetchRef = useRef<() => void>(() => {});
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [ imagePreview, setImagePreview ] = React.useState<string | null>(null);
-  const [image, setImage] = React.useState<File | null>(null);
+  const [ image, setImage ] = React.useState<File | null>(null);
+  const [teacherSearch, setTeacherSearch] = React.useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: teachers } = useFetch<TeachersType[]>(
+    "http://localhost:8800/backend/teachers"
+  );
 
   const { data: messages, reFetch } = useFetch<NotificationType[]>(
     `http://localhost:8800/backend/messages/all`
@@ -134,8 +143,28 @@ const Inbox = () => {
     }
   }
 
-  const onSubmit = () => {
+  const searchTeacherHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeacherSearch(event.target.value);
+  };
 
+  const onSubmit = async (values: z.infer<typeof MessageSchema>) => {
+    const imgUrl = await uploadImage();
+
+    try {
+      await axios.post("http://localhost:8800/backend/messages/send", {
+        subject: values.subject,
+        message: values.message,
+        image: image ? imgUrl : "",
+        receiver_id: teachers.find(
+          (a) => a.uid === values.receiver)?.uid
+      }, {
+        withCredentials: true
+      }
+    );
+      navigate(0);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (
@@ -161,6 +190,86 @@ const Inbox = () => {
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                       <div className="sm:space-y-5 space-y-2 relative">
+
+                        <FormField
+                          control={form.control}
+                          name="receiver"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>To :</FormLabel>
+                              <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl className="w-full">
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "justify-between w-full",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value
+                                        ? teachers.find(
+                                            (item) => item.uid === field.value
+                                          )?.teacher_name
+                                        : "Select Teacher"}
+                                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="overflow-hidden p-0">
+                                  <Command>
+                                    <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                                      <Search size={16} className="text-primary inline" />
+                                      <input
+                                        placeholder="Search teacher..."
+                                        value={teacherSearch}
+                                        onChange={searchTeacherHandler}
+                                        className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                                      />
+                                    </div>
+                                    <CommandGroup>
+                                      <div className="overflow-y-auto max-h-[300px]">
+                                        {teachers
+                                          .filter((filtered) =>
+                                            filtered.teacher_name
+                                              .toLowerCase()
+                                              .includes(teacherSearch.toLowerCase())
+                                          )
+                                          .map((item) => (
+                                            <div
+                                              key={item.nip}
+                                              className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                              onClick={() => {
+                                                form.setValue(
+                                                  "receiver",
+                                                  item.uid
+                                                );
+                                              }}
+                                            >
+                                              <Check
+                                                className={cn(
+                                                  "max-h-4 max-w-4 text-primary basis-1/6",
+                                                  field.value === item.uid
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                              />
+                                              <h1 className="basis-5/6 leading-tight">
+                                                {item.teacher_name}
+                                              </h1>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </CommandGroup>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                          />
 
                         <FormField
                           control={form.control}

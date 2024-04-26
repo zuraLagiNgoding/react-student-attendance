@@ -17,6 +17,7 @@ export type TeachersType = {
   gender: string;
   phone_number: string;
   email: string;
+  uid: number;
 };
 
 export const columns: ColumnDef<TeachersType>[] = [
