@@ -1,6 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `db_absensi_siswa` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `db_absensi_siswa`;
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: db_absensi_siswa
 -- ------------------------------------------------------
@@ -179,7 +179,7 @@ CREATE TABLE `messages` (
   KEY `receiver_id_idx` (`receiver_id`),
   CONSTRAINT `receiver_id` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sender_id` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +188,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (61,'Absence request : Izin','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet laoreet tortor. Maecenas volutpat ante ac augue maximus dapibus. Integer a diam at nulla tincidunt faucibus non sed nunc. Praesent ut urna ante. Curabitur porttitor quam ut nisl sollicitudin tincidunt. Integer elementum velit sit amet lorem euismod pharetra. Duis mollis interdum tortor, id auctor nisl fermentum ac.\n\nEtiam orci metus, imperdiet vitae ante ac, efficitur eleifend orci. Duis sit amet pulvinar ipsum. Quisque est neque, convallis sed lobortis a, eleifend nec diam. Suspendisse ac sollicitudin neque, eu auctor massa. Vestibulum at lobortis dui. Etiam ante nunc, dapibus eu sodales mollis, luctus quis nisl. Donec vitae massa tincidunt, porttitor purus vitae, iaculis massa. Phasellus ut ante a libero euismod bibendum. Duis risus enim, vulputate sit amet pharetra a, gravida a nulla. Aenean blandit, mi sed lobortis fringilla, tellus metus ornare ligula, ut iaculis ex orci nec nulla. Pellentesque in sapien eget nisl hendrerit tincidunt. Phasellus in vehicula nisl. Donec ac sodales leo.',9,15,'1','2024-04-23 09:49:28.107',NULL,'2024-04-23','2024-04-25'),(63,'Absence request : Izin','',13,15,'1','2024-04-23 10:29:05.168',NULL,'2024-04-23','2024-04-29');
+INSERT INTO `messages` VALUES (61,'Absence request : Izin','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet laoreet tortor. Maecenas volutpat ante ac augue maximus dapibus. Integer a diam at nulla tincidunt faucibus non sed nunc. Praesent ut urna ante. Curabitur porttitor quam ut nisl sollicitudin tincidunt. Integer elementum velit sit amet lorem euismod pharetra. Duis mollis interdum tortor, id auctor nisl fermentum ac.\n\nEtiam orci metus, imperdiet vitae ante ac, efficitur eleifend orci. Duis sit amet pulvinar ipsum. Quisque est neque, convallis sed lobortis a, eleifend nec diam. Suspendisse ac sollicitudin neque, eu auctor massa. Vestibulum at lobortis dui. Etiam ante nunc, dapibus eu sodales mollis, luctus quis nisl. Donec vitae massa tincidunt, porttitor purus vitae, iaculis massa. Phasellus ut ante a libero euismod bibendum. Duis risus enim, vulputate sit amet pharetra a, gravida a nulla. Aenean blandit, mi sed lobortis fringilla, tellus metus ornare ligula, ut iaculis ex orci nec nulla. Pellentesque in sapien eget nisl hendrerit tincidunt. Phasellus in vehicula nisl. Donec ac sodales leo.',9,15,'1','2024-04-23 09:49:28.107','1714051515620mount.png','2024-04-23','2024-04-25'),(63,'Absence request : Izin','',13,15,'1','2024-04-23 10:29:05.168',NULL,'2024-04-23','2024-04-29'),(64,'Absence request : Sakit','Izin Sakit....',9,15,'1','2024-04-26 08:18:37.727','1714094317680cover-tanjung-lesung-home2-1.jpg','2024-04-25',NULL);
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,4 +356,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-23 12:42:56
+-- Dump completed on 2024-04-26  9:41:27
