@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sun } from "lucide-react";
+import { Circle, Sun } from "lucide-react";
 import student from "@/assets/student.svg";
 // import student1 from "@/assets/student1.svg";
 // import professor from "@/assets/professor.svg";
@@ -23,6 +23,9 @@ import {
 import { ScheduleType } from "./jadwal_mengajar/JadwalMengajar";
 import ScheduleCard from "./jadwal_mengajar/components/ScheduleCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { NotificationType } from "@/Layout";
+import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 interface RecapsType {
   nisn: string;
@@ -79,6 +82,37 @@ const Information = () => {
   const { data: schedules } = useFetch<ScheduleType[]>(
     "http://localhost:8800/backend/schedules/teacher"
   );
+  const { data: messages, reFetch } = useFetch<NotificationType[]>(
+    `http://localhost:8800/backend/messages/all`
+  );
+
+  const timeAgo = (date: Date | undefined): string => {
+    if (!date) {
+      return "";
+    }
+
+    const now = new Date();
+    const differenceInMs = now.getTime() - date.getTime();
+    const differenceInMinutes = Math.round(differenceInMs / (1000 * 60));
+    const differenceInHours = Math.round(differenceInMinutes / 60);
+
+    if (differenceInMinutes <= 1) {
+      return "Just now";
+    } else if (differenceInMinutes < 60) {
+      return `${differenceInMinutes} minute${
+        differenceInMinutes !== 1 ? "s" : ""
+      } ago`;
+    } else if (differenceInHours < 24) {
+      return `${differenceInHours} hour${
+        differenceInHours !== 1 ? "s" : ""
+      } ago`;
+    } else {
+      const differenceInDays = Math.round(
+        differenceInHours / 24);
+      return `${differenceInDays} day${differenceInDays !== 1 ? "s" : ""} ago`;
+    }
+  };
+
   const [totalAbsence, setTotalAbsence] = React.useState(0);
 
   React.useEffect(() => {
@@ -105,8 +139,61 @@ const Information = () => {
         <h1 className="text-xl font-semibold">Inbox</h1>
         <div className="flex h-fit max-h-full max-w-full shrink-0 flex-col gap-4">
           <Card>
-            <CardContent className="min-h-[10rem] flex items-center justify-center text-slate-800/50">
-              Your inbox is currently empty.
+            <CardContent className="px-0 min-h-[10rem] flex items-center justify-center text-slate-800/50">
+              {messages ? (
+                <ScrollArea className="flex flex-col p-3 h-full">
+                  {messages.slice(0,3).map((message) => (
+                    <Card
+                      className="flex mb-3 hover:bg-slate-100 cursor-pointer overflow-hidden shadow-lg"
+                      // onClick={() => {
+                      //   if (message.message_read === "0") {
+                      //     if (socket) {
+                      //       socket.emit("readMessage", {
+                      //         messageId: message.message_id,
+                      //       });
+                      //       navigate("/inbox/" + message.message_id);
+                      //     }
+                      //   } else {
+                      //     navigate("/inbox/" + message.message_id);
+                      //   }
+                      // }}
+                    >
+                      <div className="flex basis-1/12 items-center justify-center shrink-0">
+                        <Circle
+                          className={clsx(
+                            "fill-current text-sky-500",
+                            message.message_read === "0" ? "block" : "hidden"
+                          )}
+                          size={10}
+                        />
+                      </div>
+                      <div className="flex basis-11/12 flex-col w-full gap-1 overflow-hidden">
+                        <CardHeader className="flex-row justify-between w-full pl-0 pb-0 pt-3.5">
+                          <div className="flex flex-col w-[calc(100%-80px)] lg:gap-2 gap-1">
+                            <h1 className="lg:text-base text-sm text-ellipsis lg:max-w-[90%] max-w-[85%] overflow-hidden">
+                              {message.student_name && message.student_name}
+                              {message.teacher_name && message.teacher_name}
+                            </h1>
+                            <h1 className="font-normal lg:text-sm text-xs">
+                              {message.subject}
+                            </h1>
+                          </div>
+                          <h1 className="text-xs">
+                            {timeAgo(new Date(message.send_at))}
+                          </h1>
+                        </CardHeader>
+                        <CardContent className="p-0 pr-3 pb-3.5">
+                          <h1 className="font-light lg:text-sm text-xs text-neutral-400 line-clamp-2 text-wrap">
+                            {message.message}
+                          </h1>
+                        </CardContent>
+                      </div>
+                    </Card>
+                  ))}
+                </ScrollArea>
+              ) : (
+                "Your inbox is currently empty."
+              )}
             </CardContent>
           </Card>
         </div>
@@ -150,6 +237,7 @@ const Overview = () => {
   const { data: recap } = useFetch<RecapsType[]>(
     "http://localhost:8800/backend/attendances/recaps"
   );
+
   const [attendanceCounts, setAttendanceCounts] = React.useState<
     {
       name: string;
