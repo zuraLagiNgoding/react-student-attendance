@@ -1,0 +1,18 @@
+# POST http://localhost:8800/backend/auth/login
+# content-type: application/json
+
+# {
+#     "username":"1111111111",
+#     "email":"naruto@mail.com",
+#     "password":"1"
+# }
+
+POST http://localhost:8800/backend/messages/send
+content-type: application/json
+
+{
+    "subject":"",
+    "message":"1111111111",
+    "image":"",
+    "receiver_id":"15"
+}

@@ -91,8 +91,8 @@ const Overview = () => {
             <Information />
           </div>
         </div>
-        <ScrollArea className="lg:basis-2/6 basis-0">
-          <div className="lg:flex flex-col gap-6 hidden">
+        <ScrollArea className="lg:flex hidden lg:basis-2/6 basis-0">
+          <div className="flex flex-col gap-6">
             <Information />
           </div>
         </ScrollArea>

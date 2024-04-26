@@ -13,7 +13,7 @@ interface CardProps {
 
 const ScheduleCard = ({ schedule }: CardProps) => {
   return (
-    <Card className="min-h-[160px] sm:max-h-[160px] max-h-[180px]">
+    <Card className="min-h-[160px] sm:max-h-[160px] min-w-[260px] max-h-[180px] overflow-hidden">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col w-full gap-2 max-w-[80%] ">
           <CardTitle className="sm:text-base text-sm sm:text-ellipsis sm:text-nowrap text-wrap overflow-hidden">

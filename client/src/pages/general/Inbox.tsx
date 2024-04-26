@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Circle, CornerUpRight, Pencil } from "lucide-react";
+import { Check, ChevronsUpDown, Circle, CornerUpRight, Pencil, Search, Trash2 } from "lucide-react";
 import React, { useRef } from "react";
 import { NotificationType } from "@/Layout";
 import { useFetch } from "@/hooks/fetcher";
@@ -11,7 +11,21 @@ import { useSocketStore } from "@/store/useSocketStore";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { MessageSchema } from "@/schemas/messages-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Command, CommandGroup } from "@/components/ui/command";
+import { TeachersType } from "../admin/data_guru/columns";
+
+
 
 const Inbox = () => {
   const { socket } = useSocketStore();
@@ -19,7 +33,15 @@ const Inbox = () => {
   const location = useLocation();
   const messageId = location.pathname.split("/").pop();
   const reFetchRef = useRef<() => void>(() => {});
-  const [ openDrawer, setOpenDrawer ] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [ imagePreview, setImagePreview ] = React.useState<string | null>(null);
+  const [ image, setImage ] = React.useState<File | null>(null);
+  const [teacherSearch, setTeacherSearch] = React.useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: teachers } = useFetch<TeachersType[]>(
+    "http://localhost:8800/backend/teachers"
+  );
 
   const { data: messages, reFetch } = useFetch<NotificationType[]>(
     `http://localhost:8800/backend/messages/all`
@@ -79,6 +101,72 @@ const Inbox = () => {
     }
   };
 
+  const form = useForm<z.infer<typeof MessageSchema>>({
+    resolver: zodResolver(MessageSchema),
+    defaultValues: {
+      image: "",
+      message: "",
+      subject: "",
+      receiver: undefined
+    },
+  });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setImagePreview(null);
+      return;
+    } else {
+      setImage(file)
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImage = async () => {
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image)
+
+      try {
+        const res = await axios.post(
+          "http://localhost:8800/backend/upload", formData
+        );
+        return res.data;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  const searchTeacherHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeacherSearch(event.target.value);
+  };
+
+  const onSubmit = async (values: z.infer<typeof MessageSchema>) => {
+    const imgUrl = await uploadImage();
+
+    try {
+      await axios.post("http://localhost:8800/backend/messages/send", {
+        subject: values.subject,
+        message: values.message,
+        image: image ? imgUrl : "",
+        receiver_id: teachers.find(
+          (a) => a.uid === values.receiver)?.uid
+      }, {
+        withCredentials: true
+      }
+    );
+      navigate(0);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-auto flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -95,10 +183,178 @@ const Inbox = () => {
                     Compose
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="sm:min-w-[650px] max-h-[75%] overflow-auto pb-0">
                   <DialogHeader>
                     <DialogTitle>New Message</DialogTitle>
                   </DialogHeader>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                      <div className="sm:space-y-5 space-y-2 relative">
+
+                        <FormField
+                          control={form.control}
+                          name="receiver"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>To :</FormLabel>
+                              <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl className="w-full">
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "justify-between w-full",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value
+                                        ? teachers.find(
+                                            (item) => item.uid === field.value
+                                          )?.teacher_name
+                                        : "Select Teacher"}
+                                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="overflow-hidden p-0">
+                                  <Command>
+                                    <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                                      <Search size={16} className="text-primary inline" />
+                                      <input
+                                        placeholder="Search teacher..."
+                                        value={teacherSearch}
+                                        onChange={searchTeacherHandler}
+                                        className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                                      />
+                                    </div>
+                                    <CommandGroup>
+                                      <div className="overflow-y-auto max-h-[300px]">
+                                        {teachers
+                                          .filter((filtered) =>
+                                            filtered.teacher_name
+                                              .toLowerCase()
+                                              .includes(teacherSearch.toLowerCase())
+                                          )
+                                          .map((item) => (
+                                            <div
+                                              key={item.nip}
+                                              className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                              onClick={() => {
+                                                form.setValue(
+                                                  "receiver",
+                                                  item.uid
+                                                );
+                                              }}
+                                            >
+                                              <Check
+                                                className={cn(
+                                                  "max-h-4 max-w-4 text-primary basis-1/6",
+                                                  field.value === item.uid
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                              />
+                                              <h1 className="basis-5/6 leading-tight">
+                                                {item.teacher_name}
+                                              </h1>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </CommandGroup>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                          />
+
+                        <FormField
+                          control={form.control}
+                          name="subject"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Subject</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Subject" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                          />
+                          
+                        <FormField
+                          control={form.control}
+                          name="message"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Message</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Message" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        {!imagePreview &&
+                          <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                              <FormItem className={clsx()}>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    ref={fileInputRef && field.ref}
+                                    onChange={(e) => {
+                                      field.onChange(e);
+                                      handleImageChange(e);
+                                    }}
+                                    type="file"
+                                  />
+                                </FormControl>
+                                <FormMessage/>
+                              </FormItem>
+                            )}
+                          />
+                        }
+
+                        {imagePreview && (
+                          <div className="w-full relative">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="max-w-full"
+                            />
+                            <Trash2
+                              onClick={() => {
+                                setImagePreview(null);
+                                form.setValue("image", "");
+                                if (fileInputRef.current) {
+                                  fileInputRef.current.value = "";
+                                }
+                              }}
+                              className="absolute top-3 right-3 text-red-500"
+                            />
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-x-4 sticky bottom-0 bg-white pb-6 pt-2">
+                          <DialogClose>
+                            <Button
+                              className="w-full"
+                              type="button"
+                              variant="outline"
+                            >
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                          <Button type="submit">Submit</Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
             </div>
@@ -235,13 +491,24 @@ const Inbox = () => {
                           <p>{selectedMessage.message}</p>
                         }
                         {selectedMessage.img &&
-                          <div className="flex items-center gap-2">
-                            <img
-                              src={"../upload/" + selectedMessage.img}
-                              alt=""
-                              className="max-w-[200px] rounded-md"
-                            />
-                          </div>
+                          <Dialog>
+                            <DialogTrigger>                            
+                              <div className="flex items-center gap-2">
+                                <img
+                                  src={"../upload/" + selectedMessage.img}
+                                  alt={selectedMessage.img}
+                                  className="max-w-[200px] rounded-md"
+                                />
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="p-1 max-w-[70vw] max-h-screen">
+                              <img
+                                src={"../upload/" + selectedMessage.img}
+                                alt={selectedMessage.img}
+                                className="rounded-md max-w-full"
+                              />
+                            </DialogContent>
+                          </Dialog>
                         }
                         <div
                           className={clsx(

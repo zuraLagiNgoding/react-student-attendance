@@ -37,7 +37,7 @@ const JadwalMengajar = () => {
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-6 overflow-y-auto">
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Today</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full pb-4 overflow-auto flex-col gap-4">
             {data
               .filter(
                 (filter) =>
@@ -60,7 +60,7 @@ const JadwalMengajar = () => {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Tomorrow</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full pb-4 overflow-auto flex-col gap-4">
             {data
               .filter(
                 (filter) => filter.day == dayjs().add(1, "day").format("dddd")
@@ -72,7 +72,7 @@ const JadwalMengajar = () => {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Coming</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full pb-4 overflow-auto flex-col gap-4">
             <Accordion type="single" collapsible>
               {Object.entries(
                 data.reduce((acc: Record<string, ScheduleType[]>, schedule) => {
@@ -92,7 +92,7 @@ const JadwalMengajar = () => {
                 .map(([day, groupedSchedules]) => (
                   <AccordionItem key={day} value={day}>
                     <AccordionTrigger>{day}</AccordionTrigger>
-                    <AccordionContent className="flex flex-col gap-4">
+                    <AccordionContent className="flex sm:flex-col gap-4 overflow-auto">
                       {groupedSchedules.map((schedule) => (
                         <Card schedule={schedule} key={schedule.schedule_id} />
                       ))}
