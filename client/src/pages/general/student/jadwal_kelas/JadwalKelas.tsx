@@ -153,11 +153,10 @@ const JadwalKelas = () => {
                   <MailPlus size={16} />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:min-w-[650px] max-h-[60%] overflow-auto pb-0">
+              <DialogContent className="sm:min-w-[650px] max-h-[75%] overflow-auto pb-0">
                 <DialogHeader>
                   <DialogTitle>Apply Absence</DialogTitle>
                 </DialogHeader>
-                <ScrollArea></ScrollArea>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="sm:space-y-5 space-y-2 relative">
@@ -370,27 +369,28 @@ const JadwalKelas = () => {
                           </FormItem>
                         )}
                       />
-
-                      <FormField
-                        control={form.control}
-                        name="image"
-                        render={({ field }) => (
-                          <FormItem className={clsx()}>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                ref={fileInputRef && field.ref}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  handleImageChange(e);
-                                }}
-                                type="file"
-                              />
-                            </FormControl>
-                            <FormMessage/>
-                          </FormItem>
-                        )}
-                      />
+                      {!imagePreview &&
+                        <FormField
+                          control={form.control}
+                          name="image"
+                          render={({ field }) => (
+                            <FormItem className={clsx()}>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  ref={fileInputRef && field.ref}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    handleImageChange(e);
+                                  }}
+                                  type="file"
+                                />
+                              </FormControl>
+                              <FormMessage/>
+                            </FormItem>
+                          )}
+                        />
+                      }
 
                       {imagePreview && (
                         <div className="w-full relative">

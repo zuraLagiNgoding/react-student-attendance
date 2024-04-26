@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Circle, CornerUpRight, Pencil } from "lucide-react";
+import { Circle, CornerUpRight, Pencil, Trash2 } from "lucide-react";
 import React, { useRef } from "react";
 import { NotificationType } from "@/Layout";
 import { useFetch } from "@/hooks/fetcher";
@@ -11,7 +11,17 @@ import { useSocketStore } from "@/store/useSocketStore";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { MessageSchema } from "@/schemas/messages-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+
 
 const Inbox = () => {
   const { socket } = useSocketStore();
@@ -19,7 +29,10 @@ const Inbox = () => {
   const location = useLocation();
   const messageId = location.pathname.split("/").pop();
   const reFetchRef = useRef<() => void>(() => {});
-  const [ openDrawer, setOpenDrawer ] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [ imagePreview, setImagePreview ] = React.useState<string | null>(null);
+  const [image, setImage] = React.useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: messages, reFetch } = useFetch<NotificationType[]>(
     `http://localhost:8800/backend/messages/all`
@@ -79,6 +92,52 @@ const Inbox = () => {
     }
   };
 
+  const form = useForm<z.infer<typeof MessageSchema>>({
+    resolver: zodResolver(MessageSchema),
+    defaultValues: {
+      image: "",
+      message: "",
+      subject: "",
+      receiver: undefined
+    },
+  });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setImagePreview(null);
+      return;
+    } else {
+      setImage(file)
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImage = async () => {
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image)
+
+      try {
+        const res = await axios.post(
+          "http://localhost:8800/backend/upload", formData
+        );
+        return res.data;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  const onSubmit = () => {
+
+  }
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-auto flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -95,10 +154,98 @@ const Inbox = () => {
                     Compose
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="sm:min-w-[650px] max-h-[75%] overflow-auto pb-0">
                   <DialogHeader>
                     <DialogTitle>New Message</DialogTitle>
                   </DialogHeader>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                      <div className="sm:space-y-5 space-y-2 relative">
+
+                        <FormField
+                          control={form.control}
+                          name="subject"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Subject</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Subject" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                          />
+                          
+                        <FormField
+                          control={form.control}
+                          name="message"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Message</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Message" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        {!imagePreview &&
+                          <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                              <FormItem className={clsx()}>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    ref={fileInputRef && field.ref}
+                                    onChange={(e) => {
+                                      field.onChange(e);
+                                      handleImageChange(e);
+                                    }}
+                                    type="file"
+                                  />
+                                </FormControl>
+                                <FormMessage/>
+                              </FormItem>
+                            )}
+                          />
+                        }
+
+                        {imagePreview && (
+                          <div className="w-full relative">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="max-w-full"
+                            />
+                            <Trash2
+                              onClick={() => {
+                                setImagePreview(null);
+                                form.setValue("image", "");
+                                if (fileInputRef.current) {
+                                  fileInputRef.current.value = "";
+                                }
+                              }}
+                              className="absolute top-3 right-3 text-red-500"
+                            />
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-x-4 sticky bottom-0 bg-white pb-6 pt-2">
+                          <DialogClose>
+                            <Button
+                              className="w-full"
+                              type="button"
+                              variant="outline"
+                            >
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                          <Button type="submit">Submit</Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
             </div>
@@ -235,13 +382,24 @@ const Inbox = () => {
                           <p>{selectedMessage.message}</p>
                         }
                         {selectedMessage.img &&
-                          <div className="flex items-center gap-2">
-                            <img
-                              src={"../upload/" + selectedMessage.img}
-                              alt=""
-                              className="max-w-[200px] rounded-md"
-                            />
-                          </div>
+                          <Dialog>
+                            <DialogTrigger>                            
+                              <div className="flex items-center gap-2">
+                                <img
+                                  src={"../upload/" + selectedMessage.img}
+                                  alt={selectedMessage.img}
+                                  className="max-w-[200px] rounded-md"
+                                />
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="p-1 max-w-[70vw] max-h-screen">
+                              <img
+                                src={"../upload/" + selectedMessage.img}
+                                alt={selectedMessage.img}
+                                className="rounded-md max-w-full"
+                              />
+                            </DialogContent>
+                          </Dialog>
                         }
                         <div
                           className={clsx(

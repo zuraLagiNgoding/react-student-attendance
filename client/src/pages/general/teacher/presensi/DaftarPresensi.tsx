@@ -34,7 +34,7 @@ const DaftarPresensi = () => {
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-6 overflow-y-auto">
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Due</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full overflow-auto flex-col gap-4">
             {data
               .filter(
                 (schedule) =>
@@ -63,7 +63,7 @@ const DaftarPresensi = () => {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Filled In</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full overflow-auto flex-col gap-4">
             {filledData
               .filter((filter) => dayjs().isSame(filter.created_at, "date") && filter.day === dayjs().format("dddd"))
               .map((schedule) => (
@@ -73,7 +73,7 @@ const DaftarPresensi = () => {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <h1 className="text-xl font-semibold">Empty</h1>
-          <div className="flex h-fit max-h-full max-w-[350px] shrink-0 flex-col gap-4">
+          <div className="flex h-fit max-h-full overflow-auto flex-col gap-4">
             {data
               .filter(
                 (schedule) =>

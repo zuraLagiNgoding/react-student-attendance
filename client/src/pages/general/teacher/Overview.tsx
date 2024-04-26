@@ -264,8 +264,8 @@ const Overview = () => {
             </Card>
           </div>
         </div>
-        <ScrollArea className="lg:basis-2/6 basis-0">
-          <div className="lg:flex flex-col gap-6 hidden">
+        <ScrollArea className="lg:flex lg:basis-2/6 basis-0 hidden">
+          <div className="flex flex-col gap-6">
             <Information />
           </div>
         </ScrollArea>
