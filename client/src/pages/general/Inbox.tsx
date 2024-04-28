@@ -161,6 +161,11 @@ const Inbox = () => {
         withCredentials: true
       }
     );
+    if (socket) {
+      socket.emit("sendNotification", {
+        receiverId: teachers.find((a) => a.uid === values.receiver)?.uid,
+      });
+    }
       navigate(0);
     } catch (e) {
       console.log(e);
@@ -172,7 +177,7 @@ const Inbox = () => {
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
         Inbox
       </h1>
-      <div className="flex flex-col h-full w-full overflow-hidden">
+      <div className="flex flex-col h-full w-full overflow-hidden bg-white">
         <div className="relative flex h-full w-full rounded-md border shadow-lg overflow-hidden">
           <div className="flex flex-col w-full xl:basis-5/12 lg:basis-6/12 overflow-hidden">
             <div className="p-3 border-b">
@@ -492,7 +497,7 @@ const Inbox = () => {
                         }
                         {selectedMessage.img &&
                           <Dialog>
-                            <DialogTrigger>                            
+                            <DialogTrigger className="w-fit">                            
                               <div className="flex items-center gap-2">
                                 <img
                                   src={"../upload/" + selectedMessage.img}
@@ -501,7 +506,7 @@ const Inbox = () => {
                                 />
                               </div>
                             </DialogTrigger>
-                            <DialogContent className="p-1 max-w-[70vw] max-h-screen">
+                            <DialogContent className="p-1 w-fit max-w-[100rem]">
                               <img
                                 src={"../upload/" + selectedMessage.img}
                                 alt={selectedMessage.img}
@@ -510,18 +515,21 @@ const Inbox = () => {
                             </DialogContent>
                           </Dialog>
                         }
-                        <div
-                          className={clsx(
-                            "flex gap-2 lg:mt-8 mt-1 w-fit",
-                            selectedMessage.img === "" && "!mt-0",
-                            selectedMessage.message === "" && "!mt-0"
-                          )}
-                        >
-                          <Button className="w-fit">Confirm Application</Button>
-                          <Button className="w-fit" variant={"outline"}>
-                            Decline
-                          </Button>
-                        </div>
+                        {
+                          selectedMessage.start_date &&
+                          <div
+                            className={clsx(
+                              "flex gap-2 lg:mt-8 mt-1 w-fit",
+                              selectedMessage.img === "" && "!mt-0",
+                              selectedMessage.message === "" && "!mt-0"
+                            )}
+                          >
+                            <Button className="w-fit">Confirm Application</Button>
+                            <Button className="w-fit" variant={"outline"}>
+                              Decline
+                            </Button>
+                          </div>
+                        }
                       </>
                       }
                     </div>

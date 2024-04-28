@@ -41,6 +41,7 @@ type SubjectType = {
 const Recap = () => {
   const [searchParams] = useSearchParams();
   const month = searchParams.get("month");
+  const year = searchParams.get("year");
   const location = useLocation().pathname.split("/");
   const classId = location[location.length - 2];
   const [day, setDay] = React.useState(-1);
@@ -60,6 +61,8 @@ const Recap = () => {
         const attendancesForDay = recap.attendance.filter(
           (att) =>
             dayjs(att.created_at).date() === dayIndex + 1 &&
+            dayjs(att.created_at).format("YYYY") === year &&
+              dayjs(att.created_at).format("YYYY") === year &&
             dayjs(att.created_at).format("M") ===
               (parseInt(month as string) + 1).toString()
         );
@@ -89,16 +92,16 @@ const Recap = () => {
     });
 
     setTotal(totalHadir);
-  }, [data, month, days]);
+  }, [data, month, days, year]);
 
   React.useEffect(() => {
     const daysInMonth = new Date(
-      dayjs().year(),
+      parseInt(year as string),
       parseInt(month as string) + 1,
       0
     ).getDate();
     setDays(daysInMonth);
-  }, [month]);
+  }, [month, year]);
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -143,6 +146,7 @@ const Recap = () => {
                   .filter((filter) =>
                     filter.attendance.find(
                       (att) =>
+                          dayjs(att.created_at).format("YYYY") === year &&
                         dayjs(att.created_at).format("M") ==
                         (parseInt(month as string) + 1).toString()
                     )
@@ -155,7 +159,7 @@ const Recap = () => {
                       onOpenChange={() => setCollapse(undefined)}
                     >
                       <>
-                        <TableRow key={recap.nisn} className="relative">
+                        <TableRow key={recap.nisn} className="relative bg-white">
                           <TableCell>{recap.nisn}</TableCell>
                           <TableCell className="sticky left-0 bg-white/80">
                             {recap.student_name}
@@ -366,6 +370,7 @@ const Recap = () => {
                       const attendancesForDay = recap.attendance.filter(
                         (att) =>
                           dayjs(att.created_at).date() === dayIndex + 1 &&
+                          dayjs(att.created_at).format("YYYY") === year &&
                           dayjs(att.created_at).format("M") ==
                             (parseInt(month as string) + 1).toString()
                       );

@@ -16,6 +16,7 @@ import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "@/context/authContext";
+import logo from "@/assets/logo1.svg";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -45,7 +46,10 @@ const Login = () => {
   return (
     <div className="h-screen max-h-screen w-full flex md:flex-row flex-col md:justify-start justify-between overflow-hidden">
       <div className="relative 2xl:basis-[68%] md:basis-3/5 md:p-14 md:gap-0 gap-4 flex flex-col justify-between p-8">
-        <h1 className="text-primary sm:text-2xl text-xl">Presynce</h1>
+        <div className="flex items-center gap-3">
+          <img width={48} src={logo} alt="logo" />
+          <h1 className="text-primary sm:text-2xl text-xl">Presynce</h1>
+        </div>
         <div className="items-center justify-center md:flex hidden">
           <img
             src={img}

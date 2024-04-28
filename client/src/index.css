@@ -8,6 +8,10 @@
   font-family: "Inter", Helvetica, sans-serif;
 }
 
+.green_gradient {
+  @apply bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent;
+}
+
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

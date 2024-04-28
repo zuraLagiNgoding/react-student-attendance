@@ -12,6 +12,7 @@ import {
 } from "./ui/dropdown-menu";
 import { LogOut, MoreHorizontal, PanelLeftClose, PanelLeftOpen, UserCircle2 } from "lucide-react";
 import { Button } from "./ui/button";
+import logo from "@/assets/logo.svg"
 
 type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED";
 interface SidebarProps {
@@ -48,14 +49,17 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
     <aside
       ref={navRef}
       className={clsx(
-        "lg:basis-1/6 sm:basis-[5%] z-20 sm:translate-x-0 translate-x-0 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 px-3 border-r sm:relative fixed transition-all",
+        "lg:basis-1/6 sm:basis-[5%] z-20 sm:translate-x-0 translate-x-0 bg-white sm:overflow-visible overflow-hidden text-nowrap sm:w-full w-2/3 h-screen flex flex-col py-8 sm:pt-3 px-3 border-r sm:relative fixed transition-all",
         close && "translate-x-[-25rem]"
       )}
     >
       <div className="flex justify-between items-center">
-        <h1 className="text-primary text-lg my-4 transition-all sm:opacity-100">
-          Presynce
-        </h1>
+        <div className="flex items-center gap-3">
+          <img width={36} src={logo} alt="logo" />
+          <h1 className="text-secondary text-lg my-4 transition-all sm:opacity-100">
+            Presynce
+          </h1>
+        </div>
         {close ? (
           <PanelLeftOpen
             size={20}
@@ -83,13 +87,20 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
                     onClick={() => setClose(false)}
                     to={link.href}
                     className={clsx(
-                      "rounded-md text-sm font-medium text-slate-800/70 px-4 py-3 inline-flex gap-2 items-center leading-none w-full",
+                      "rounded-md group text-sm font-medium text-slate-800/50 px-4 py-3 inline-flex gap-2 items-center leading-none w-full",
                       location.pathname == "/" + link.href
                         ? "bg-primary/[0.10] !text-primary/100"
-                        : "hover:bg-primary/[0.08]"
+                        : " hover:text-slate-800"
                     )}
                   >
-                    <link.icon size={18} className="min-w-[18px]" />
+                    <link.icon
+                      size={18}
+                      className={clsx(
+                        "min-w-[18px] text-primary/50 group-hover:text-primary/100",
+                        location.pathname == "/" + link.href
+                          && "!text-primary/100"
+                      )}
+                    />
                     <span className="transition-all sm:opacity-100">
                       {link.label}
                     </span>

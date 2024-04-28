@@ -85,8 +85,8 @@ const Routing = () => {
                 <Route path="/teachers" element={<DataGuru />} />
                 <Route path="/teachers/:id" element={<DataGuru detail />} />
                 <Route path="/teachers/save" element={<SaveGuru />} />
-                <Route path="/inbox" element={<Inbox/>}/>
-                <Route path="/inbox/:id" element={<Inbox/>}/>
+                <Route path="/inbox" element={<Inbox />} />
+                <Route path="/inbox/:id" element={<Inbox />} />
               </Route>
               <Route path="/login" element={<Login />} />
             </Routes>
@@ -103,8 +103,8 @@ const Routing = () => {
                   <Route path="/" element={<Navigate to="/overview" />} />
                   <Route path="/overview" element={<StudentOverview />} />
                   <Route path="/class" element={<JadwalKelas />} />
-                  <Route path="/inbox" element={<Inbox/>}/>
-                  <Route path="/inbox/:id" element={<Inbox/>}/>
+                  <Route path="/inbox" element={<Inbox />} />
+                  <Route path="/inbox/:id" element={<Inbox />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
@@ -127,8 +127,8 @@ const Routing = () => {
                   <Route path="/attendance/records" element={<DaftarRecap />} />
                   <Route path="/attendance/records/:id" element={<Recap />} />
                   <Route path="/attendance/:id" element={<Presensi />} />
-                  <Route path="/inbox" element={<Inbox/>}/>
-                  <Route path="/inbox/:id" element={<Inbox/>}/>
+                  <Route path="/inbox" element={<Inbox />} />
+                  <Route path="/inbox/:id" element={<Inbox />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
@@ -146,7 +146,7 @@ const Routing = () => {
 function App() {
   return (
     <>
-      <Toaster/>
+      <Toaster />
       <Routing />
     </>
   );
