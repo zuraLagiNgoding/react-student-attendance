@@ -151,7 +151,7 @@ const Information = () => {
               <CardTitle>Inbox</CardTitle>
             </CardHeader>
             <CardContent className="px-0 min-h-[10rem] flex flex-col items-center justify-center text-slate-800/50">
-              {messages ? (
+              {messages.slice(0, 3).length > 0 ? (
                 <>
                   <ScrollArea className="w-full flex flex-col p-3 h-full">
                     {messages.slice(0, 3).map((message) => (

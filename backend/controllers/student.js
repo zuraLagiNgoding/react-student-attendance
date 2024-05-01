@@ -22,7 +22,6 @@ export const getStudent = (req, res) => {
   });
 };
 
-
 export const addStudent = (req, res) => {
   const qUser =
     "INSERT INTO users(`username`, `role`, `email`, `password`) VALUES (?)";

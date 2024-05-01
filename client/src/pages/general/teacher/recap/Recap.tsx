@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
   Table,
@@ -10,10 +11,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFetch } from "@/hooks/fetcher";
+import { ClassesType } from "@/pages/admin/data_kelas/columns";
+import clsx from "clsx";
 import dayjs from "dayjs";
-import { Circle } from "lucide-react";
-import React from "react";
+import { Circle, FilePlus2 } from "lucide-react";
+import React, { useRef } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { utils, writeFileXLSX } from "xlsx";
 
 type RecapType = {
   nisn: string;
@@ -46,12 +50,19 @@ const Recap = () => {
   const classId = location[location.length - 2];
   const [day, setDay] = React.useState(-1);
   const [days, setDays] = React.useState(0);
+  const tableRef = useRef(null);
   const { data } = useFetch<RecapType[]>(
     "http://localhost:8800/backend/attendances/recap/" + classId
   );
+
   const { data: subjects } = useFetch<SubjectType[]>(
     "http://localhost:8800/backend/attendances/recap/subjects/" + classId
   );
+
+  const { data: classes } = useFetch<ClassesType[]>(
+    "http://localhost:8800/backend/classes/" + classId
+  );
+
   const [total, setTotal] = React.useState<number[]>([]);
   const [collapse, setCollapse] = React.useState<number | undefined>();
 
@@ -62,7 +73,7 @@ const Recap = () => {
           (att) =>
             dayjs(att.created_at).date() === dayIndex + 1 &&
             dayjs(att.created_at).format("YYYY") === year &&
-              dayjs(att.created_at).format("YYYY") === year &&
+            dayjs(att.created_at).format("YYYY") === year &&
             dayjs(att.created_at).format("M") ===
               (parseInt(month as string) + 1).toString()
         );
@@ -81,9 +92,7 @@ const Recap = () => {
             return dayTotal + 1;
           } else if (
             attendancesForDay[0].status === "Izin" &&
-            attendancesForDay.some(
-              (att) => att.status === "Hadir"
-            )
+            attendancesForDay.some((att) => att.status === "Hadir")
           ) {
             return dayTotal + 1;
           }
@@ -103,6 +112,27 @@ const Recap = () => {
     setDays(daysInMonth);
   }, [month, year]);
 
+  const exportToSheet = () => {
+    const wb = utils.table_to_book(tableRef.current);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+
+    const widths = [
+      { wpx: 80, level: 3 },
+      { wpx: 200, level: 3 },
+      ...[...Array(days)].map(() => ({ wpx: 20 })),
+    ];
+
+    ws["!cols"] = widths;
+
+    writeFileXLSX(
+      wb,
+      ((((classes[0].grade.toLowerCase() +
+        classes[0].shorten.toLowerCase() +
+        classes[0].identifier.toLowerCase() +
+        year) as string) + month) as string) + "_recap.xlsx"
+    );
+  };
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -110,6 +140,15 @@ const Recap = () => {
       </h1>
       <div className="flex flex-col h-full w-full overflow-hidden">
         <div className="flex flex-col gap-4 py-4 h-full w-full overflow-auto">
+          <div className="flex w-full items-center justify-between">
+            <h1 className="text-lg font-medium">
+              {classes[0]?.grade} {classes[0]?.shorten} {classes[0]?.identifier}
+            </h1>
+            <Button className="flex items-center gap-2" onClick={exportToSheet}>
+              <FilePlus2 size={18} />
+              Export To Sheet
+            </Button>
+          </div>
           <TableCaption className="flex items-center justify-center gap-4">
             <div className="flex items-center justify-center gap-2">
               <Circle className="fill-current text-primary" size={12} />
@@ -129,7 +168,10 @@ const Recap = () => {
             </div>
           </TableCaption>
           <div className="rounded-md border overflow-y-auto overflow-x-auto">
-            <Table className="h-full relative sm:text-sm text-xs">
+            <Table
+              ref={tableRef}
+              className="h-full relative sm:text-sm text-xs"
+            >
               <TableHeader className="sticky top-0 bg-white z-10">
                 <TableRow>
                   <TableHead>NISN</TableHead>
@@ -146,9 +188,9 @@ const Recap = () => {
                   .filter((filter) =>
                     filter.attendance.find(
                       (att) =>
-                          dayjs(att.created_at).format("YYYY") === year &&
+                        dayjs(att.created_at).format("YYYY") === year &&
                         dayjs(att.created_at).format("M") ==
-                        (parseInt(month as string) + 1).toString()
+                          (parseInt(month as string) + 1).toString()
                     )
                   )
                   .map((recap, index) => (
@@ -159,7 +201,10 @@ const Recap = () => {
                       onOpenChange={() => setCollapse(undefined)}
                     >
                       <>
-                        <TableRow key={recap.nisn} className="relative bg-white">
+                        <TableRow
+                          key={recap.nisn}
+                          className="relative bg-white"
+                        >
                           <TableCell>{recap.nisn}</TableCell>
                           <TableCell className="sticky left-0 bg-white/80">
                             {recap.student_name}
@@ -167,7 +212,7 @@ const Recap = () => {
                           {[...Array(days)].map((_, dayIndex) => {
                             let status;
                             const attendancesForDay = recap.attendance.filter(
-                              (att) =>                                
+                              (att) =>
                                 dayjs(att.created_at).date() === dayIndex + 1
                             );
                             if (attendancesForDay.length > 0) {
@@ -233,11 +278,22 @@ const Recap = () => {
                                   />
                                 );
                               }
+                            } else {
+                              status = (
+                                <Circle
+                                  className="fill-current text-neutral-200"
+                                  size={12}
+                                />
+                              );
                             }
                             return (
-                              <TableCell key={dayIndex} >
+                              <TableCell key={dayIndex}>
                                 <div
-                                  className="flex w-full items-center justify-center cursor-pointer transition-all hover:opacity-75"
+                                  className={clsx(
+                                    "flex w-full items-center justify-center transition-all hover:opacity-75",
+                                    attendancesForDay.length > 0 &&
+                                      "cursor-pointer"
+                                  )}
                                   onClick={() => {
                                     setCollapse(
                                       collapse === index && day === dayIndex + 1
@@ -248,10 +304,13 @@ const Recap = () => {
                                   }}
                                 >
                                   {status === "p" ? (
-                                    <Circle
-                                      className="fill-current text-primary"
-                                      size={12}
-                                    />
+                                    <>
+                                      <span className="sr-only">✓</span>
+                                      <Circle
+                                        className="fill-current text-primary"
+                                        size={12}
+                                      />
+                                    </>
                                   ) : (
                                     status
                                   )}

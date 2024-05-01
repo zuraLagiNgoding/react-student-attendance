@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ColumnDef,
   SortingState,
@@ -25,7 +23,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
-import { Search, CirclePlus } from "lucide-react";
+import { Search, CirclePlus, FilePlus2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -34,8 +32,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "./button";
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
+import { utils, writeFileXLSX } from "xlsx";
+// import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+// import { Command, CommandGroup } from "./command";
+// import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,6 +54,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState("");
+  const tableRef = useRef(null);
 
   const table = useReactTable({
     data,
@@ -67,6 +70,11 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const exportToSheet = () => {
+    const wb = utils.table_to_book(tableRef.current);
+    writeFileXLSX(wb, saveLabel.toLowerCase() + "_data.xlsx");
+  };
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -79,17 +87,82 @@ export function DataTable<TData, TValue>({
             className="w-full h-full focus-visible:ring-0 focus-visible:outline-none px-2 py-0.5 border-b border-transparent focus-visible:border-b-slate-200"
           />
         </div>
-
-        <Link to="save">
-          <Button className="flex items-center gap-2">
-            <CirclePlus size={18} />
-            Add New {saveLabel}
+        <div className="flex items-center gap-3">
+          <Button
+            variant={"outline"}
+            className="flex items-center gap-2 bg-transparent"
+            onClick={exportToSheet}
+          >
+            <FilePlus2 size={18} />
+            Export To Sheet
           </Button>
-        </Link>
+          <Link to="save">
+            <Button className="flex items-center gap-2">
+              <CirclePlus size={18} />
+              Add New {saveLabel}
+            </Button>
+          </Link>
+        </div>
       </div>
+      {/* <div className="flex items-center justify-between mt-4">
+        <Button size={"sm"} className="flex items-center gap-2">
+          <PlusCircle size={16} /> Major
+        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className="flex items-center gap-2">
+              <CirclePlus size={18} />
+              Add New {saveLabel}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="overflow-hidden p-0">
+            <Command>
+              <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                <Search size={16} className="text-primary inline" />
+                <input
+                  placeholder="Search major..."
+                  value={search}
+                  onChange={searchHandler}
+                  className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                />
+              </div>
+              <CommandGroup>
+                <div className="overflow-y-auto max-h-[300px]">
+                  {majors
+                    .filter((filtered) =>
+                      filtered.major_name
+                        .toLowerCase()
+                        .includes(search.toLowerCase())
+                    )
+                    .map((major) => (
+                      <div
+                        className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                        onClick={() => {
+                          form.setValue("major_id", major.major_name);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "max-h-4 max-w-4 text-primary basis-1/6",
+                            field.value === major.major_name
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        <h1 className="basis-5/6 leading-tight">
+                          {major.major_name}
+                        </h1>
+                      </div>
+                    ))}
+                </div>
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div> */}
       <div className="flex flex-col justify-between gap-8 py-4 h-full overflow-y-auto">
         <div className="rounded-md border overflow-y-auto">
-          <Table className="h-full relative">
+          <Table ref={tableRef} className="h-full relative">
             <TableHeader className="sticky top-0 ">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
