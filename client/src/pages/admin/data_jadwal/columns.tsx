@@ -96,6 +96,43 @@ export const columns: ColumnDef<SchedulesType>[] = [
         </>
       );
     },
+    enableColumnFilter: true,
+    filterFn: (rows, _, filterValue) => {
+      if (filterValue.length === 0) return true;
+
+      const row = rows.original
+      const className = `${row.grade} ${row.shorten} ${row.identifier}`;
+
+      let grade:string[] = []
+      let major:string[] = []
+
+      filterValue.forEach((item:string) => {
+        if (item.startsWith("X")) {
+          grade.push(item)
+        } else {
+          major.push(item)
+        }
+      });
+
+      const combinedItems:string[] = [];
+
+      if (grade.length > 0 && major.length > 0) {
+        grade.forEach(gradeItem => {
+          major.forEach(majorItem => {
+            combinedItems.push(`${gradeItem} ${majorItem}`);
+          });
+        });    
+      }else if(grade.length > 0 && major.length == 0){
+        grade.forEach(item => {
+          combinedItems.push(item)
+        })
+      }else if(grade.length == 0 && major.length > 0){
+        major.forEach(item => {
+          combinedItems.push(item)
+        })
+      }
+    return combinedItems.some((f:string) => className.includes(f))
+    },
   },
   {
     accessorKey: "teacher_name",

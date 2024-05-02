@@ -459,6 +459,86 @@ export function DataTable<TData, TValue>({
             </PopoverContent>
           </Popover>
         )}
+        {table
+          .getHeaderGroups()
+          .some((headerGroup) =>
+            headerGroup.headers.some(
+              (header) => header.id === "class"
+            )
+          ) && (
+          <Popover onOpenChange={() => setSearch("")}>
+            <PopoverTrigger asChild>
+              <Button
+                size={"sm"}
+                variant={"outline"}
+                className="border-slate-900/10 shadow-none flex items-center gap-2 bg-transparent"
+              >
+                <div
+                  className={clsx(
+                    "flex items-center gap-2 border-slate-900/10",
+                    activeFilters["grade"].length > 0 && "border-r pr-2"
+                  )}
+                >
+                  <Filter size={16} /> Grade
+                </div>
+                <div className="flex items-center gap-2 ">
+                  {activeFilters["grade"].length > 2 ? (
+                    <h1>{activeFilters["grade"].length} selected</h1>
+                  ) : (
+                    <>
+                      {activeFilters["grade"].map((active, index) => (
+                        <h1 key={index}>{active}</h1>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="overflow-hidden p-0 !w-fit max-w-[7rem] min-w-full flex-nowrap whitespace-nowrap"
+            >
+              <div className="overflow-y-auto max-h-[300px] w-full PopoverContent">
+                {grades.map((grade, index) => (
+                  <div
+                    key={index}
+                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-xs gap-2 indent-0"
+                    onClick={() => {
+                      toggleFilter("grade", grade);
+                      setColumnFilters((prev) => {
+                        const gradess = prev.find((f) => f.id === "class")
+                          ?.value as string[];
+                        if (!gradess) {
+                          return [...prev, { id: "class", value: [grade] }];
+                        }
+                        return prev.map((f) =>
+                          f.id === "class"
+                            ? {
+                                ...f,
+                                value: activeFilters["grade"].includes(grade)
+                                  ? gradess.filter((filter) => filter !== grade)
+                                  : [...gradess, grade],
+                              }
+                            : f
+                        );
+                      });
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "max-h-4 max-w-4 min-h-4 min-w-4 text-primary basis-1/6",
+                        activeFilters["grade"].includes(grade)
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    <h1 className="basis-5/6 leading-tight">{grade}</h1>
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
       <div className="flex flex-col justify-between gap-8 py-4 h-full overflow-y-auto">
         <div className="rounded-md border overflow-y-auto">
