@@ -28,6 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Command, CommandGroup } from "@/components/ui/command";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -87,8 +88,10 @@ const DetailSiswa = ({isOpen, setIsOpen}: DetailProps) => {
         email: values.email,
       });
       console.log(values);
+      toast.success("Data murid telah di update.")
       navigate("/students");
     } catch (error) {
+      toast.error("Terjadi kesalahan.");
       console.log(error);
     }
   };

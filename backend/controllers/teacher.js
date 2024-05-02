@@ -1,9 +1,29 @@
 import { db } from "../db.js";
 import bcrypt from "bcryptjs";
 
-export const getTeachers = (req, res) => {
+export const getAllTeachers = (req, res) => {
   const q =
     "SELECT * FROM teachers";
+
+  db.query(q, (err, data) => {
+    if (err) return res.send(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const getTeachers = (req, res) => {
+  const q =
+    "SELECT t.* FROM teachers t LEFT JOIN users u ON t.uid = u.id WHERE u.role = 'TEACHER'";
+
+  db.query(q, (err, data) => {
+    if (err) return res.send(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const getStaff = (req, res) => {
+  const q =
+    "SELECT t.* FROM teachers t LEFT JOIN users u ON t.uid = u.id WHERE u.role = 'STAFF'";
 
   db.query(q, (err, data) => {
     if (err) return res.send(err);

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { MajorsType } from "./columns";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, CircleX, Eye, SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -26,8 +26,8 @@ import {
 import { useForm } from "react-hook-form";
 import { MajorSchema } from "@/schemas/major-schemas";
 import { z } from "zod";
-import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean
@@ -88,15 +88,11 @@ const DetailKelas = ({setIsOpen, isOpen}: DetailProps) => {
         name: values.major_name,
         shorten: values.shorten,
       });
-      toast("Data Jurusan telah di update.", {
-        icon: <CheckCircle2 size={18} className="text-primary"/>,
-      });
+      toast.success("Data Jurusan telah di update.");
       console.log(values)
     } catch (error) {
       console.log(error);
-      toast("Terjadi kesalahan.", {
-        icon: <CircleX size={18} className="text-red-500"/>,
-      });
+      toast.error("Terjadi kesalahan.");
     }
   }
 

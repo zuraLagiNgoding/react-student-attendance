@@ -1,7 +1,9 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { createContext, useEffect, useState } from "react";
 import { z } from "zod";
 import { LoginSchema } from "@/schemas/auth";
+import toast from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 
 interface currentUserType {
   id: string;
@@ -35,12 +37,27 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   );
 
   const login = async (inputs: z.infer<typeof LoginSchema>) => {
-    const res = await axios.post(
-      "http://localhost:8800/backend/auth/login",
-      inputs,
-      { withCredentials: true }
-    );
-    setCurrentUser(res.data);
+    try {
+      const res = await axios.post(
+        "http://localhost:8800/backend/auth/login",
+        inputs,
+        { withCredentials: true }
+      );
+      setCurrentUser(res.data);
+      if (res.status === 200) {
+        return <Navigate to={"/"}/>;
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response && error.response.status === 404) {
+          toast.error("User credentials not found!");
+        } else if (error.response && error.response.status === 400) {
+          toast.error("Wrong password!");
+        } else {
+          toast.error(error.message);
+        }
+      }
+    }
   };
   
   const logout = async () => {

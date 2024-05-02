@@ -23,7 +23,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
-import { Search, CirclePlus, FilePlus2, Filter, Check } from "lucide-react";
+import { Search, CirclePlus, Filter, Check, FileSpreadsheet } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-6 justify-between">
         <div className="flex bg-white items-center gap-x-2 max-w-sm rounded-md border leading-none border-slate-200 bg-transparent px-3 py-2 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
           <Search size={18} className="text-primary inline" />
           <input
@@ -143,8 +143,10 @@ export function DataTable<TData, TValue>({
             className="flex items-center gap-2 bg-transparent"
             onClick={exportToSheet}
           >
-            <FilePlus2 size={18} />
-            Export To Sheet
+            <FileSpreadsheet size={18} />
+            <p className="lg:block hidden">
+              Export To Sheet
+            </p>
           </Button>
           <Link to="save">
             <Button className="flex items-center gap-2">
@@ -604,7 +606,7 @@ export function DataTable<TData, TValue>({
           </Table>
         </div>
         <div className="flex items-center justify-between px-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 gap-2">
             <p className="text-sm font-medium">Rows per page</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
@@ -631,7 +633,7 @@ export function DataTable<TData, TValue>({
               Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 gap-2">
               <Button
                 variant="outline"
                 className="hidden h-8 w-8 p-0 lg:flex"

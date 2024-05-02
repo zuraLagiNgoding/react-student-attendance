@@ -21,13 +21,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ClassSchema } from "@/schemas/class-schemas";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Command, CommandGroup } from "@/components/ui/command";
 import { MajorsType } from "../data_jurusan/columns";
 import { useFetch } from "@/hooks/fetcher";
 import { TeachersType } from "../data_guru/columns";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -86,11 +86,11 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
           (teacher) => teacher.teacher_name === values.waliKelas
         )?.nip,
       });
-      toast("Data kelas telah di update.", {
+      toast.success("Data kelas telah di update.", {
         icon: <CheckCircle2 size={18} className="text-primary" />,
       });
     } catch (error) {
-      toast("Terjadi kesalahan.", {
+      toast.error("Terjadi kesalahan.", {
         icon: <CircleX size={18} className="text-red-500" />,
       });
     }

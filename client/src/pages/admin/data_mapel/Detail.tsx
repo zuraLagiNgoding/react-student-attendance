@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { SubjectsType } from "./columns";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, CircleX, Eye, SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SubjectSchema } from "@/schemas/subject-schemas";
@@ -27,7 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -71,13 +71,9 @@ const DetailKelas = ({ setIsOpen, isOpen }: DetailProps) => {
         name: values.subject_name,
         code: values.subject_code,
       });
-      toast("Data mata pelajaran telah di update.", {
-        icon: <CheckCircle2 size={18} className="text-primary" />,
-      });
+      toast.success("Data mata pelajaran telah di update.");
     } catch (error) {
-      toast("Terjadi kesalahan.", {
-        icon: <CircleX size={18} className="text-red-500" />,
-      });
+      toast.error("Terjadi kesalahan.");
     }
   };
 

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { ClassRoomsType } from "./columns";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, CircleX, Eye, SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ClassroomSchema } from "@/schemas/classroom-schemas";
@@ -27,7 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -68,13 +68,9 @@ const DetailRuang = ({ setIsOpen, isOpen }: DetailProps) => {
       await axios.put(`http://localhost:8800/backend/classrooms/` + classroomId, {
         name: values.classroom_name,
       });
-      toast("Data ruang ajar telah di update.", {
-        icon: <CheckCircle2 size={18} className="text-primary" />,
-      });
+      toast.success("Data ruang ajar telah di update.");
     } catch (error) {
-      toast("Terjadi kesalahan.", {
-        icon: <CircleX size={18} className="text-red-500" />,
-      });
+      toast.error("Terjadi kesalahan.");
     }
   };
 

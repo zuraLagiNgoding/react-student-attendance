@@ -13,6 +13,7 @@ import {
 import { LogOut, MoreHorizontal, PanelLeftClose, PanelLeftOpen, UserCircle2 } from "lucide-react";
 import { Button } from "./ui/button";
 import logo from "@/assets/logo.svg"
+import { ScrollArea } from "./ui/scroll-area";
 
 type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED";
 interface SidebarProps {
@@ -26,24 +27,6 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
   const navRef = React.useRef<HTMLInputElement>(null);
   const { links } = NavLinks[role];
   const location = useLocation();
-
-  // React.useEffect(() => {
-  //   const handleClickOutside = (event: Event) => {
-  //     if (
-  //       navRef.current &&
-  //       !navRef.current.contains(event.target as Node)
-  //     ) {
-  //       setClose(true);
-  //     } else {
-  //       setClose(false)
-  //     }
-  //   };
-
-  //   document.addEventListener("click", handleClickOutside, true);
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside, true);
-  //   };
-  // });
 
   return (
     <aside
@@ -74,7 +57,7 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
           />
         )}
       </div>
-      <div className="py-4">
+      <ScrollArea className="py-4">
         {links.map((base) => (
           <React.Fragment key={base.base}>
             <h1 className="2xl:text-xs text-[12px] font-light opacity-65 transition-all sm:opacity-100">
@@ -110,7 +93,7 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
             </ul>
           </React.Fragment>
         ))}
-      </div>
+      </ScrollArea>
       <div className="w-full flex gap-4 ml-1.5 justify-start items-center mt-auto">
         <UserCircle2 className="text-primary" size={28} />
         <div

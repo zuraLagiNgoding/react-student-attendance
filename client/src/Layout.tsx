@@ -87,7 +87,7 @@ const Layout = () => {
 
   const [close, setClose] = React.useState(true);
   return (
-    <div className="relative flex w-[100vw] overflow-x-hidden">
+    <div className="relative flex w-[100vw] h-screen overflow-x-hidden">
       <Sidebar close={close} setClose={setClose} />
       <div className="relative lg:basis-5/6 bg-gray-100 sm:basis-[95%] h-screen flex flex-col min-h-screen max-h-screen max-w-full w-full sm:overflow-x-auto gap-10">
         <div className="z-[1] sticky top-0 flex bg-white border-b shadow-sm items-center justify-between sm:px-4 sm:my-0 p-5">

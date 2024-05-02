@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { SchedulesType } from "./columns";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Check, CheckCircle2, ChevronsUpDown, CircleX, Clock9, Eye, Search, SquarePen } from "lucide-react";
+import { Check, ChevronsUpDown, Clock9, Eye, Search, SquarePen } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -25,13 +25,13 @@ import { useFetch } from "@/hooks/fetcher";
 import { ClassesType } from "../data_kelas/columns";
 import { TeachersType } from "../data_guru/columns";
 import { SubjectsType } from "../data_mapel/columns";
-import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { TimePicker } from "@/components/ui/time-picker";
 import { Command, CommandGroup } from "@/components/ui/command";
 import { ClassRoomsType } from "../data_ruang/columns";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -123,14 +123,9 @@ const DetailJadwal = ({ isOpen, setIsOpen }: DetailProps) => {
             values.class_id
         )?.class_id,
       });
-      console.log(values)
-      toast("Data jadwal telah di update.", {
-        icon: <CheckCircle2 size={18} className="text-primary" />,
-      });
+      toast.success("Data jadwal telah di update.");
     } catch (error) {
-      toast("Terjadi kesalahan.", {
-        icon: <CircleX size={18} className="text-red-500" />,
-      });
+      toast.error("Terjadi kesalahan.");
     }
   };
 

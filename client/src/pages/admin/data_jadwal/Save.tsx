@@ -181,443 +181,449 @@ const Save = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="day"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Day</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? days.find((item) => item === field.value)
-                              : "Select Day"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden p-0">
-                        <Command>
-                          <CommandGroup>
-                            <div className="overflow-y-auto max-h-[300px]">
-                              {days.map((item) => (
-                                  <div
-                                    key={item}
-                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
-                                    onClick={() => {
-                                      form.setValue(
-                                        "day",
-                                        item
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === item
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <h1 className="basis-5/6 leading-tight">
-                                      {item}
-                                    </h1>
-                                  </div>
-                                ))}
-                            </div>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="timestamps"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Timestamps</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? field.value : null}
-                            <Clock9 className="ml-auto h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden">
-                        <div className="flex items-center justify-between w-full">
-                          <TimePicker date={dateStart} setDate={setDateStart} />
-                          <span className="">-</span>
-                          <TimePicker date={dateEnd} setDate={setDateEnd} />
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="subject_id"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Subject</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? subjects.find(
-                                  (item) => item.subject_code === field.value
-                                )?.subject_name
-                              : "Select Subject"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden p-0">
-                        <Command>
-                          <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
-                            <Search size={16} className="text-primary inline" />
-                            <input
-                              placeholder="Search subject..."
-                              value={subjectSearch}
-                              onChange={searchSubjectHandler}
-                              className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
-                            />
+              <div className="grid grid-cols-2 items-center">
+                <FormField
+                  control={form.control}
+                  name="day"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Day</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? days.find((item) => item === field.value)
+                                : "Select Day"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {days.map((item) => (
+                                    <div
+                                      key={item}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "day",
+                                          item
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="timestamps"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Timestamps</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? field.value : null}
+                              <Clock9 className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden">
+                          <div className="flex items-center justify-between w-full">
+                            <TimePicker date={dateStart} setDate={setDateStart} />
+                            <span className="">-</span>
+                            <TimePicker date={dateEnd} setDate={setDateEnd} />
                           </div>
-                          <CommandGroup>
-                            <div className="overflow-y-auto max-h-[300px]">
-                              {subjects
-                                .filter(
-                                  (filtered) =>
-                                    filtered.subject_code
-                                      .toLowerCase()
-                                      .includes(subjectSearch.toLowerCase()) ||
-                                    filtered.subject_name
-                                      .toLowerCase()
-                                      .includes(subjectSearch.toLowerCase())
-                                )
-                                .map((item) => (
-                                  <div
-                                    key={item.subject_id}
-                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
-                                    onClick={() => {
-                                      form.setValue(
-                                        "subject_id",
-                                        item.subject_code
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === item.subject_code
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <h1 className="basis-5/6 leading-tight">
-                                      {item.subject_code}
-                                    </h1>
-                                  </div>
-                                ))}
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 items-center">
+                <FormField
+                  control={form.control}
+                  name="subject_id"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Subject</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? subjects.find(
+                                    (item) => item.subject_code === field.value
+                                  )?.subject_name
+                                : "Select Subject"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search size={16} className="text-primary inline" />
+                              <input
+                                placeholder="Search subject..."
+                                value={subjectSearch}
+                                onChange={searchSubjectHandler}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
                             </div>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="class_id"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Class</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? classes.find(
-                                  (item) =>
-                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
-                                    field.value
-                                )?.grade +
-                                " " +
-                                classes.find(
-                                  (item) =>
-                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
-                                    field.value
-                                )?.shorten +
-                                " " +
-                                classes.find(
-                                  (item) =>
-                                    `${item.grade} ${item.shorten} ${item.identifier}` ===
-                                    field.value
-                                )?.identifier
-                              : "Select Class"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden p-0">
-                        <Command>
-                          <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
-                            <Search size={16} className="text-primary inline" />
-                            <input
-                              placeholder="Search class..."
-                              value={classSearch}
-                              onChange={searchClassHandler}
-                              className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
-                            />
-                          </div>
-                          <CommandGroup>
-                            <div className="overflow-y-auto max-h-[300px]">
-                              {classes
-                                .filter(
-                                  (filtered) =>
-                                    filtered.grade
-                                      .toLowerCase()
-                                      .includes(classSearch.toLowerCase()) ||
-                                    filtered.major_name
-                                      .toLowerCase()
-                                      .includes(classSearch.toLowerCase()) ||
-                                    filtered.shorten
-                                      .toLowerCase()
-                                      .includes(classSearch.toLowerCase()) ||
-                                    filtered.identifier
-                                      .toLowerCase()
-                                      .includes(classSearch.toLowerCase())
-                                )
-                                .map((item) => (
-                                  <div
-                                    key={item.class_id}
-                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
-                                    onClick={() => {
-                                      form.setValue(
-                                        "class_id",
-                                        `${item.grade} ${item.shorten} ${item.identifier}`
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value ===
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {subjects
+                                  .filter(
+                                    (filtered) =>
+                                      filtered.subject_code
+                                        .toLowerCase()
+                                        .includes(subjectSearch.toLowerCase()) ||
+                                      filtered.subject_name
+                                        .toLowerCase()
+                                        .includes(subjectSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.subject_id}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "subject_id",
+                                          item.subject_code
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item.subject_code
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.subject_code}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="class_id"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Class</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? classes.find(
+                                    (item) =>
+                                      `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                      field.value
+                                  )?.grade +
+                                  " " +
+                                  classes.find(
+                                    (item) =>
+                                      `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                      field.value
+                                  )?.shorten +
+                                  " " +
+                                  classes.find(
+                                    (item) =>
+                                      `${item.grade} ${item.shorten} ${item.identifier}` ===
+                                      field.value
+                                  )?.identifier
+                                : "Select Class"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search size={16} className="text-primary inline" />
+                              <input
+                                placeholder="Search class..."
+                                value={classSearch}
+                                onChange={searchClassHandler}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
+                            </div>
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {classes
+                                  .filter(
+                                    (filtered) =>
+                                      filtered.grade
+                                        .toLowerCase()
+                                        .includes(classSearch.toLowerCase()) ||
+                                      filtered.major_name
+                                        .toLowerCase()
+                                        .includes(classSearch.toLowerCase()) ||
+                                      filtered.shorten
+                                        .toLowerCase()
+                                        .includes(classSearch.toLowerCase()) ||
+                                      filtered.identifier
+                                        .toLowerCase()
+                                        .includes(classSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.class_id}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "class_id",
                                           `${item.grade} ${item.shorten} ${item.identifier}`
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <h1 className="basis-5/6 leading-tight">
-                                      {item.grade} {item.shorten}{" "}
-                                      {item.identifier}
-                                    </h1>
-                                  </div>
-                                ))}
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value ===
+                                            `${item.grade} ${item.shorten} ${item.identifier}`
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.grade} {item.shorten}{" "}
+                                        {item.identifier}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 items-center">
+                <FormField
+                  control={form.control}
+                  name="classroom_id"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Room</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? classrooms.find(
+                                    (item) => item.classroom_name === field.value
+                                  )?.classroom_name
+                                : "Select Room"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search size={16} className="text-primary inline" />
+                              <input
+                                placeholder="Search classroom..."
+                                value={classroomSearch}
+                                onChange={searchClassroomHandler}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
                             </div>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="classroom_id"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Room</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? classrooms.find(
-                                  (item) => item.classroom_name === field.value
-                                )?.classroom_name
-                              : "Select Room"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden p-0">
-                        <Command>
-                          <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
-                            <Search size={16} className="text-primary inline" />
-                            <input
-                              placeholder="Search classroom..."
-                              value={classroomSearch}
-                              onChange={searchClassroomHandler}
-                              className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
-                            />
-                          </div>
-                          <CommandGroup>
-                            <div className="overflow-y-auto max-h-[300px]">
-                              {classrooms
-                                .filter((filtered) =>
-                                  filtered.classroom_name
-                                    .toLowerCase()
-                                    .includes(classroomSearch.toLowerCase())
-                                )
-                                .map((item) => (
-                                  <div
-                                    key={item.classroom_id}
-                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
-                                    onClick={() => {
-                                      form.setValue(
-                                        "classroom_id",
-                                        item.classroom_name
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === item.classroom_name
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <h1 className="basis-5/6 leading-tight">
-                                      {item.classroom_name}
-                                    </h1>
-                                  </div>
-                                ))}
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {classrooms
+                                  .filter((filtered) =>
+                                    filtered.classroom_name
+                                      .toLowerCase()
+                                      .includes(classroomSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.classroom_id}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "classroom_id",
+                                          item.classroom_name
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item.classroom_name
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.classroom_name}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="teacher_id"
+                  render={({ field }) => (
+                    <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                      <FormLabel>Teacher</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="w-full">
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between w-full",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? teachers.find(
+                                    (item) => item.teacher_name === field.value
+                                  )?.teacher_name
+                                : "Select Teacher"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="overflow-hidden p-0">
+                          <Command>
+                            <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
+                              <Search size={16} className="text-primary inline" />
+                              <input
+                                placeholder="Search teacher..."
+                                value={teacherSearch}
+                                onChange={searchTeacherHandler}
+                                className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
+                              />
                             </div>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="teacher_id"
-                render={({ field }) => (
-                  <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                    <FormLabel>Teacher</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl className="w-full">
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between w-full",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? teachers.find(
-                                  (item) => item.teacher_name === field.value
-                                )?.teacher_name
-                              : "Select Teacher"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="overflow-hidden p-0">
-                        <Command>
-                          <div className="flex items-center gap-x-2 border-b leading-none border-slate-200 bg-transparent px-3 py-1.5 transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300">
-                            <Search size={16} className="text-primary inline" />
-                            <input
-                              placeholder="Search teacher..."
-                              value={teacherSearch}
-                              onChange={searchTeacherHandler}
-                              className="h-full placeholder:text-sm focus-visible:ring-0 focus-visible:outline-none px-2 py-1"
-                            />
-                          </div>
-                          <CommandGroup>
-                            <div className="overflow-y-auto max-h-[300px]">
-                              {teachers
-                                .filter((filtered) =>
-                                  filtered.teacher_name
-                                    .toLowerCase()
-                                    .includes(teacherSearch.toLowerCase())
-                                )
-                                .map((item) => (
-                                  <div
-                                    key={item.nip}
-                                    className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
-                                    onClick={() => {
-                                      form.setValue(
-                                        "teacher_id",
-                                        item.teacher_name
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "max-h-4 max-w-4 text-primary basis-1/6",
-                                        field.value === item.teacher_name
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <h1 className="basis-5/6 leading-tight">
-                                      {item.teacher_name}
-                                    </h1>
-                                  </div>
-                                ))}
-                            </div>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                            <CommandGroup>
+                              <div className="overflow-y-auto max-h-[300px]">
+                                {teachers
+                                  .filter((filtered) =>
+                                    filtered.teacher_name
+                                      .toLowerCase()
+                                      .includes(teacherSearch.toLowerCase())
+                                  )
+                                  .map((item) => (
+                                    <div
+                                      key={item.nip}
+                                      className="flex hover:bg-primary/[0.08] cursor-pointer items-center px-2 py-1.5 text-sm gap-2 indent-0"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "teacher_id",
+                                          item.teacher_name
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "max-h-4 max-w-4 text-primary basis-1/6",
+                                          field.value === item.teacher_name
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <h1 className="basis-5/6 leading-tight">
+                                        {item.teacher_name}
+                                      </h1>
+                                    </div>
+                                  ))}
+                              </div>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
             <CardFooter>
               <Button type="submit">Submit</Button>

@@ -4,7 +4,6 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTr
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
@@ -144,6 +143,7 @@ const JadwalKelas = () => {
       </h1>
       <div className="flex flex-col overflow-y-hidden">
         <div className="flex flex-col justify-between gap-3 py-4 h-full overflow-y-auto">
+          <h1 className="text-lg font-semibold text-neutral-800">Wali Kelas : <span className=' text-secondary/70'>{classes[0]?.teacher_name}</span></h1>
           <div className="flex justify-between items-center">
             <h1 className="text-lg font-semibold text-neutral-800">Schedule</h1>
             <Dialog>
@@ -185,80 +185,75 @@ const JadwalKelas = () => {
                       />
 
                       <FormField
-                          control={form.control}
-                          name="date"
-                          render={({ field }) => (
-                            <FormItem className='sm:block hidden'>
-                              <FormLabel>Date</FormLabel>
-                              <FormControl>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <FormControl>
-                                      <Button
-                                        id="date"
-                                        variant={"outline"}
-                                        className={cn(
-                                          "w-full justify-start text-left font-normal",
-                                          !field.value.from &&
-                                            "text-muted-foreground"
-                                        )}
-                                      >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {field.value.from ? (
-                                          field.value.to ? (
-                                            <>
-                                              {format(
-                                                field.value.from,
-                                                "LLL dd, y"
-                                              )}{" "}
-                                              -{" "}
-                                              {format(
-                                                field.value.to,
-                                                "LLL dd, y"
-                                              )}
-                                            </>
-                                          ) : (
-                                            format(
+                        control={form.control}
+                        name="date"
+                        render={({ field }) => (
+                          <FormItem className="sm:block hidden">
+                            <FormLabel>Date</FormLabel>
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      id="date"
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start text-left font-normal",
+                                        !field.value.from &&
+                                          "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                      {field.value.from ? (
+                                        field.value.to ? (
+                                          <>
+                                            {format(
                                               field.value.from,
                                               "LLL dd, y"
-                                            )
-                                          )
+                                            )}{" "}
+                                            -{" "}
+                                            {format(
+                                              field.value.to,
+                                              "LLL dd, y"
+                                            )}
+                                          </>
                                         ) : (
-                                          <span>Pick a date</span>
-                                        )}
-                                      </Button>
-                                    </FormControl>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="min-w-max p-0"
-                                    align="center"
-                                  >
-                                    <Calendar
-                                      initialFocus
-                                      mode="range"
-                                      selected={{
-                                        from: field.value.from!,
-                                        to: field.value.to,
-                                      }}
-                                      onSelect={field.onChange}
-                                      numberOfMonths={2}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                                          format(field.value.from, "LLL dd, y")
+                                        )
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="min-w-max p-0"
+                                  align="center"
+                                >
+                                  <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    selected={{
+                                      from: field.value.from!,
+                                      to: field.value.to,
+                                    }}
+                                    onSelect={field.onChange}
+                                    numberOfMonths={2}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
 
                       <FormField
                         control={form.control}
                         name="date.from"
                         render={({ field }) => (
-                          <FormItem className='sm:hidden block'>
+                          <FormItem className="sm:hidden block">
                             <FormLabel>
-                              {showDateEnd
-                                ? "Absence From/To Date"
-                                : " Date"}
+                              {showDateEnd ? "Absence From/To Date" : " Date"}
                             </FormLabel>
                             <FormControl>
                               <Popover>
@@ -369,7 +364,7 @@ const JadwalKelas = () => {
                           </FormItem>
                         )}
                       />
-                      {!imagePreview &&
+                      {!imagePreview && (
                         <FormField
                           control={form.control}
                           name="image"
@@ -386,11 +381,11 @@ const JadwalKelas = () => {
                                   type="file"
                                 />
                               </FormControl>
-                              <FormMessage/>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
-                      }
+                      )}
 
                       {imagePreview && (
                         <div className="w-full relative">
@@ -431,9 +426,9 @@ const JadwalKelas = () => {
             </Dialog>
           </div>
           <div className="rounded-md border overflow-y-auto">
-            <Table className="h-full relative sm:text-sm text-xs">
-              <TableHeader className="sticky top-0 bg-white z-10">
-                <TableRow>
+            <Table className="h-full relative sm:text-sm text-xs bg-white">
+              <TableHeader className="sticky top-0 z-10">
+                <TableRow className="bg-white">
                   <TableHead />
                   <TableHead>Schedule</TableHead>
                   <TableHead>Subject</TableHead>
@@ -448,7 +443,7 @@ const JadwalKelas = () => {
                   );
                   return (
                     <>
-                      <TableRow className="group border-t-2">
+                      <TableRow className="group border-t-2 bg-white">
                         <TableCell
                           rowSpan={
                             filteredData.length > 0 ? filteredData.length : 1
@@ -478,7 +473,7 @@ const JadwalKelas = () => {
                       </TableRow>
                       {filteredData.length > 0 &&
                         filteredData.slice(1).map((item) => (
-                          <TableRow className="group">
+                          <TableRow className="group bg-white">
                             <TableCell className="group-hover:underline">
                               {item.start + " - " + item.end}
                             </TableCell>

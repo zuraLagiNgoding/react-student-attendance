@@ -23,6 +23,7 @@ import { z } from "zod";
 import { TeacherSchema } from "@/schemas/teacher-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import toast from "react-hot-toast";
 
 interface DetailProps {
   isOpen: boolean;
@@ -71,8 +72,10 @@ const DetailGuru = ({isOpen, setIsOpen}: DetailProps) => {
         phone_number: values.phone_number,
         email: values.email,
       });
+      toast.success("Data guru berhasil di update.");
       navigate("/teachers");
     } catch (error) {
+      toast.error("terjadi kesalahan.");
       console.log(error);
     }
   };

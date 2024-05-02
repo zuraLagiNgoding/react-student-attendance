@@ -90,7 +90,7 @@ const Save = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card className="py-8">
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 overflow-y-auto">
               <FormField
                 control={form.control}
                 name="nisn"

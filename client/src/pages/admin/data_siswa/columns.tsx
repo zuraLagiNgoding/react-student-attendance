@@ -79,8 +79,8 @@ export const columns: ColumnDef<StudentsType>[] = [
       const row = rows.original
       const className = `${row.grade} ${row.shorten} ${row.identifier}`;
 
-      let grade:string[] = []
-      let major:string[] = []
+      const grade:string[] = []
+      const major:string[] = []
 
       filterValue.forEach((item:string) => {
         if (item.startsWith("X")) {

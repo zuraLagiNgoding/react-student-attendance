@@ -37,69 +37,6 @@ interface RecapsType {
   }[];
 }
 
-// const dummy = [
-//   {
-//     name: "Jan",
-//     attendances: 624,
-//     absences: 973,
-//   },
-//   {
-//     name: "Feb",
-//     attendances: 802,
-//     absences: 609,
-//   },
-//   {
-//     name: "Mar",
-//     attendances: 768,
-//     absences: 1015,
-//   },
-//   {
-//     name: "Apr",
-//     attendances: 862,
-//     absences: 627,
-//   },
-//   {
-//     name: "May",
-//     attendances: 873,
-//     absences: 917,
-//   },
-//   {
-//     name: "Jun",
-//     attendances: 1143,
-//     absences: 1175,
-//   },
-//   {
-//     name: "Jul",
-//     attendances: 834,
-//     absences: 1124,
-//   },
-//   {
-//     name: "Aug",
-//     attendances: 946,
-//     absences: 975,
-//   },
-//   {
-//     name: "Sep",
-//     attendances: 797,
-//     absences: 556,
-//   },
-//   {
-//     name: "Oct",
-//     attendances: 961,
-//     absences: 731,
-//   },
-//   {
-//     name: "Nov",
-//     attendances: 508,
-//     absences: 977,
-//   },
-//   {
-//     name: "Dec",
-//     attendances: 735,
-//     absences: 737,
-//   },
-// ];
-
 
 const monthNames = [
   "Jan",
@@ -275,7 +212,7 @@ const Overview = () => {
       <h1 className="text-3xl font-bold leading-none text-neutral-900">
         Overview
       </h1>
-      <div className="flex h-full gap-6 overflow-y-hidden">
+      <div className="flex h-full gap-6 overflow-y-auto">
         <div className="basis-4/6 flex flex-col gap-6">
           <div className="flex relative shrink-0 border overflow-hidden justify-between border-slate-200 bg-white text-slate-950 shadow dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 w-full h-40 rounded-md">
             <div className="absolute lg:block hidden right-[-3.5rem]">
