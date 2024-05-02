@@ -38,6 +38,7 @@ export const columns: ColumnDef<ClassesType>[] = [
     },
   },
   {
+    id: "grade",
     accessorKey: "grade",
     header: ({ column }) => {
       return (
@@ -50,12 +51,22 @@ export const columns: ColumnDef<ClassesType>[] = [
         </Button>
       );
     },
-    enableGlobalFilter: false,
+    enableColumnFilter: true,
+    filterFn: (row, columnId, filterGrades) => {
+      if (filterGrades.length === 0) return true;
+      const grade = row.getValue(columnId);
+      return filterGrades.includes(grade);
+    },
   },
   {
     accessorKey: "shorten",
     header: "Major",
-    enableGlobalFilter: false,
+    enableColumnFilter: true,
+    filterFn: (row, columnId, filterMajors) => {
+      if (filterMajors.length === 0) return true;
+      const major = row.getValue(columnId);
+      return filterMajors.includes(major);
+    },
   },
   {
     accessorKey: "identifier",
@@ -68,9 +79,7 @@ export const columns: ColumnDef<ClassesType>[] = [
     cell: ({ row }) => {
       const classes = row.original;
 
-      return (
-        <>{classes.teacher_name}</>
-      );
+      return <>{classes.teacher_name}</>;
     },
   },
   {

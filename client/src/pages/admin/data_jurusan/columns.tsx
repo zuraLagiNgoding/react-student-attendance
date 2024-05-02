@@ -44,11 +44,15 @@ export const columns: ColumnDef<MajorsType>[] = [
         </Button>
       );
     },
+  },
+  {
+    id: "code",
+    header: "Code",
     cell: ({ row }) => {
       const majors = row.original;
       return (
         <>
-          {majors.major_name} / {majors.shorten}
+          {majors.shorten}
         </>
       );
     },

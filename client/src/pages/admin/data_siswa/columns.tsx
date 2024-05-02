@@ -39,7 +39,11 @@ export const columns: ColumnDef<StudentsType>[] = [
     cell: ({ row }) => {
       const student = row.original.nisn;
 
-      return <Link className="text-primary" to={"/students/" + student}>{student}</Link>;
+      return (
+        <Link className="text-primary" to={"/students/" + student}>
+          {student}
+        </Link>
+      );
     },
   },
   {
@@ -57,7 +61,6 @@ export const columns: ColumnDef<StudentsType>[] = [
     },
   },
   {
-    accessorKey: "class_id",
     id: "class",
     header: "Class",
     cell: ({ row }) => {
@@ -68,6 +71,14 @@ export const columns: ColumnDef<StudentsType>[] = [
           {schedules.grade} {schedules.shorten} {schedules.identifier}
         </>
       );
+    },
+    enableColumnFilter: true,
+    filterFn: (rows, _, filterValue) => {
+      if (filterValue.length === 0) return true;
+
+      const row = rows.original
+      const className = `${row.grade} ${row.shorten} ${row.identifier}`;
+      return filterValue.includes(className);
     },
   },
   {
@@ -86,14 +97,10 @@ export const columns: ColumnDef<StudentsType>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Link to={"/students/" + students.nisn}>
-                  View
-                </Link>
+                <Link to={"/students/" + students.nisn}>View</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link to={"/students/" + students.nisn}>
-                  Delete
-                </Link>
+                <Link to={"/students/" + students.nisn}>Delete</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
