@@ -142,6 +142,8 @@ const Save = () => {
                   </FormItem>
                 )}
               />
+              </div>
+              <div className="grid grid-cols-2">
               <FormField
                 control={form.control}
                 name="phone_number"
