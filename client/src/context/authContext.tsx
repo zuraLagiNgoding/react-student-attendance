@@ -15,7 +15,7 @@ interface currentUserType {
 
 interface AuthContextType {
   currentUser: currentUserType | null;
-  login: (inputs: z.infer<typeof LoginSchema>) => void;
+  login: (inputs: z.infer<typeof LoginSchema>) => Promise<number | void> | void;
   logout: () => void
 }
 
@@ -44,9 +44,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         { withCredentials: true }
       );
       setCurrentUser(res.data);
-      if (res.status === 200) {
-        return <Navigate to={"/"}/>;
-      }
+      return res.status
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response && error.response.status === 404) {

@@ -315,7 +315,7 @@ CREATE TABLE `teachers` (
 
 LOCK TABLES `teachers` WRITE;
 /*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
-INSERT INTO `teachers` VALUES ('098765432112345678','Dimas Smilikitiw','LK','Tangerang','081234567890','dimas@mail.com',15),('123456789012345678','John Doe','LK','Tangerang','083234567890','john@mail.com',10);
+INSERT INTO `teachers` VALUES ('098765432112345678','Dimas Smilikitiw','LK','Tangerang','081234567890','dimas@mail.com',15),('102938475678901234','Gilang Velg Depan','LK','tangerang','081234567890','gilang@mail.com',16),('123456789012345678','John Doe','LK','Tangerang','083234567890','john@mail.com',10);
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -330,11 +330,11 @@ CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(45) NOT NULL,
   `username` varchar(64) NOT NULL,
-  `email` varchar(225) NOT NULL,
+  `email` varchar(225) DEFAULT NULL,
   `img` varchar(225) DEFAULT NULL,
   `password` varchar(225) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,7 +343,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'ADMIN','admin','admin@mail.com',NULL,'$2a$10$XOM04hZvm0WAv4OrX0CtfOT1pnjMHaG/juJ/DD3vQAo.OSCHWrOJ2'),(7,'STUDENT','1623587216','yusuf@mail.com',NULL,'$2a$10$uhXv2IVJIpWY5Vt9qsaF2.nmuH5p3syMwifYi1CqvC2VZNXN.BU3K'),(8,'STUDENT','1623511111','akbar@mail.com',NULL,'$2a$10$W8RIjqf8ivXgI.twI7iayOyf5/Q3nu6Jq3vA7Aw88sJgFJS9qeoJS'),(9,'STUDENT','1111111111','naruto@mail.com',NULL,'$2a$10$gsejELNtvss/cAGiTE0ydOD.XzhIJ3gYxjhqQBf8dxD9K/vMt0d6.'),(10,'TEACHER','123456789012345678','john@mail.com',NULL,'$2a$10$mofP4qjx8Iib2J3Jgel5P.Os9lYSwSrwZJLOyxp7dAWZCWV5sEiv2'),(11,'STUDENT','2222222222','ikbir@mail.com',NULL,'$2a$10$1sKbsp0JmUOI04.hnYoxi.F6JscGD5vkuW6JjGy2IX69OXpWcZL6S'),(12,'STUDENT','3333333333','sumbul@mail.com',NULL,'$2a$10$4Tj/AFI3JrsP5YT96hCxxuPNlpPNigdEGUkGyi.pyNkdKg2eizMZ.'),(13,'STUDENT','4444444444','yaqub@mail.com',NULL,'$2a$10$wJHlLlbCElFL44V5x5AU9eMtck6RJh.A./qyP10kQSeDXPwlS7VE6'),(14,'STUDENT','5555555555','khasmiri@mail.com',NULL,'$2a$10$AIhtwtLPrSOAGVcpuWTEs.h7TjdelAxcLUp80OcMT42eB2MgKgYZW'),(15,'TEACHER','098765432112345678','dimas@mail.com',NULL,'$2a$10$Vs6X5uQcFIFkCXEoaG/OV.6YeGeymswKPFVfxS4e4wDtwAeOwz.Xu');
+INSERT INTO `users` VALUES (1,'ADMIN','admin','admin@mail.com',NULL,'$2a$10$XOM04hZvm0WAv4OrX0CtfOT1pnjMHaG/juJ/DD3vQAo.OSCHWrOJ2'),(7,'STUDENT','1623587216','yusuf@mail.com',NULL,'$2a$10$uhXv2IVJIpWY5Vt9qsaF2.nmuH5p3syMwifYi1CqvC2VZNXN.BU3K'),(8,'STUDENT','1623511111','akbar@mail.com',NULL,'$2a$10$W8RIjqf8ivXgI.twI7iayOyf5/Q3nu6Jq3vA7Aw88sJgFJS9qeoJS'),(9,'STUDENT','1111111111','naruto@mail.com',NULL,'$2a$10$gsejELNtvss/cAGiTE0ydOD.XzhIJ3gYxjhqQBf8dxD9K/vMt0d6.'),(10,'TEACHER','123456789012345678','john@mail.com',NULL,'$2a$10$mofP4qjx8Iib2J3Jgel5P.Os9lYSwSrwZJLOyxp7dAWZCWV5sEiv2'),(11,'STUDENT','2222222222','ikbir@mail.com',NULL,'$2a$10$1sKbsp0JmUOI04.hnYoxi.F6JscGD5vkuW6JjGy2IX69OXpWcZL6S'),(12,'STUDENT','3333333333','sumbul@mail.com',NULL,'$2a$10$4Tj/AFI3JrsP5YT96hCxxuPNlpPNigdEGUkGyi.pyNkdKg2eizMZ.'),(13,'STUDENT','4444444444','yaqub@mail.com',NULL,'$2a$10$wJHlLlbCElFL44V5x5AU9eMtck6RJh.A./qyP10kQSeDXPwlS7VE6'),(14,'STUDENT','5555555555','khasmiri@mail.com',NULL,'$2a$10$AIhtwtLPrSOAGVcpuWTEs.h7TjdelAxcLUp80OcMT42eB2MgKgYZW'),(15,'TEACHER','098765432112345678','dimas@mail.com',NULL,'$2a$10$Vs6X5uQcFIFkCXEoaG/OV.6YeGeymswKPFVfxS4e4wDtwAeOwz.Xu'),(16,'STAFF','102938475678901234','gilang@mail.com',NULL,'$2a$10$0NWKbaouhrV5R4hQeVVYreucXBSKa2t/X0jFYqTVPCWJyANXHMDIa');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -356,4 +356,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-26  9:41:27
+-- Dump completed on 2024-05-03  9:59:06

@@ -48,7 +48,7 @@ export const addTeacher = (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync("1", salt);
 
-  const valuesUser = [req.body.nip, "TEACHER", req.body.email, hashedPassword];
+  const valuesUser = [req.body.nip, req.body.role, req.body.email, hashedPassword];
 
   db.query(qUser, [valuesUser], (err) => {
     if (err) return res.send(err);

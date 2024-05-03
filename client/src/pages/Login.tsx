@@ -13,13 +13,14 @@ import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "@/context/authContext";
 import logo from "@/assets/logo1.svg";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -29,13 +30,19 @@ const Login = () => {
     },
   });
 
+  
+
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     try {
-      login({
+      const res = await login({
         username: values.username,
         email: values.email,
         password: values.password,
       });
+      console.log(res)
+      if (res === 200) {
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }

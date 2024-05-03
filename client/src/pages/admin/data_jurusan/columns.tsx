@@ -46,6 +46,7 @@ export const columns: ColumnDef<MajorsType>[] = [
     },
   },
   {
+    accessorKey: "shorten",
     id: "code",
     header: "Code",
     cell: ({ row }) => {

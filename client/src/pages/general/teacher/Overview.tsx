@@ -371,7 +371,7 @@ const Overview = () => {
                   <h1 className="sm:text-2xl text-lg font-semibold leading-none text-neutral-900">
                     Welcome, {user?.teacher_name}!
                   </h1>
-                  <p className="text-sm text-slate-500 text-wrap 2xl:max-w-full max-w-[75%]">
+                  <p className="text-sm text-slate-500 text-wrap 2xl:max-w-full sm:max-w-[75%] max-w-[90%]">
                     Your dedication and passion for teaching continue to inspire
                     us all.
                   </p>

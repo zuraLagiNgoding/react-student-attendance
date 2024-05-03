@@ -61,6 +61,7 @@ export const columns: ColumnDef<ClassesType>[] = [
   {
     accessorKey: "shorten",
     header: "Major",
+    enableGlobalFilter: true,
     enableColumnFilter: true,
     filterFn: (row, columnId, filterMajors) => {
       if (filterMajors.length === 0) return true;
@@ -74,13 +75,9 @@ export const columns: ColumnDef<ClassesType>[] = [
     enableGlobalFilter: false,
   },
   {
-    accessorKey: "waliKelas",
+    accessorKey: "teacher_name",
+    id: "homeroom",
     header: "Wali Kelas",
-    cell: ({ row }) => {
-      const classes = row.original;
-
-      return <>{classes.teacher_name}</>;
-    },
   },
   {
     id: "actions",

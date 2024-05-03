@@ -41,17 +41,8 @@ export const columns: ColumnDef<SchedulesType>[] = [
     },
   },
   {
-    id: "classroom_id",
+    accessorKey: "classroom_name",
     header: "Room",
-    cell: ({ row }) => {
-      const schedules = row.original;
-
-      return (
-        <>
-          {schedules.classroom_name}
-        </>
-      );
-    },
   },
   {
     accessorKey: "day",

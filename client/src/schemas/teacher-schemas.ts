@@ -4,6 +4,9 @@ const phoneNumberRegex =
   /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/;
 
 export const TeacherSchema = z.object({
+  role: z
+    .string()
+    .min(1, { message: "Employee role is required." }),
   nip: z
     .string()
     .min(1, { message: "NISN is required." })

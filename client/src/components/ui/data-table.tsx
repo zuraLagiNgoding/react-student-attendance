@@ -23,7 +23,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
-import { Search, CirclePlus, Filter, Check, FileSpreadsheet } from "lucide-react";
+import { Search, CirclePlus, Filter, Check, FileSpreadsheet, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -51,7 +51,7 @@ interface DataTableProps<TData, TValue> {
 
 interface FilterType {
   id: string;
-  value: string[];
+  value: string[] | string;
 }
 
 interface FilterActiveKeyType {
@@ -121,10 +121,6 @@ export function DataTable<TData, TValue>({
     setSearch(event.target.value);
   };
 
-  React.useEffect(() => {
-    console.log(columnFilters)
-  }, [columnFilters])
-
   return (
     <>
       <div className="flex items-center gap-6 justify-between">
@@ -136,6 +132,7 @@ export function DataTable<TData, TValue>({
             onChange={(event) => setColumnGlobalFilters(event.target.value)}
             className="w-full h-full focus-visible:ring-0 focus-visible:outline-none px-2 py-0.5 border-b border-transparent focus-visible:border-b-slate-200"
           />
+          <X onClick={() => setColumnGlobalFilters("")} size={18} className={clsx("text-red-500 invisible", columnGlobalFilters.length > 0 && "!visible")} />
         </div>
         <div className="flex items-center gap-3">
           <Button
