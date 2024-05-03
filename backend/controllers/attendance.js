@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import cron from "node-cron"
 
 export const getAttendances = (req, res) => {
-  const search = req.query.result
+  const search = req.query.result;
   const q = "SELECT * FROM attendance_list";
 
   db.query(q, (err, data) => {
@@ -13,7 +13,7 @@ export const getAttendances = (req, res) => {
 };
 
 export const getAttendanceList = (req, res) => {
-  const scheduleId = req.params.id
+  const scheduleId = req.params.id;
   const q = "SELECT attendance_list.attendance_list_id, attendances.student_id, students.student_name ,attendances.status, attendances.description, attendances.attendance_id FROM attendance_list LEFT JOIN attendances ON attendances.attendance_list_id = attendance_list.attendance_list_id LEFT JOIN students ON attendances.student_id = students.nisn WHERE schedule_id = ? AND created_at = curdate();";
 
   db.query(q, [scheduleId], (err, data) => {
@@ -21,6 +21,16 @@ export const getAttendanceList = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const getList = (req, res) => {
+  const classId = req.params.id;
+  const q = "SELECT a.* FROM attendance_list a LEFT JOIN schedules s ON a.schedule_id = s.schedule_id WHERE s.class_id = ?"
+
+  db.query(q, [scheduleId], (err, data) => {
+    if (err) return res.send(err);
+    return res.status(200).json(data);
+  });
+}
 
 export const getRecaps = (req, res) => {
   const classId = req.params.id;

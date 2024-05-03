@@ -42,6 +42,13 @@ type SubjectType = {
   ];
 };
 
+type ListType = {
+  attendance_list_id: string;
+  schedule_id: string;
+  status: string;
+  created_at: Date;
+}
+
 const Recap = () => {
   const [searchParams] = useSearchParams();
   const month = searchParams.get("month");
@@ -53,6 +60,10 @@ const Recap = () => {
   const tableRef = useRef(null);
   const { data } = useFetch<RecapType[]>(
     "http://localhost:8800/backend/attendances/recap/" + classId
+  );
+
+  const { data:list } = useFetch<ListType[]>(
+    "http://localhost:8800/backend/attendances/checkList//" + classId
   );
 
   const { data: subjects } = useFetch<SubjectType[]>(
@@ -133,6 +144,16 @@ const Recap = () => {
     );
   };
 
+  console.log(data
+    .filter((filter) =>
+      filter.attendance.find(
+        (att) =>
+          dayjs(att.created_at).format("YYYY") === year &&
+          dayjs(att.created_at).format("M") ==
+            (parseInt(month as string) + 1).toString()
+      )
+    ))
+
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
       <h1 className="sm:text-3xl text-2xl font-bold leading-none text-neutral-900">
@@ -170,14 +191,14 @@ const Recap = () => {
           <div className="rounded-md border overflow-y-auto overflow-x-auto">
             <Table
               ref={tableRef}
-              className="h-full relative sm:text-sm text-xs"
+              className="h-full relative sm:text-sm text-xs bg-white"
             >
               <TableHeader className="sticky top-0 bg-white z-10">
                 <TableRow>
                   <TableHead>NISN</TableHead>
                   <TableHead>Student Name</TableHead>
                   {[...Array(days)].map((item, index) => (
-                    <TableHead className="text-center" key={item}>
+                    <TableHead className={clsx("text-center", (parseInt(month as string) + 1 < parseInt(dayjs().format("M")) ? true : index + 1 < parseInt(dayjs().format("D"))) && "cursor-pointer")} key={item}>
                       {index + 1}
                     </TableHead>
                   ))}

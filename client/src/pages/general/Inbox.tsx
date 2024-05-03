@@ -426,7 +426,7 @@ const Inbox = () => {
               <>
                 <div className="p-3 border-b">
                   <Button
-                    className="justify-start gap-2"
+                    className="justify-start gap-2 lg:invisible"
                     variant={"ghost"}
                     onClick={() => setOpenDrawer(false)}
                   >

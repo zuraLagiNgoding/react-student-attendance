@@ -1,9 +1,10 @@
 import express from "express";
-import { addAttendance, getAttendanceList, getLastId, getRecap, getRecaps, getSubjects, getToAttend, updateAttendanceList } from "../controllers/attendance.js";
+import { addAttendance, getAttendanceList, getLastId, getList, getRecap, getRecaps, getSubjects, getToAttend, updateAttendanceList } from "../controllers/attendance.js";
 
 const router = express.Router();
 
 router.get("/list/:id", getAttendanceList);
+router.get("/checkList/:id", getList);
 router.get("/getToAttend/:id", getToAttend);
 router.get("/lastId/:id", getLastId);
 router.get("/recaps", getRecaps);
