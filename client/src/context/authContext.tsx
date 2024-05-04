@@ -3,11 +3,10 @@ import { createContext, useEffect, useState } from "react";
 import { z } from "zod";
 import { LoginSchema } from "@/schemas/auth";
 import toast from "react-hot-toast";
-import { Navigate } from "react-router-dom";
 
 interface currentUserType {
   id: string;
-  role: "ADMIN" | "TEACHER" | "STUDENT";
+  role: "ADMIN" | "STAFF" | "TEACHER" | "STUDENT";
   username: string;
   email: string;
   img?: string;

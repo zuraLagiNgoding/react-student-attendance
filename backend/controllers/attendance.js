@@ -24,9 +24,11 @@ export const getAttendanceList = (req, res) => {
 
 export const getList = (req, res) => {
   const classId = req.params.id;
-  const q = "SELECT a.* FROM attendance_list a LEFT JOIN schedules s ON a.schedule_id = s.schedule_id WHERE s.class_id = ?"
+  const uid = req.params.uid;
+  const q =
+    "SELECT a.* FROM attendance_list a LEFT JOIN schedules s ON a.schedule_id = s.schedule_id LEFT JOIN teachers t ON s.teacher_id = t.nip WHERE s.class_id = ? AND t.uid = ?";
 
-  db.query(q, [scheduleId], (err, data) => {
+  db.query(q, [classId, uid], (err, data) => {
     if (err) return res.send(err);
     return res.status(200).json(data);
   });

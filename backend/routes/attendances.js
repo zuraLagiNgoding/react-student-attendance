@@ -4,7 +4,7 @@ import { addAttendance, getAttendanceList, getLastId, getList, getRecap, getReca
 const router = express.Router();
 
 router.get("/list/:id", getAttendanceList);
-router.get("/checkList/:id", getList);
+router.get("/checkList/:id/:uid", getList);
 router.get("/getToAttend/:id", getToAttend);
 router.get("/lastId/:id", getLastId);
 router.get("/recaps", getRecaps);

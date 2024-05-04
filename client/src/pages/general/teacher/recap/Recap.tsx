@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
@@ -10,13 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AuthContext } from "@/context/authContext";
 import { useFetch } from "@/hooks/fetcher";
 import { ClassesType } from "@/pages/admin/data_kelas/columns";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { Circle, FilePlus2 } from "lucide-react";
-import React, { useRef } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { AlertCircle, Circle, FilePlus2 } from "lucide-react";
+import React, { useContext, useRef } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { utils, writeFileXLSX } from "xlsx";
 
 type RecapType = {
@@ -47,13 +49,16 @@ type ListType = {
   schedule_id: string;
   status: string;
   created_at: Date;
-}
+};
 
 const Recap = () => {
   const [searchParams] = useSearchParams();
-  const month = searchParams.get("month");
+  const month = parseInt(searchParams.get("month") as string);
   const year = searchParams.get("year");
   const location = useLocation().pathname.split("/");
+  const { currentUser } = useContext(AuthContext);
+  // const navigate = useNavigate();
+
   const classId = location[location.length - 2];
   const [day, setDay] = React.useState(-1);
   const [days, setDays] = React.useState(0);
@@ -62,8 +67,8 @@ const Recap = () => {
     "http://localhost:8800/backend/attendances/recap/" + classId
   );
 
-  const { data:list } = useFetch<ListType[]>(
-    "http://localhost:8800/backend/attendances/checkList//" + classId
+  const { data: list } = useFetch<ListType[]>(
+    `http://localhost:8800/backend/attendances/checkList/${classId}/${currentUser?.id}`
   );
 
   const { data: subjects } = useFetch<SubjectType[]>(
@@ -86,7 +91,7 @@ const Recap = () => {
             dayjs(att.created_at).format("YYYY") === year &&
             dayjs(att.created_at).format("YYYY") === year &&
             dayjs(att.created_at).format("M") ===
-              (parseInt(month as string) + 1).toString()
+              (month + 1).toString()
         );
         if (attendancesForDay.length > 0)
           if (
@@ -117,7 +122,7 @@ const Recap = () => {
   React.useEffect(() => {
     const daysInMonth = new Date(
       parseInt(year as string),
-      parseInt(month as string) + 1,
+      month + 1,
       0
     ).getDate();
     setDays(daysInMonth);
@@ -144,15 +149,39 @@ const Recap = () => {
     );
   };
 
-  console.log(data
-    .filter((filter) =>
-      filter.attendance.find(
-        (att) =>
-          dayjs(att.created_at).format("YYYY") === year &&
-          dayjs(att.created_at).format("M") ==
-            (parseInt(month as string) + 1).toString()
-      )
-    ))
+  const isAvailable = (day:number) => {
+    const find = 
+      list.find(
+        (f) =>
+          parseInt(dayjs(f.created_at).format("D")) === day &&
+          dayjs(f.created_at).format("YYYY") === year &&
+          parseInt(dayjs(f.created_at).format("M")) === month + 1
+      )?.created_at;
+
+      if (currentUser?.role !== "ADMIN" && currentUser?.role !== "STAFF") {
+        if (month + 1 < parseInt(dayjs().format("M"))) {
+          if (find !== undefined) {
+            if (
+              parseInt(
+                dayjs(find).format("D")
+              ) !== day
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return true
+          }
+        } else {
+          if (day < parseInt(dayjs().format("D"))) {
+            return true
+          }
+        }
+      } else {
+        return false
+      }
+  }
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -162,9 +191,16 @@ const Recap = () => {
       <div className="flex flex-col h-full w-full overflow-hidden">
         <div className="flex flex-col gap-4 py-4 h-full w-full overflow-auto">
           <div className="flex w-full items-center justify-between">
-            <h1 className="text-lg font-medium">
-              {classes[0]?.grade} {classes[0]?.shorten} {classes[0]?.identifier}
-            </h1>
+            <div className="flex gap-4 items-center">
+              <h1 className="text-lg font-medium">
+                {classes[0]?.grade} {classes[0]?.shorten}{" "}
+                {classes[0]?.identifier}
+              </h1>
+              <Badge className="gap-2">
+                <AlertCircle className="fill-orange-300 text-secondary" size={20}/>
+                There's an empty attendance!
+              </Badge>
+            </div>
             <Button className="flex items-center gap-2" onClick={exportToSheet}>
               <FilePlus2 size={18} />
               Export To Sheet
@@ -198,8 +234,25 @@ const Recap = () => {
                   <TableHead>NISN</TableHead>
                   <TableHead>Student Name</TableHead>
                   {[...Array(days)].map((item, index) => (
-                    <TableHead className={clsx("text-center", (parseInt(month as string) + 1 < parseInt(dayjs().format("M")) ? true : index + 1 < parseInt(dayjs().format("D"))) && "cursor-pointer")} key={item}>
-                      {index + 1}
+                    <TableHead
+                      className={clsx(
+                        "text-center",
+                        isAvailable(index + 1) && "cursor-pointer"
+                      )}
+                      key={item}
+                      onClick={() => {
+                        // isAvailable(index + 1)
+                      }}
+                    >
+                      <div className="relative group">
+                        {index + 1}
+                        <div
+                          className={clsx(
+                            "absolute bg-orange-300 h-2 w-2 top-0 right-0 hidden rounded-full",
+                            isAvailable(index + 1) && "!block"
+                          )}
+                        />
+                      </div>
                     </TableHead>
                   ))}
                 </TableRow>
@@ -211,7 +264,7 @@ const Recap = () => {
                       (att) =>
                         dayjs(att.created_at).format("YYYY") === year &&
                         dayjs(att.created_at).format("M") ==
-                          (parseInt(month as string) + 1).toString()
+                          (month + 1).toString()
                     )
                   )
                   .map((recap, index) => (
@@ -349,7 +402,7 @@ const Recap = () => {
                                   dayjs(
                                     new Date(
                                       parseInt(dayjs().format("YYYY")),
-                                      parseInt(month as string),
+                                      month,
                                       day
                                     )
                                   ).format("dddd")
@@ -452,7 +505,7 @@ const Recap = () => {
                           dayjs(att.created_at).date() === dayIndex + 1 &&
                           dayjs(att.created_at).format("YYYY") === year &&
                           dayjs(att.created_at).format("M") ==
-                            (parseInt(month as string) + 1).toString()
+                            (month + 1).toString()
                       );
                       if (attendancesForDay.length > 0) {
                         const firstStatus = attendancesForDay[0].status;
