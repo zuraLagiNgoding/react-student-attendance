@@ -60,6 +60,65 @@ export const NavLinks = {
       },
     ],
   },
+  STAFF: {
+    links: [
+      {
+        base: "Main Menu",
+        links: [
+          {
+            label: "Overview",
+            href: "overview",
+            icon: PanelsLeftBottom,
+          },
+          {
+            label: "Record Absen",
+            href: "attendance/records",
+            icon: Clipboard,
+          },
+        ],
+      },
+      {
+        base: "Master Data",
+        links: [
+          {
+            label: "Data Jurusan",
+            href: "majors",
+            icon: Album,
+          },
+          {
+            label: "Data Kelas",
+            href: "classes",
+            icon: School,
+          },
+          {
+            label: "Data Ruang Ajar",
+            href: "classrooms",
+            icon: School,
+          },
+          {
+            label: "Data Siswa",
+            href: "students",
+            icon: Users,
+          },
+          {
+            label: "Data Guru",
+            href: "teachers",
+            icon: Users,
+          },
+          {
+            label: "Data Mata Pelajaran",
+            href: "subjects",
+            icon: NotebookPen,
+          },
+          {
+            label: "Data Jadwal",
+            href: "schedules",
+            icon: CalendarClock,
+          },
+        ],
+      },
+    ],
+  },
   TEACHER: {
     links: [
       {

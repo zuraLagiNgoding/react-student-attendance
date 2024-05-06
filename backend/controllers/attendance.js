@@ -83,17 +83,17 @@ export const getRecap = (req, res) => {
 export const getSubjects = (req, res) => {
   const classId = req.params.id;
   const q =
-    "SELECT subjects.subject_code, subjects.subject_name, schedules.day FROM subjects LEFT JOIN schedules ON schedules.subject_id = subjects.subject_id WHERE schedules.class_id = ?";
+    "SELECT subjects.subject_code, subjects.subject_name, schedules.day, schedules.schedule_id, teachers.uid FROM subjects LEFT JOIN schedules ON schedules.subject_id = subjects.subject_id LEFT JOIN teachers ON schedules.teacher_id = teachers.nip WHERE schedules.class_id = ?";
 
   db.query(q, [classId], (err, data) => {
     if(err) return res.send(err);
     
     const transformedData = {};
-    data.forEach(({ subject_code, subject_name, day }) => {
+    data.forEach(({ subject_code, subject_name, day, schedule_id, uid }) => {
       if (!transformedData[day]) {
         transformedData[day] = { day, subjects: [] };
       }
-      transformedData[day].subjects.push({ subject_code, subject_name });
+      transformedData[day].subjects.push({ subject_code, subject_name, schedule_id, uid });
     });
 
     // Converting object to array
@@ -161,20 +161,22 @@ export const getUnique = (req, res) => {
 }
 
 export const addAttendance = (req, res) => {
-  const qCheck = "SELECT * FROM attendance_list WHERE schedule_id = ? AND created_at = curdate()"
-
-  db.query(qCheck, [req.body.schedule_id], (err, data) => {
+  const qCheck =
+    "SELECT * FROM attendance_list WHERE schedule_id = ? AND created_at = ?";
+  
+  db.query(qCheck, [req.body.schedule_id ,req.body.created_at], (err, data) => {
     if (err) return res.status(500).json(err);
 
     if (data.length > 0)
     return res.status(409).json({ message: "Already took attendance today" });
 
-    const qList = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?, curdate())";
+    const qList = "INSERT INTO attendance_list(`attendance_list_id`, `schedule_id`, `status`, `created_at`) VALUES (?)";
   
     const valuesList = [
       req.body.attendance_list_id,
       req.body.schedule_id,
       "done",
+      req.body.created_at
     ];
   
     db.query(qList, [valuesList], (err, data) => {

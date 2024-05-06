@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
@@ -16,8 +15,9 @@ import { useFetch } from "@/hooks/fetcher";
 import { ClassesType } from "@/pages/admin/data_kelas/columns";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { AlertCircle, Circle, FilePlus2 } from "lucide-react";
+import { CheckCircle2, Circle, FilePlus2 } from "lucide-react";
 import React, { useContext, useRef } from "react";
+import toast from "react-hot-toast";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { utils, writeFileXLSX } from "xlsx";
 
@@ -40,6 +40,8 @@ type SubjectType = {
     {
       subject_code: string;
       subject_name: string;
+      schedule_id: string;
+      uid: string;
     }
   ];
 };
@@ -56,6 +58,7 @@ const Recap = () => {
   const month = parseInt(searchParams.get("month") as string);
   const year = searchParams.get("year");
   const location = useLocation().pathname.split("/");
+  const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   // const navigate = useNavigate();
 
@@ -81,6 +84,7 @@ const Recap = () => {
 
   const [total, setTotal] = React.useState<number[]>([]);
   const [collapse, setCollapse] = React.useState<number | undefined>();
+  const [collapseDay, setCollapseDay] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const totalHadir = [...Array(days)].map((_, dayIndex) => {
@@ -90,8 +94,7 @@ const Recap = () => {
             dayjs(att.created_at).date() === dayIndex + 1 &&
             dayjs(att.created_at).format("YYYY") === year &&
             dayjs(att.created_at).format("YYYY") === year &&
-            dayjs(att.created_at).format("M") ===
-              (month + 1).toString()
+            dayjs(att.created_at).format("M") === (month + 1).toString()
         );
         if (attendancesForDay.length > 0)
           if (
@@ -149,39 +152,34 @@ const Recap = () => {
     );
   };
 
-  const isAvailable = (day:number) => {
-    const find = 
-      list.find(
-        (f) =>
-          parseInt(dayjs(f.created_at).format("D")) === day &&
-          dayjs(f.created_at).format("YYYY") === year &&
-          parseInt(dayjs(f.created_at).format("M")) === month + 1
-      )?.created_at;
+  const isAvailable = (day: number) => {
+    const filter = list.filter(
+      (f) =>
+        parseInt(dayjs(f.created_at).format("D")) === day &&
+        dayjs(f.created_at).format("YYYY") === year &&
+        parseInt(dayjs(f.created_at).format("M")) === month + 1
+    );
 
-      if (currentUser?.role !== "ADMIN" && currentUser?.role !== "STAFF") {
-        if (month + 1 < parseInt(dayjs().format("M"))) {
-          if (find !== undefined) {
-            if (
-              parseInt(
-                dayjs(find).format("D")
-              ) !== day
-            ) {
-              return true;
-            } else {
-              return false;
-            }
+    if (currentUser?.role !== "ADMIN" && currentUser?.role !== "STAFF") {
+      if (month + 1 < parseInt(dayjs().format("M"))) {
+        if (filter !== undefined) {
+          if (filter.every(e => parseInt(dayjs(e.created_at).format("D")) !== day)) {
+            return true;
           } else {
-            return true
+            return false;
           }
         } else {
-          if (day < parseInt(dayjs().format("D"))) {
-            return true
-          }
+          return true;
         }
       } else {
-        return false
+        if (day < parseInt(dayjs().format("D"))) {
+          return true;
+        }
       }
-  }
+    } else {
+      return false;
+    }
+  };
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -196,10 +194,13 @@ const Recap = () => {
                 {classes[0]?.grade} {classes[0]?.shorten}{" "}
                 {classes[0]?.identifier}
               </h1>
-              <Badge className="gap-2">
-                <AlertCircle className="fill-orange-300 text-secondary" size={20}/>
+              {/* <Badge className="gap-2">
+                <AlertCircle
+                  className="fill-orange-300 text-secondary"
+                  size={20}
+                />
                 There's an empty attendance!
-              </Badge>
+              </Badge> */}
             </div>
             <Button className="flex items-center gap-2" onClick={exportToSheet}>
               <FilePlus2 size={18} />
@@ -235,20 +236,19 @@ const Recap = () => {
                   <TableHead>Student Name</TableHead>
                   {[...Array(days)].map((item, index) => (
                     <TableHead
-                      className={clsx(
-                        "text-center",
-                        isAvailable(index + 1) && "cursor-pointer"
-                      )}
+                      className="text-center cursor-pointer hover:bg-secondary/5 rounded-lg"
                       key={item}
                       onClick={() => {
-                        // isAvailable(index + 1)
+                        setCollapseDay(!collapseDay);
+                        setCollapse(-1);
+                        setDay(index + 1);
                       }}
                     >
-                      <div className="relative group">
+                      <div className="relative group ">
                         {index + 1}
                         <div
                           className={clsx(
-                            "absolute bg-orange-300 h-2 w-2 top-0 right-0 hidden rounded-full",
+                            "absolute bg-orange-300 h-1.5 sm:h-2 w-1.5 sm:w-2 top-0 right-0 hidden rounded-full",
                             isAvailable(index + 1) && "!block"
                           )}
                         />
@@ -258,13 +258,122 @@ const Recap = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                <Collapsible
+                  asChild
+                  open={collapseDay}
+                  onOpenChange={() => setCollapseDay(!collapseDay)}
+                >
+                  <CollapsibleContent asChild>
+                    <>
+                      {subjects
+                        .filter(
+                          (filter) =>
+                            filter.day ==
+                            dayjs(
+                              new Date(
+                                parseInt(dayjs().format("YYYY")),
+                                month,
+                                day
+                              )
+                            ).format("dddd")
+                        )
+                        .map((day) => (
+                          <>
+                            {day.subjects.map((subject) => (
+                              <TableRow
+                                className="bg-primary/5 hover:bg-primary/[0.04] group relative"
+                                key={subject.subject_name}
+                              >
+                                <TableCell
+                                  colSpan={2}
+                                  className="font-medium group-hover:underline"
+                                >
+                                  {subject.subject_name}
+                                </TableCell>
+                                {[...Array(days)].map((_, dayIndex) => {
+                                  const attendancesForDay: RecapType["attendance"] =
+                                    [{}] as RecapType["attendance"];
+
+                                  data.forEach((student) => {
+                                    student.attendance
+                                      .filter(
+                                        (att) =>
+                                          dayjs(att.created_at).month() ===
+                                            month &&
+                                          dayjs(att.created_at).date() ===
+                                            dayIndex + 1 &&
+                                          att.subject_name ===
+                                            subject.subject_name
+                                      )
+                                      .forEach((attendance) => {
+                                        if (attendancesForDay) {
+                                          attendancesForDay.push(attendance);
+                                        }
+                                      });
+                                  });
+
+                                  let status;
+                                  if (
+                                    attendancesForDay.some((s) => s.created_at)
+                                  ) {
+                                    status = (
+                                      <CheckCircle2
+                                        className="text-primary"
+                                        size={14}
+                                      />
+                                    );
+                                  } else if (
+                                    dayjs()
+                                      .month(month)
+                                      .date(dayIndex + 1)
+                                      .format("dddd") === day.day
+                                  ) {
+                                    status = (
+                                      <Circle
+                                        onClick={() => {
+                                          currentUser?.id === subject.uid
+                                            ? navigate(
+                                                "/attendance/" +
+                                                  subject.schedule_id,
+                                                {
+                                                  state: {
+                                                    year: year,
+                                                    month: month,
+                                                    day: dayIndex + 1,
+                                                  },
+                                                }
+                                              )
+                                            : toast.error(
+                                                "You cannot take this attendance"
+                                              );
+                                        }}
+                                        className="fill-current text-neutral-200 cursor-pointer"
+                                        size={12}
+                                      />
+                                    );
+                                  }
+                                  return (
+                                    <TableCell key={dayIndex}>
+                                      <div className="flex w-full items-center justify-center">
+                                        {status}
+                                      </div>
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
+                            ))}
+                          </>
+                        ))}
+                    </>
+                  </CollapsibleContent>
+                </Collapsible>
                 {data
                   .filter((filter) =>
                     filter.attendance.find(
                       (att) =>
-                        dayjs(att.created_at).format("YYYY") === year &&
-                        dayjs(att.created_at).format("M") ==
-                          (month + 1).toString()
+                        dayjs(att.created_at).year() ===
+                          parseInt(year as string) &&
+                        dayjs(att.created_at).month() == month
                     )
                   )
                   .map((recap, index) => (
@@ -287,6 +396,7 @@ const Recap = () => {
                             let status;
                             const attendancesForDay = recap.attendance.filter(
                               (att) =>
+                                dayjs(att.created_at).month() === month &&
                                 dayjs(att.created_at).date() === dayIndex + 1
                             );
                             if (attendancesForDay.length > 0) {
@@ -374,6 +484,7 @@ const Recap = () => {
                                         ? -1
                                         : index
                                     );
+                                    setCollapseDay(false);
                                     setDay(dayIndex + 1);
                                   }}
                                 >
@@ -424,12 +535,18 @@ const Recap = () => {
                                         const attendancesForDay =
                                           recap.attendance.filter(
                                             (att) =>
+                                              dayjs()
+                                                .month(month)
+                                                .date(dayIndex + 1)
+                                                .format("dddd") === day.day &&
+                                              dayjs(att.created_at).month() ===
+                                                month &&
                                               dayjs(att.created_at).date() ===
                                                 dayIndex + 1 &&
                                               att.subject_name ===
                                                 subject.subject_name
                                           );
-                                        let status; // Default status is Presence
+                                        let status;
                                         if (attendancesForDay.length > 0) {
                                           if (
                                             attendancesForDay[0].status ===

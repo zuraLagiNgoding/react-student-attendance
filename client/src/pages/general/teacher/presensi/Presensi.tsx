@@ -54,6 +54,7 @@ const Save = () => {
   const [checked, setChecked] = React.useState<number[]>([]);
   const [generatedId, setGeneratedId] = React.useState("");
   const location = useLocation();
+  const { state } = location;
   const navigate = useNavigate();
   const scheduleId =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
@@ -105,12 +106,15 @@ const Save = () => {
     });
   }, [form, data, generatedId]);
 
+  console.log(state)
+
   const onSubmit = async (values: z.infer<typeof AttendanceSchema>) => {
-    if (schedules[0].day === dayjs().format("dddd")) {
+    if (schedules[0].day === dayjs().format("dddd") && !location.state) {
       try {
         await axios.post("http://localhost:8800/backend/attendances/", {
           attendance_list_id: generatedId,
           schedule_id: scheduleId,
+          created_at: new Date().toISOString().slice(0, 10) + " 00:00:00",
           attendance: values.attendance.map((attendance) => ({
             attendance_id: attendance.attendance_id,
             student_id: data.find(
@@ -122,6 +126,38 @@ const Save = () => {
         });
         navigate("/attendance");
         toast.success("Proccess successfuly!")
+      } catch (error) {
+        console.log(error)
+        if (error instanceof AxiosError) {
+          if (error.response && error.response.status === 409) {
+            toast.error("Already took attendance today!");
+          } else {
+            toast.error(error.message);
+          }
+        }
+      }
+    } else if (
+      schedules[0].day ===
+      dayjs().month(state.month).date(state.day).format("dddd")
+    ) {
+      try {
+        await axios.post("http://localhost:8800/backend/attendances/", {
+          attendance_list_id: generatedId,
+          schedule_id: scheduleId,
+          created_at: dayjs(
+            `${state.year}-${state.month + 1}-${state.day} 00:00:00`
+          ).format("YYYY-MM-DD HH:mm:ss"),
+          attendance: values.attendance.map((attendance) => ({
+            attendance_id: attendance.attendance_id,
+            student_id: data.find(
+              (student) => student.student_name === attendance.student_id
+            )?.nisn,
+            status: attendance.status,
+            description: attendance.description,
+          })),
+        });
+        navigate("/attendance");
+        toast.success("Proccess successfuly!");
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response && error.response.status === 409) {
@@ -169,7 +205,6 @@ const Save = () => {
       setChecked(newChecked);
     }
   };
-
 
   return (
     <div className="flex flex-col h-full gap-6 overflow-y-hidden flex-nowrap whitespace-nowrap">
@@ -266,7 +301,6 @@ const Save = () => {
                             checked={checked.includes(index)}
                             onCheckedChange={() => {
                               handleCheckboxChange(index);
-                              console.log(checked);
                             }}
                           />
                         </TableCell>
@@ -438,7 +472,6 @@ const View = () => {
       });
       navigate("/attendance");
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         if (error.response && error.response.status === 409) {
           toast("Already took attendance today", {

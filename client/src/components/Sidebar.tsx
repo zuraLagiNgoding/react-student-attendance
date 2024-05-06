@@ -15,7 +15,7 @@ import { Button } from "./ui/button";
 import logo from "@/assets/logo.svg"
 import { ScrollArea } from "./ui/scroll-area";
 
-type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED";
+type roleType = "ADMIN" | "TEACHER" | "STUDENT" | "UNNASSIGNED" | "STAFF";
 interface SidebarProps {
   close: boolean,
   setClose: Dispatch<SetStateAction<boolean>>
@@ -63,7 +63,7 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
             <h1 className="2xl:text-xs text-[12px] font-light opacity-65 transition-all sm:opacity-100">
               {base.base}
             </h1>
-            <ul className="flex flex-col py-2 space-y-1.5 overflow-y-auto overflow-x-hidden">
+            <ul className="flex flex-col py-2 space-y-1.5 overflow-y-auto overflow-x-hidden">              
               {base.links.map((link) => (
                 <li key={link.label}>
                   <Link
@@ -80,8 +80,8 @@ const Sidebar = ({ close, setClose }: SidebarProps) => {
                       size={18}
                       className={clsx(
                         "min-w-[18px] text-primary/50 group-hover:text-primary/100",
-                        location.pathname == "/" + link.href
-                          && "!text-primary/100"
+                        location.pathname == "/" + link.href &&
+                          "!text-primary/100"
                       )}
                     />
                     <span className="transition-all sm:opacity-100">
